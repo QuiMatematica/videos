@@ -1,4 +1,6 @@
 from manim import *
+from laser.line import LaserLine
+from laser.text import LaserTitle
 
 
 class Video(MovingCameraScene):
@@ -47,21 +49,3 @@ class Video(MovingCameraScene):
         self.wait(60)
 
 
-class LaserLine(Line):
-
-    def __init__(self, start, end, **kwargs):
-        super().__init__(start, end, color=YELLOW, **kwargs)
-        glom_size = .2
-        glom = Rectangle(height=glom_size, width=glom_size + self.width, z_index=self.z_index - 1, fill_opacity=.3,
-                         fill_color=YELLOW_A, color=BLACK).round_corners(radius=.2)
-        self.add(glom)
-
-
-class LaserTitle(Tex):
-
-    def __init__(self, *tex_strings, **kwargs):
-        super().__init__(*tex_strings, **kwargs)
-        t = self.copy().set_opacity(.3).shift(.03 * DR).set_z_index(self.z_index - 1)
-        self.add(t)
-        t = self.copy().set_opacity(.3).shift(.03 * UL).set_z_index(self.z_index - 1)
-        self.add(t)
