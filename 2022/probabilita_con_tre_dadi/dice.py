@@ -61,6 +61,8 @@ class Video2D(MovingCameraScene):
             MathTex(r"\text{eventi indipendenti: }p(E_1 \,\land\, E_2) = p(E_1) \cdot p(E_2)"),
             MathTex(r"\text{eventi dipendenti: }p(E_1 \,\land\, E_2) = p(E_1) \cdot p(E_2 | E_1)")
         ).arrange(DOWN).to_edge(DOWN)
+        surr = SurroundingRectangle(prob_prodotto, fill_color=WHITE, fill_opacity=0.15)
+        self.play(Create(surr))
         self.play(Write(prob_prodotto))
         self.wait(delay)
         self.next_section()
@@ -82,7 +84,7 @@ class Video2D(MovingCameraScene):
         self.wait(delay)
         self.next_section()
 
-        self.play(FadeOut(prob_prodotto))
+        self.play(FadeOut(prob_prodotto), FadeOut(surr))
         self.wait(delay)
         self.next_section()
 
@@ -97,6 +99,137 @@ class Video2D(MovingCameraScene):
 
         riga4 = MathTex(r"= \dfrac{1}{216} = 0,00463 \dots").next_to(riga3, 2 * DOWN)
         self.play(Write(riga4))
+        self.wait(delay)
+        self.next_section()
+
+        self.play(FadeOut(title), FadeOut(riga4), FadeOut(riga3), FadeOut(riga2),
+                  FadeOut(riga1[0]), FadeOut(riga1[2]), FadeOut(riga1[4]), FadeOut(riga1[6]),
+                  red_dice.animate.scale(5).move_to(4*LEFT + UP),
+                  yellow_dice.animate.scale(5).move_to(UP),
+                  blue_dice.animate.scale(5).move_to(4*RIGHT + UP))
+        self.wait(delay)
+        self.next_section()
+
+        title = Title("6 su uno e un solo dado")
+        self.play(Write(title))
+        self.wait(delay)
+        self.next_section()
+
+        caso1 = VGroup(
+            MathTex(r"p("),
+            red_dice.copy().scale(.2),
+            MathTex(r"=6 \,\,\land "),
+            yellow_dice.copy().scale(.2),
+            MathTex(r"\ne 6 \,\,\land "),
+            blue_dice.copy().scale(.2),
+            MathTex(r"\ne 6"),
+            MathTex(r")\, +")
+        ).arrange(RIGHT)
+
+        caso2 = VGroup(
+            MathTex(r"p("),
+            red_dice.copy().scale(.2),
+            MathTex(r"\ne 6 \,\,\land "),
+            yellow_dice.copy().scale(.2),
+            MathTex(r"= 6 \,\,\land "),
+            blue_dice.copy().scale(.2),
+            MathTex(r"\ne 6"),
+            MathTex(r")\, +")
+        ).arrange(RIGHT)
+
+        caso3 = VGroup(
+            MathTex(r"p("),
+            red_dice.copy().scale(.2),
+            MathTex(r"\ne 6 \,\,\land "),
+            yellow_dice.copy().scale(.2),
+            MathTex(r"\ne 6 \,\,\land "),
+            blue_dice.copy().scale(.2),
+            MathTex(r"= 6"),
+            MathTex(") =")
+        ).arrange(RIGHT)
+
+        tre_casi = VGroup(caso1, caso2, caso3).arrange(DOWN).next_to(yellow_dice, 3*DOWN)
+        self.play(Create(tre_casi[0][1:7]))
+        self.wait(delay)
+        self.next_section()
+
+        self.play(Create(tre_casi[1][1:7]))
+        self.wait(delay)
+        self.next_section()
+
+        self.play(Create(tre_casi[2][1:7]))
+        self.wait(delay)
+        self.next_section()
+
+        self.play(FadeOut(red_dice), FadeOut(yellow_dice), FadeOut(blue_dice), tre_casi.animate.next_to(title, 3*DOWN))
+        self.wait(delay)
+        self.next_section()
+
+        caso1 = VGroup(
+            MathTex(r"p("),
+            red_dice.copy().scale(.2),
+            MathTex(r"=6\,\,) \cdot p("),
+            yellow_dice.copy().scale(.2),
+            MathTex(r"\ne 6\,\,) \cdot p("),
+            blue_dice.copy().scale(.2),
+            MathTex(r"\ne 6"),
+            MathTex(r")\, +")
+        ).arrange(RIGHT)
+
+        caso2 = VGroup(
+            MathTex(r"p("),
+            red_dice.copy().scale(.2),
+            MathTex(r"\ne 6\,\,) \cdot p("),
+            yellow_dice.copy().scale(.2),
+            MathTex(r"= 6\,\,) \cdot p("),
+            blue_dice.copy().scale(.2),
+            MathTex(r"\ne 6"),
+            MathTex(r")\, +")
+        ).arrange(RIGHT)
+
+        caso3 = VGroup(
+            MathTex(r"p("),
+            red_dice.copy().scale(.2),
+            MathTex(r"\ne 6\,\,) \cdot p("),
+            yellow_dice.copy().scale(.2),
+            MathTex(r"\ne 6\,\,) \cdot p("),
+            blue_dice.copy().scale(.2),
+            MathTex(r"= 6"),
+            MathTex(") =")
+        ).arrange(RIGHT)
+
+        tre_casi_2 = VGroup(caso1, caso2, caso3).arrange(DOWN).next_to(tre_casi, 3*DOWN)
+        self.play(Create(tre_casi_2))
+        self.wait(delay)
+        self.next_section()
+
+        self.play(FadeOut(tre_casi), tre_casi_2.animate.move_to(tre_casi))
+
+        tre_casi_3 = MathTex(r"= \dfrac{1}{6} \cdot \dfrac{5}{6} \cdot \dfrac{5}{6} + \dfrac{5}{6} \cdot \dfrac{1}{6} "
+                             r"\cdot \dfrac{5}{6} + \dfrac{5}{6} \cdot \dfrac{5}{6} \cdot \dfrac{1}{6} =")\
+            .next_to(tre_casi_2, 2*DOWN)
+        tre_casi_3[0][1:4].set_color(PURE_RED)
+        tre_casi_3[0][5:8].set_color(YELLOW)
+        tre_casi_3[0][9:12].set_color(PURE_BLUE)
+        tre_casi_3[0][13:16].set_color(PURE_RED)
+        tre_casi_3[0][17:20].set_color(YELLOW)
+        tre_casi_3[0][21:24].set_color(PURE_BLUE)
+        tre_casi_3[0][25:28].set_color(PURE_RED)
+        tre_casi_3[0][29:32].set_color(YELLOW)
+        tre_casi_3[0][33:36].set_color(PURE_BLUE)
+        self.play(Write(tre_casi_3))
+        self.wait(delay)
+        self.next_section()
+        # self.add(index_labels(tre_casi_3[0]))
+
+        tre_casi_4 = MathTex(r"= \dfrac{1}{6} \cdot \dfrac{5}{6} \cdot \dfrac{5}{6} \cdot 3 = \dfrac{75}{216} = 0,"
+                             r"3472\dots").next_to(tre_casi_3, 2*DOWN)
+        self.play(Write(tre_casi_4[0][0:14]))
+        self.wait(delay)
+        self.next_section()
+        # self.add(index_labels(tre_casi_4[0]))
+
+        self.play(Write(tre_casi_4[0][14:]))
         self.wait(delay)
         self.next_section()
 
