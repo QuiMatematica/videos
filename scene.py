@@ -266,7 +266,7 @@ class Video2D(MovingCameraScene):
         # self.add(index_labels(tre_casi_3[0]))
 
         tre_casi_4 = MathTex(r"= \dfrac{1}{6} \cdot \dfrac{5}{6} \cdot \dfrac{5}{6} \cdot 3 = \dfrac{75}{216} = 0,"
-                             r"3472\dots").next_to(tre_casi_3, 2*DOWN)
+                             r"34722\dots").next_to(tre_casi_3, 2*DOWN)
         self.play(Write(tre_casi_4[0][0:14]))
         self.wait(delay)
         self.next_section()
@@ -357,7 +357,7 @@ class Video2D(MovingCameraScene):
         self.wait(delay)
         self.next_section()
 
-        riga6 = MathTex(r"= 1 - \dfrac{5}{6} \cdot \dfrac{5}{6} \cdot \dfrac{5}{6} = \dfrac{91}{216} = 0,421\dots")\
+        riga6 = MathTex(r"= 1 - \dfrac{5}{6} \cdot \dfrac{5}{6} \cdot \dfrac{5}{6} = \dfrac{91}{216} = 0,42129\dots")\
             .next_to(riga5, 1.5*DOWN)
         riga6[0][3:6].set_color(PURE_RED)
         riga6[0][7:10].set_color(YELLOW)
