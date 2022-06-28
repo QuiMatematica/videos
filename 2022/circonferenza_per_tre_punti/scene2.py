@@ -1,4 +1,4 @@
-from math import sqrt
+from math import sqrt, EqSystem
 
 from manim import *
 
@@ -75,19 +75,6 @@ class Scene(MovingCameraScene):
         r6 = MathTex(r"r = \sqrt{(x_Z - x_A)^2 + (y_Z - y_A)^2}").scale(t_scale).next_to(r5, DOWN)
         self.play(Write(r6))
 
+        self.wait(10)
 
-class EqSystem(VMobject):
 
-    def __init__(self, *equation_texs, **kwargs):
-        super().__init__(**kwargs)
-        eqs = VGroup()
-        for tex in equation_texs:
-            eqs.add(tex)
-        eqs.arrange(DOWN, aligned_edge=LEFT)
-
-        bracket = MathTex("\{")
-        bracket.scale(2)
-        bracket.stretch_to_fit_height(eqs.height + 2 * MED_SMALL_BUFF)
-        bracket.next_to(eqs, LEFT, MED_SMALL_BUFF)
-        self.add(bracket, eqs)
-        self.center()

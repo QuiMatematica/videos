@@ -72,3 +72,4 @@ class Scene(MovingCameraScene):
 
         self.play(Create(Circle(radius=length(z, a)).move_to(z)))
 
+        self.wait(10)
