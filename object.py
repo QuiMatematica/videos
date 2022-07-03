@@ -2,6 +2,40 @@ from typing import Optional
 
 from colour import Color
 from manim import *
+from manim.utils.rate_functions import ease_in_out_cubic, ease_in_cubic, ease_out_cubic
+
+
+class Coin(Mobject):
+
+    def __init__(self):
+        super().__init__()
+        self.head = ImageMobject('img/testa.png', z_index=1)
+        self.cross = ImageMobject('img/croce.png', z_index=-1).rotate(angle=PI)
+        self.circle = Circle(radius=1.5, color=None, z_index=2, fill_opacity=0)
+        self.add(self.head)
+        self.add(self.cross)
+        self.add(self.circle)
+
+    def flip_coin(self, scene):
+        scene.play(Rotate(
+            self,
+            axis=UP,
+            angle=PI / 2,
+            run_time=.5,
+            rate_func=ease_in_cubic
+        ))
+        self[0].set_z_index(- self[0].get_z_index())
+        self[1].set_z_index(- self[1].get_z_index())
+        scene.play(Rotate(
+            self,
+            axis=UP,
+            angle=PI / 2,
+            run_time=.5,
+            rate_func=ease_out_cubic
+        ))
+
+    def set_color(self, color: Color = RED, family: bool = True):
+        self.circle.set_fill(color, opacity=.2)
 
 
 class Ball(Circle):
@@ -50,7 +84,6 @@ class Face(Square):
 
 
 class Dice(VMobject):
-
     result_map = [
         [1, 3, 2],
         [2, 3, 6],
