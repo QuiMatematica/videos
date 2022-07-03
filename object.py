@@ -4,6 +4,13 @@ from colour import Color
 from manim import *
 
 
+class Ball(Circle):
+
+    def __init__(self, radius=.4, color=GRAY_A):
+        super().__init__(radius=radius, color=color, fill_color=color, fill_opacity=1)
+        self.set_sheen(-1, DR)
+
+
 class Face(Square):
 
     def __init__(self, vect, number, side_length=2.0, **kwargs):

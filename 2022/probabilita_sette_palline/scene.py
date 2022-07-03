@@ -1,32 +1,27 @@
 from manim import *
 
+from object import Ball
+
 
 class Scene(MovingCameraScene):
 
     def construct(self):
-        delay = 1
+        delay = 60
 
         urna_color = GREEN
         urna = Rectangle(color=urna_color, fill_color=urna_color, fill_opacity=.05, z_index=1).move_to(DOWN)
         self.play(DrawBorderThenFill(urna))
 
         ball_radius = .4
-        white1 = Circle(radius=ball_radius, color=GRAY_A, fill_color=GRAY_A, fill_opacity=1).set_sheen(-1, DR)\
-            .move_to(ball_radius * 3.3 * LEFT + (1.95 - ball_radius) * DOWN)
-        white2 = white1.copy()\
-            .move_to(ball_radius * 1.1 * LEFT + (1.95 - ball_radius) * DOWN)
-        white3 = white1.copy()\
-            .move_to(ball_radius * 1.1 * RIGHT + (1.95 - ball_radius) * DOWN)
-        white4 = white1.copy()\
-            .move_to(ball_radius * 3.3 * RIGHT + (1.95 - ball_radius) * DOWN)
+        white1 = Ball(radius=ball_radius, color=GRAY_A).move_to(ball_radius * 3.3 * LEFT + (1.95 - ball_radius) * DOWN)
+        white2 = Ball(radius=ball_radius, color=GRAY_A).move_to(ball_radius * 1.1 * LEFT + (1.95 - ball_radius) * DOWN)
+        white3 = Ball(radius=ball_radius, color=GRAY_A).move_to(ball_radius * 1.1 * RIGHT + (1.95 - ball_radius) * DOWN)
+        white4 = Ball(radius=ball_radius, color=GRAY_A).move_to(ball_radius * 3.3 * RIGHT + (1.95 - ball_radius) * DOWN)
 
         black_color = PURE_RED
-        black1 = Circle(radius=ball_radius, color=black_color, fill_color=black_color, fill_opacity=1).set_sheen(-.8, DR)\
-            .move_to(ball_radius * 2.2 * LEFT + (2 - 3 * ball_radius) * DOWN)
-        black2 = black1.copy()\
-            .move_to((2 - 3 * ball_radius) * DOWN)
-        black3 = black1.copy()\
-            .move_to(ball_radius * 2.2 * RIGHT + (2 - 3 * ball_radius) * DOWN)
+        black1 = Ball(radius=ball_radius, color=black_color).move_to(ball_radius * 2.2 * LEFT + (2 - 3 * ball_radius) * DOWN)
+        black2 = Ball(radius=ball_radius, color=black_color).move_to((2 - 3 * ball_radius) * DOWN)
+        black3 = Ball(radius=ball_radius, color=black_color).move_to(ball_radius * 2.2 * RIGHT + (2 - 3 * ball_radius) * DOWN)
 
         self.play(GrowFromPoint(white1, 4*UL, BLACK))
         self.play(GrowFromPoint(white2, 4*UL, BLACK))
@@ -171,6 +166,39 @@ class Scene(MovingCameraScene):
         self.next_section()
 
         self.play(Write(risposta[1][0][1:3]))
+        self.wait(delay)
+        self.next_section()
+
+        self.play(risposta.animate.move_to(4.5*RIGHT + 1.5*UP))
+
+        prob2 = VGroup(
+            MathTex(r"p(\text{almeno una rossa}) ="),
+            MathTex(r"= \dfrac{33}{49}")
+        ).arrange(DOWN).move_to(4.5*RIGHT + 1.5*DOWN)
+        self.play(Write(prob2[0]))
+        self.play(Write(prob2[1][0][0]))
+        self.play(Write(prob2[1][0][3:6]))
+        self.wait(delay)
+        self.next_section()
+
+        self.play(FadeOut(ul_rect), FadeOut(ul_card), FadeOut(dr_card))
+        self.wait(delay)
+        self.next_section()
+
+        ur_balls = VGroup(table_first[0][4], table_second[3][6])
+        ur_rect = SurroundingRectangle(ur_balls)
+        self.play(Create(ur_rect))
+        dl_balls = VGroup(table_first[4][0], table_second[6][3])
+        dl_rect = SurroundingRectangle(dl_balls)
+        self.play(Create(dl_rect))
+        self.wait(delay)
+        self.next_section()
+
+        self.play(Write(ul_card))
+        self.wait(delay)
+        self.next_section()
+
+        self.play(Write(prob2[1][0][1:3]))
         self.wait(delay)
         self.next_section()
 
