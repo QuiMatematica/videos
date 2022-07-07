@@ -2,15 +2,18 @@ from typing import Optional
 
 from colour import Color
 from manim import *
-from manim.utils.rate_functions import ease_in_out_cubic, ease_in_cubic, ease_out_cubic
+from manim.utils.rate_functions import ease_in_cubic, ease_out_cubic
+
+HEAD = 1
+CROSS = -1
 
 
 class Coin(Mobject):
 
-    def __init__(self):
+    def __init__(self, face=HEAD):
         super().__init__()
-        self.head = ImageMobject('img/testa.png', z_index=1)
-        self.cross = ImageMobject('img/croce.png', z_index=-1).rotate(angle=PI)
+        self.head = ImageMobject('img/testa.png', z_index=face).rotate(angle=PI if face == CROSS else 0)
+        self.cross = ImageMobject('img/croce.png', z_index=-face).rotate(angle=PI if face == HEAD else 0)
         self.circle = Circle(radius=1.5, color=None, z_index=2, fill_opacity=0)
         self.add(self.head)
         self.add(self.cross)
