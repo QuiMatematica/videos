@@ -39,6 +39,7 @@ class Coin(Mobject):
 
     def set_color(self, color: Color = RED, family: bool = True):
         self.circle.set_fill(color, opacity=.2)
+        return self
 
 
 class Ball(Circle):

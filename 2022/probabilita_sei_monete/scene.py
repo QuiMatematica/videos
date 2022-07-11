@@ -6,7 +6,7 @@ from object import Coin, CROSS, HEAD
 class Scene(MovingCameraScene):
 
     def construct(self):
-        delay = 1
+        delay = 60
 
         coin_shift = 1.3
 
@@ -131,9 +131,58 @@ class Scene(MovingCameraScene):
         self.wait(delay)
         self.next_section()
 
-        coins2 = [Coin(face=faces[_i]).set_color(colors[_i]).scale(.6).move_to(coins[_i].get_center() - 2*DOWN) for _i in range(len(faces))]
-        self.play(*[Create(c) for c in coins2])
+        coins2 = [Coin(face=faces[_i]).set_color(colors[_i]).scale(.6).move_to(coins[_i].get_center()) for _i in range(len(faces))]
+        self.play(*[c.animate.shift(2*DOWN) for c in coins])
+        self.play(*[FadeIn(c) for c in coins2])
         self.wait(delay)
         self.next_section()
+
+        letters = [Tex("T"), Tex("T"), Tex("C"), Tex("C"), Tex("C"), Tex("C")]
+        for _i in range(len(letters)):
+            letters[_i].move_to(coins2[_i])
+
+        self.play(*[FadeOut(c) for c in coins])
+        self.add(*[_l for _l in letters])
+        self.play(*[FadeOut(c) for c in coins2])
+        self.wait(delay)
+        self.next_section()
+
+        brace = Brace(VGroup(*[_l for _l in letters]))
+        self.play(Write(brace))
+        anagrammi1 = MathTex(r"\text{\# anagrammi} = {{ P^{(2,4)}_6 = }} \dfrac{6!}{2! \cdot 4!} = ").next_to(brace, DOWN)
+        anagrammi1[0][:10].set_color(YELLOW)
+
+        self.play(Write(anagrammi1[0]))
+        self.wait(delay)
+        self.next_section()
+
+        self.play(Write(anagrammi1[1]))
+        self.wait(delay)
+        self.next_section()
+
+        regola = MathTex(r"P^{(p,q,\dots )}_n = \dfrac{n!}{p! \cdot q! \cdot \dots}").move_to(-1.5*UP)
+        rect = SurroundingRectangle(regola, fill_color=BLACK, fill_opacity=1, buff=MED_LARGE_BUFF)
+        group = VGroup(rect, regola).set_z_index(5)
+
+        self.play(Write(group))
+        self.wait(delay)
+        self.next_section()
+
+        self.play(Write(anagrammi1[2]))
+        self.wait(delay)
+        self.next_section()
+
+        self.play(FadeOut(group))
+        anagrammi2 = MathTex(r"\dfrac{6 \cdot 5 \cdot 4!}{2! \cdot 4!} = {{ \dfrac{6 \cdot 5}{2} = }} 15").next_to(anagrammi1, DOWN)
+        for _a in anagrammi2:
+            self.play(Write(_a))
+            self.wait(delay)
+            self.next_section()
+
+        self.play(anagrammi2[2].copy().animate.move_to(favorevoli1[1]), FadeOut(favorevoli1[1]))
+        self.wait(delay)
+        self.next_section()
+
+        self.play(anagrammi2[2].copy().animate.move_to(domanda2[1][0:15]), FadeOut(domanda2[1][0:15]))
 
         self.wait(60)
