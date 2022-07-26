@@ -1,4 +1,4 @@
-from math import sqrt
+from qmath import sqrt
 
 from manim import *
 
