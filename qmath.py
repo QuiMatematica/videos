@@ -20,7 +20,7 @@ class EqSystem(VMobject, ABC):
         self.center()
 
 
-class Tartaglia(VGroup, ABC):
+class PascalTriangle(VGroup, ABC):
 
     def __init__(self, n_rows):
         super().__init__()

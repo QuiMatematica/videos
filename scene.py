@@ -7,7 +7,7 @@ from util import *
 class Scene(MovingCameraScene):
 
     def construct(self):
-        delay = 1
+        delay = 60
 
         coin_shift = 1.3
 
@@ -92,24 +92,37 @@ class Scene(MovingCameraScene):
         self.next_section()
 
         two1 = MathTex(r"(t + c)(t+c) = 1^2").next_to(two0, DOWN)
-        two1[0][1].set_color(RED)
-        two1[0][3].set_color(GREEN)
-        two1[0][6].set_color(RED)
-        two1[0][8].set_color(GREEN)
-        two1[0][11].set_color(YELLOW)
-        self.play(Write(two1))
+        set_color(two1, 1, 6, color=RED)
+        set_color(two1, 3, 8, color=GREEN)
+        set_color(two1, 11, color=YELLOW)
+        fftf = FromFormulaToFormula(two0, two1)
+        self.play(fftf.copy_and_move(slice(0, 5), slice(0, 5)))
+        self.play(fftf.copy_and_move(slice(0, 5), slice(5, 10)))
+        self.play(fftf.copy_and_move(slice(6, 9), slice(10, 13)))
+        self.add(two1)
+        self.remove(*fftf.get_temp_pieces())
         self.wait(delay)
         self.next_section()
 
         two2 = MathTex(r"tt + tc + ct + cc = 1").next_to(two1, DOWN)
-        two2[0][0:2].set_color(RED)
-        two2[0][3].set_color(RED)
-        two2[0][4].set_color(GREEN)
-        two2[0][6].set_color(GREEN)
-        two2[0][7].set_color(RED)
-        two2[0][9:11].set_color(GREEN)
-        two2[0][12].set_color(YELLOW)
-        self.play(Write(two2))
+        set_color(two2, slice(0, 2), 3, 7, color=RED)
+        set_color(two2, 4, 6, slice(9, 11), color=GREEN)
+        set_color(two2, 12, color=YELLOW)
+        fftf = FromFormulaToFormula(two1, two2)
+        self.play(fftf.copy_and_move(1, 0))
+        self.play(fftf.copy_and_move(6, 1))
+        self.play(fftf.write(2))
+        self.play(fftf.copy_and_move(1, 3))
+        self.play(fftf.copy_and_move(8, 4))
+        self.play(fftf.write(5))
+        self.play(fftf.copy_and_move(3, 6))
+        self.play(fftf.copy_and_move(6, 7))
+        self.play(fftf.write(8))
+        self.play(fftf.copy_and_move(3, 9))
+        self.play(fftf.copy_and_move(8, 10))
+        self.play(fftf.copy_and_move(slice(10, 12), slice(11, 13)))
+        self.add(two2)
+        self.remove(*fftf.get_temp_pieces())
         self.wait(delay)
         self.next_section()
 
@@ -355,7 +368,7 @@ class Scene(MovingCameraScene):
         self.wait(delay)
         self.next_section()
 
-        three0 = MathTex(r"(t+c)^3 = 1").move_to(.7 * DOWN)
+        three0 = MathTex(r"(t+c)^3 = 1^3").move_to(.7 * DOWN)
         three0[0][1].set_color(RED)
         three0[0][3].set_color(GREEN)
         three0[0][7].set_color(YELLOW)
@@ -363,14 +376,10 @@ class Scene(MovingCameraScene):
         self.wait(delay)
         self.next_section()
 
-        three1 = MathTex(r"t^3 + 3 t^2 c + 3 t c^2 + c^3 = 1").next_to(three0, 1.5 * DOWN)
-        three1[0][0].set_color(RED)
-        three1[0][4].set_color(RED)
-        three1[0][6].set_color(GREEN)
-        three1[0][9].set_color(RED)
-        three1[0][10].set_color(GREEN)
-        three1[0][13].set_color(GREEN)
-        three1[0][16].set_color(YELLOW)
+        three1 = MathTex(r"1 t^3 + 3 t^2 c^1 + 3 t^1 c^2 + 1 c^3 = 1").next_to(three0, 1.5 * DOWN)
+        set_color(three1, 1, 5, 11, color=RED)
+        set_color(three1, 7, 13, 17, color=GREEN)
+        set_color(three1, 20, color=YELLOW)
         self.play(Write(three1))
         self.wait(delay)
         self.next_section()
@@ -400,11 +409,11 @@ class Scene(MovingCameraScene):
         # tre teste,
 
         self.play(fftf.write(slice(0, 2)))
-        self.play(fftf.copy_and_move(0, 2),
+        self.play(fftf.copy_and_move(1, 2),
                   fftf.write(3),
-                  fftf.copy_and_move(0, 4),
+                  fftf.copy_and_move(1, 4),
                   fftf.write(5),
-                  fftf.copy_and_move(0, 6))
+                  fftf.copy_and_move(1, 6))
         self.play(fftf.write(slice(7, 9)))
         self.wait(delay)
         self.next_section()
@@ -412,11 +421,11 @@ class Scene(MovingCameraScene):
         # due teste e una croce,
 
         self.play(fftf.write(slice(12, 14)))
-        self.play(fftf.copy_and_move(4, 14),
+        self.play(fftf.copy_and_move(5, 14),
                   fftf.write(15),
-                  fftf.copy_and_move(4, 16),
+                  fftf.copy_and_move(5, 16),
                   fftf.write(17),
-                  fftf.copy_and_move(6, 18))
+                  fftf.copy_and_move(7, 18))
         self.play(fftf.write(slice(19, 21)))
         self.wait(delay)
         self.next_section()
@@ -424,11 +433,11 @@ class Scene(MovingCameraScene):
         # una testa e due croci,
 
         self.play(fftf.write(slice(24, 26)))
-        self.play(fftf.copy_and_move(9, 26),
+        self.play(fftf.copy_and_move(11, 26),
                   fftf.write(27),
-                  fftf.copy_and_move(10, 28),
+                  fftf.copy_and_move(13, 28),
                   fftf.write(29),
-                  fftf.copy_and_move(10, 30))
+                  fftf.copy_and_move(13, 30))
         self.play(fftf.write(slice(31, 33)))
         self.wait(delay)
         self.next_section()
@@ -436,11 +445,11 @@ class Scene(MovingCameraScene):
         # e tre croci. Non ci sono altre possibili combinazioni.
 
         self.play(fftf.write(slice(36, 38)))
-        self.play(fftf.copy_and_move(12, 38),
+        self.play(fftf.copy_and_move(17, 38),
                   fftf.write(39),
-                  fftf.copy_and_move(12, 40),
+                  fftf.copy_and_move(17, 40),
                   fftf.write(41),
-                  fftf.copy_and_move(12, 42))
+                  fftf.copy_and_move(17, 42))
         self.play(fftf.write(slice(43, 45)))
         self.wait(delay)
         self.next_section()
@@ -448,28 +457,28 @@ class Scene(MovingCameraScene):
         # Per ciascuno di questi risultati i casi favorevoli sono:
         # uno per le tre teste,
 
-        self.play(fftf.move(MathTex(r"1").move_to(three1[0][0].get_center() + .2 * LEFT), 9),
+        self.play(fftf.copy_and_move(0, 9),
                   fftf.write(10))
         self.wait(delay)
         self.next_section()
 
         # 3 per le due teste e una croce,
 
-        self.play(fftf.copy_and_move(3, 21),
+        self.play(fftf.copy_and_move(4, 21),
                   fftf.write(22))
         self.wait(delay)
         self.next_section()
 
         # 3 per la testa e le due croci,
 
-        self.play(fftf.copy_and_move(8, 33),
+        self.play(fftf.copy_and_move(10, 33),
                   fftf.write(34))
         self.wait(delay)
         self.next_section()
 
         # uno per le tre croci.
 
-        self.play(fftf.move(MathTex(r"1").move_to(three1[0][12].get_center() + .2 * LEFT), 45),
+        self.play(fftf.copy_and_move(16, 45),
                   fftf.write(46))
         self.wait(delay)
         self.next_section()
@@ -485,13 +494,13 @@ class Scene(MovingCameraScene):
         self.wait(delay)
         self.next_section()
 
-        self.play(fftf2.move(MathTex(r"1").move_to(three1[0][0].get_center() + .2 * LEFT), 12),
+        self.play(fftf2.copy_and_move(0, 12),
                   fftf2.write(13),
-                  fftf2.copy_and_move(3, 14),
+                  fftf2.copy_and_move(4, 14),
                   fftf2.write(15),
-                  fftf2.copy_and_move(8, 16),
+                  fftf2.copy_and_move(10, 16),
                   fftf2.write(17),
-                  fftf2.move(MathTex(r"1").move_to(three1[0][12].get_center() + .2 * LEFT), 18))
+                  fftf2.copy_and_move(16, 18))
         self.wait(delay)
         self.next_section()
 
@@ -517,6 +526,5 @@ class Scene(MovingCameraScene):
         self.play(fftf3.copy_and_move(20, 47))
         self.wait(delay)
         self.next_section()
-
 
         self.wait(60)

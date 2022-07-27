@@ -1,6 +1,6 @@
 from manim import *
 
-from qmath import Tartaglia
+from qmath import PascalTriangle
 from object import *
 from util import *
 
@@ -10,7 +10,7 @@ class Scene(MovingCameraScene):
     config.max_files_cached = 200
 
     def construct(self):
-        delay = 1
+        delay = 60
 
         faces = [HEAD, HEAD, CROSS, CROSS, CROSS, CROSS]
         points = [
@@ -32,11 +32,12 @@ class Scene(MovingCameraScene):
         six0 = MathTex(r"(t + c)^6 = 1").move_to(3 * UP)
         set_color(six0, 1, color=RED)
         set_color(six0, 3, color=GREEN)
+        set_color(six0, 7, color=YELLOW)
         self.play(Write(six0))
         self.wait(delay)
         self.next_section()
 
-        tartaglia = Tartaglia(7)
+        tartaglia = PascalTriangle(7)
 
         # Facciamo un velocissimo ripasso di come si costruire il triangolo di Tartaglia.
         # Si parte da un singolo 1, che ne rappresenta il vertice.
