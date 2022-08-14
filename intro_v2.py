@@ -4,7 +4,7 @@ from manim import *
 class Scene(MovingCameraScene):
 
     def construct(self):
-        delay = 60
+        delay = 1
 
         livelli = VGroup(
             Tex("regole", color=RED),
@@ -19,7 +19,7 @@ class Scene(MovingCameraScene):
         self.wait(delay)
         self.next_section()
 
-        self.play(Wiggle(livelli[0], run_time=2), Wiggle(livelli[1], run_time=2))
+        self.play(Wiggle(livelli[2], run_time=2), Wiggle(livelli[3], run_time=2))
 
         self.wait(delay)
         self.next_section()

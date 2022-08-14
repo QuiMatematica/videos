@@ -4,7 +4,7 @@ from manim import *
 class Scene(MovingCameraScene):
 
     def construct(self):
-        delay = 1
+        delay = 60
 
         equation = VGroup(
             MathTex(r"(2x + 1)^2 -3(2x - 1)(2x + 1) = -2(2x + 1)(2x - 3)"),
