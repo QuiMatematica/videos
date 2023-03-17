@@ -4,7 +4,7 @@ from manim import *
 class Scene(MovingCameraScene):
 
     def construct(self):
-        delay = 1
+        delay = 30
 
         scale = 2
 

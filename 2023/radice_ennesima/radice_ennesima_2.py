@@ -4,7 +4,7 @@ from manim import *
 class Scene(MovingCameraScene):
 
     def construct(self):
-        delay = 1
+        delay = 30
 
         scale = 2
 
@@ -70,7 +70,5 @@ class Scene(MovingCameraScene):
         self.play(Write(radice_cubica))
         self.play(Write(ce_radice_cubica[0]))
         self.play(Write(ce_radice_cubica[2]))
-        self.wait(delay)
-        self.next_section()
 
         self.wait(30)
