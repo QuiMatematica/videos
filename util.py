@@ -29,7 +29,7 @@ class FromFormulaToFormula:
         return MoveToTarget(tex)
 
 
-class TableHelper():
+class TableHelper:
 
     def __init__(self,
                  table: Table):
