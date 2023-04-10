@@ -13,7 +13,7 @@ class Scene(MovingCameraScene):
     def construct(self):
         self.wait(1)
 
-        pentagono = RegularPolygon(n=5, fill_opacity=.2, fill_color=BLUE).scale(PENTAGONO_RADIUS).shift(
+        pentagono = RegularPolygon(n=5, fill_opacity=.2, fill_color=BLUE, z_index=-2).scale(PENTAGONO_RADIUS).shift(
             PENTAGONO_CENTER)
         vertici_pentagono = pentagono.get_vertices()
         vertici = {"a": vertici_pentagono[2],
@@ -48,6 +48,8 @@ class Scene(MovingCameraScene):
         self.angoli_esterni(vertici, angolo_abc)
 
         self.suddivisione_angolo(vertici, lettere_vertici)
+
+        self.triangolo_abd(vertici)
 
         self.wait(30)
 
@@ -132,7 +134,7 @@ class Scene(MovingCameraScene):
 
         teorema = Tex(r"In ogni poligono di $n$ lati, \\ "
                       r"la somma degli angoli interni è pari a \\ "
-                      r"$n - 2$ angoli piatti")
+                      r"$n - 2$ angoli piatti.")
 
         cornice = SurroundingRectangle(teorema, fill_opacity=1, fill_color=BLACK, buff=.5)
 
@@ -157,7 +159,7 @@ class Scene(MovingCameraScene):
             MathTex("+"),
             angolo_interno.copy(),
             MathTex(r"= (5-2) \pi")
-        ).arrange(RIGHT).move_to(3 * RIGHT + 2 * UP)
+        ).arrange(RIGHT).move_to(2.8 * RIGHT + 2 * UP)
 
         archi_target = [somma_1[0], somma_1[2], somma_1[4], somma_1[6], somma_1[8]]
         somme = [somma_1[1], somma_1[3], somma_1[5], somma_1[7]]
@@ -180,7 +182,7 @@ class Scene(MovingCameraScene):
             MathTex(r"5 \cdot"),
             angolo_interno.copy(),
             MathTex(r"= 3 \pi")
-        ).arrange(RIGHT).next_to(somma_1, DOWN)
+        ).arrange(RIGHT).next_to(somma_1, 2*DOWN)
 
         archi_dinamici_2 = []
 
@@ -199,7 +201,7 @@ class Scene(MovingCameraScene):
         somma_3 = VGroup(
             angolo_interno.copy(),
             MathTex(r"= \dfrac{3}{5} \pi")
-        ).arrange(RIGHT).next_to(somma_2, DOWN)
+        ).arrange(RIGHT).next_to(somma_2, 2*DOWN)
 
         archi_dinamici_3 = []
         for x in somma_2:
@@ -272,7 +274,7 @@ class Scene(MovingCameraScene):
             AngleWithArc(),
             MathTex("-"),
             angolo_abc[0].copy()
-        ).arrange(RIGHT).next_to(formula_1, DOWN)
+        ).arrange(RIGHT).next_to(formula_1, 2*DOWN)
 
         esterno = esterno.copy()
         esterno.target = formula_2[0]
@@ -297,7 +299,7 @@ class Scene(MovingCameraScene):
             MathTex(r"\pi"),
             MathTex("-"),
             MathTex(r"\dfrac{3}{5}\pi")
-        ).arrange(RIGHT).next_to(formula_2, DOWN)
+        ).arrange(RIGHT).next_to(formula_2, 2*DOWN)
 
         esterno = esterno.copy()
         esterno.target = formula_3[0]
@@ -320,7 +322,7 @@ class Scene(MovingCameraScene):
             angolo_esterno_b.copy(),
             MathTex("="),
             MathTex(r"\dfrac{2}{5}\pi")
-        ).arrange(RIGHT).next_to(formula_3, DOWN)
+        ).arrange(RIGHT).next_to(formula_3, 2*DOWN)
 
         esterno = esterno.copy()
         esterno.target = formula_4[0]
@@ -345,6 +347,17 @@ class Scene(MovingCameraScene):
     def suddivisione_angolo(self, vertici, lettere_vertici):
         to_fade_out = []
 
+        cong = MathTex(r"\cong")
+        pi = MathTex(r"\pi")
+
+        alpha = MathTex(r"\alpha")
+        beta = MathTex(r"\beta")
+        gamma = MathTex(r"\gamma")
+        delta = MathTex(r"\delta")
+        epsilon = MathTex(r"\epsilon")
+
+        lettere_greche = [alpha, beta, gamma, delta, epsilon]
+
         diagonale_ad = Line(start=vertici["a"], end=vertici["d"], color=BLUE)
         diagonale_bd = Line(start=vertici["b"], end=vertici["d"], color=BLUE)
         retta_start = vertici["d"].copy()
@@ -366,53 +379,59 @@ class Scene(MovingCameraScene):
 
         angoli = []
 
-        lettere = [
-            MathTex(r"\alpha").scale(.7),
-            MathTex(r"\beta").scale(.7),
-            MathTex(r"\gamma").scale(.7),
-            MathTex(r"\delta").scale(.7),
-            MathTex(r"\epsilon").scale(.7)
-        ]
+        lettere = []
 
         for _i in range(5):
             angolo = AngleWithArc(radius=.3, start_angle=(5 + _i) * PI / 5, angle=PI / 5, center=vertici["d"])
             angoli.append(angolo)
-            lettere[_i].move_to(
+            lettera = lettere_greche[_i].copy().scale(.7).move_to(
                 Arc(radius=.6, start_angle=(5 + _i) * PI / 5, angle=PI / 5, arc_center=vertici["d"]).get_center())
+            lettere.append(lettera)
 
         self.play(*[Create(x) for x in angoli])
         self.play(*[Write(x) for x in lettere])
         to_fade_out.extend(angoli)
-        to_fade_out.extend(lettere)
         self.wait(DELAY)
         self.next_section()
 
-        angolino = AngleWithArc(radius=.3, angle=PI / 5)
+        template_angolo = AngleWithArc(radius=.3, angle=PI / 5)
         formula_1 = VGroup(
-            VGroup(angolino.copy(), lettere[0].copy()).arrange(DOWN),
+            template_angolo.copy(),
             MathTex("+"),
-            VGroup(angolino.copy(), lettere[1].copy()).arrange(DOWN),
+            template_angolo.copy(),
             MathTex("+"),
-            VGroup(angolino.copy(), lettere[2].copy()).arrange(DOWN),
+            template_angolo.copy(),
             MathTex("+"),
-            VGroup(angolino.copy(), lettere[3].copy()).arrange(DOWN),
+            template_angolo.copy(),
             MathTex("+"),
-            VGroup(angolino.copy(), lettere[4].copy()).arrange(DOWN),
+            template_angolo.copy(),
             MathTex("="),
-            AngleWithArc(radius=.3, angle=PI)
-        ).arrange(RIGHT).move_to(3 * RIGHT + 3 * UP)
+            AngleWithArc(radius=.3, angle=PI),
+            alpha.copy(),
+            MathTex("+"),
+            beta.copy(),
+            MathTex("+"),
+            gamma.copy(),
+            MathTex("+"),
+            delta.copy(),
+            MathTex("+"),
+            epsilon.copy(),
+            MathTex("="),
+            pi.copy(),
+        ).arrange_in_grid(2, 11, buff=(.25, .1)).move_to(3 * RIGHT + 3 * UP)
 
         statico = []
         for _i in range(5):
-            statico.append(formula_1[(_i * 2) + 1])
+            statico.append(formula_1[(_i * 2) + 12])
+        statico.append(formula_1[21])
 
         dinamo = []
         for _i in range(5):
             angolo = angoli[_i].copy()
-            angolo.target = formula_1[_i * 2][0]
+            angolo.target = formula_1[_i * 2]
             dinamo.append(angolo)
             lettera = lettere[_i].copy()
-            lettera.target = formula_1[_i * 2][1]
+            lettera.target = formula_1[_i * 2 + 11]
             dinamo.append(lettera)
         retto = AngleWithArc(radius=.3, start_angle=PI, angle=PI, center=vertici["d"])
         retto.target = formula_1[10]
@@ -422,7 +441,7 @@ class Scene(MovingCameraScene):
         to_fade_out.extend(dinamo)
         to_fade_out.extend(statico)
 
-        circonferenza = Circle.from_three_points(vertici["a"], vertici["b"], vertici["c"], color=BLUE, z_index=-2)
+        circonferenza = Circle.from_three_points(vertici["a"], vertici["b"], vertici["c"], color=BLUE, z_index=-3)
         self.play(Create(circonferenza))
         to_fade_out.append(circonferenza)
         self.wait(DELAY)
@@ -509,23 +528,28 @@ class Scene(MovingCameraScene):
         template_archi = ArcBetweenPoints(start=vertici["a"], end=vertici["b"], arc_center=circonferenza.get_center(),
                                           angle=2*PI/5, color=BLUE)
         equivalenza_archi = VGroup(
-            VGroup(MathTex("A").scale(.7), template_archi.copy(), MathTex("B").scale(.7)).arrange(RIGHT, buff=.1),
+            template_archi.copy(),
             MathTex(r"\cong"),
-            VGroup(MathTex("B").scale(.7), template_archi.copy(), MathTex("C").scale(.7)).arrange(RIGHT, buff=.1),
+            template_archi.copy(),
             MathTex(r"\cong"),
-            VGroup(MathTex("C").scale(.7), template_archi.copy(), MathTex("D").scale(.7)).arrange(RIGHT, buff=.1),
+            template_archi.copy(),
             MathTex(r"\cong"),
-            VGroup(MathTex("D").scale(.7), template_archi.copy(), MathTex("E").scale(.7)).arrange(RIGHT, buff=.1),
+            template_archi.copy(),
             MathTex(r"\cong"),
-            VGroup(MathTex("E").scale(.7), template_archi.copy(), MathTex("A").scale(.7)).arrange(RIGHT, buff=.1)
+            template_archi.copy()
         ).arrange(DOWN).next_to(formula_1, 3 * DOWN)
 
         archi = [
-            ArcBetweenPoints(start=vertici["a"], end=vertici["b"], arc_center=circonferenza.get_center(), angle=2*PI/5, color=BLUE),
-            ArcBetweenPoints(start=vertici["b"], end=vertici["c"], arc_center=circonferenza.get_center(), angle=2*PI/5, color=BLUE),
-            ArcBetweenPoints(start=vertici["c"], end=vertici["d"], arc_center=circonferenza.get_center(), angle=2*PI/5, color=BLUE),
-            ArcBetweenPoints(start=vertici["d"], end=vertici["e"], arc_center=circonferenza.get_center(), angle=2*PI/5, color=BLUE),
-            ArcBetweenPoints(start=vertici["e"], end=vertici["a"], arc_center=circonferenza.get_center(), angle=2*PI/5, color=BLUE),
+            ArcBetweenPoints(start=vertici["a"], end=vertici["b"], arc_center=circonferenza.get_center(), angle=2*PI/5,
+                             color=BLUE),
+            ArcBetweenPoints(start=vertici["b"], end=vertici["c"], arc_center=circonferenza.get_center(), angle=2*PI/5,
+                             color=BLUE),
+            ArcBetweenPoints(start=vertici["c"], end=vertici["d"], arc_center=circonferenza.get_center(), angle=2*PI/5,
+                             color=BLUE),
+            ArcBetweenPoints(start=vertici["d"], end=vertici["e"], arc_center=circonferenza.get_center(), angle=2*PI/5,
+                             color=BLUE),
+            ArcBetweenPoints(start=vertici["e"], end=vertici["a"], arc_center=circonferenza.get_center(), angle=2*PI/5,
+                             color=BLUE),
         ]
 
         congruenze = [
@@ -537,42 +561,42 @@ class Scene(MovingCameraScene):
 
         dinamo = []
         lettera = lettere_vertici["a"].copy()
-        lettera.target = equivalenza_archi[0][0]
+        lettera.target = MathTex("A").scale(.7).next_to(equivalenza_archi[0].get_start(), LEFT, buff=.1)
         dinamo.append(lettera)
         lettera = lettere_vertici["b"].copy()
-        lettera.target = equivalenza_archi[0][2]
+        lettera.target = MathTex("B").scale(.7).next_to(equivalenza_archi[0].get_end(), RIGHT, buff=.1)
         dinamo.append(lettera)
         lettera = lettere_vertici["b"].copy()
-        lettera.target = equivalenza_archi[2][0]
+        lettera.target = MathTex("B").scale(.7).next_to(equivalenza_archi[2].get_start(), LEFT, buff=.1)
         dinamo.append(lettera)
         lettera = lettere_vertici["c"].copy()
-        lettera.target = equivalenza_archi[2][2]
+        lettera.target = MathTex("C").scale(.7).next_to(equivalenza_archi[2].get_end(), RIGHT, buff=.1)
         dinamo.append(lettera)
         lettera = lettere_vertici["c"].copy()
-        lettera.target = equivalenza_archi[4][0]
+        lettera.target = MathTex("C").scale(.7).next_to(equivalenza_archi[4].get_start(), LEFT, buff=.1)
         dinamo.append(lettera)
         lettera = lettere_vertici["d"].copy()
-        lettera.target = equivalenza_archi[4][2]
+        lettera.target = MathTex("D").scale(.7).next_to(equivalenza_archi[4].get_end(), RIGHT, buff=.1)
         dinamo.append(lettera)
         lettera = lettere_vertici["d"].copy()
-        lettera.target = equivalenza_archi[6][0]
+        lettera.target = MathTex("D").scale(.7).next_to(equivalenza_archi[6].get_start(), LEFT, buff=.1)
         dinamo.append(lettera)
         lettera = lettere_vertici["e"].copy()
-        lettera.target = equivalenza_archi[6][2]
+        lettera.target = MathTex("E").scale(.7).next_to(equivalenza_archi[6].get_end(), RIGHT, buff=.1)
         dinamo.append(lettera)
         lettera = lettere_vertici["e"].copy()
-        lettera.target = equivalenza_archi[8][0]
+        lettera.target = MathTex("E").scale(.7).next_to(equivalenza_archi[8].get_start(), LEFT, buff=.1)
         dinamo.append(lettera)
         lettera = lettere_vertici["a"].copy()
-        lettera.target = equivalenza_archi[8][2]
+        lettera.target = MathTex("A").scale(.7).next_to(equivalenza_archi[8].get_end(), RIGHT, buff=.1)
         dinamo.append(lettera)
 
         self.play(
-            archi[0].animate.move_to(equivalenza_archi[0][1]),
-            archi[1].animate.move_to(equivalenza_archi[2][1]).rotate(-2 * PI / 5),
-            archi[2].animate.move_to(equivalenza_archi[4][1]).rotate(-4 * PI / 5),
-            archi[3].animate.move_to(equivalenza_archi[6][1]).rotate(-6 * PI / 5),
-            archi[4].animate.move_to(equivalenza_archi[8][1]).rotate(-8 * PI / 5),
+            archi[0].animate.move_to(equivalenza_archi[0]),
+            archi[1].animate.rotate(-2 * PI / 5).move_to(equivalenza_archi[2]),
+            archi[2].animate.rotate(-4 * PI / 5).move_to(equivalenza_archi[4]),
+            archi[3].animate.rotate(-6 * PI / 5).move_to(equivalenza_archi[6]),
+            archi[4].animate.rotate(-8 * PI / 5).move_to(equivalenza_archi[8]),
             *[MoveToTarget(x) for x in dinamo],
             *[Write(x) for x in congruenze]
         )
@@ -585,27 +609,165 @@ class Scene(MovingCameraScene):
             *[FadeOut(x) for x in congruenze]
         )
 
-        # corda_unica = Line(start=vertici["a"], end=vertici["b"], color=BLUE).next_to(formula_1, 3*DOWN)
-        # for x in corde:
-        #     x.target = corda_unica
-        # self.play(*[MoveToTarget(x) for x in corde])
-        # self.wait(DELAY)
-        # self.next_section()
-        #
-        # self.play(*[FadeOut(x) for x in corde])
-        #
-        # arco_unico = ArcBetweenPoints(start=vertici["a"],
-        #                               end=vertici["b"],
-        #                               arc_center=circonferenza.get_center(),
-        #                               angle=2*PI/5,
-        #                               color=YELLOW).rotate(PI).next_to(formula_1, 3*DOWN)
-        #
-        # for x in archi:
-        #     x.target = arco_unico
-        # self.play(*[MoveToTarget(x) for x in archi])
-        # self.wait(DELAY)
-        # self.next_section()
+        formula_2 = VGroup()
+        for _i in range(5):
+            formula_2.add(template_angolo.copy())
+            if _i < 4:
+                formula_2.add(cong.copy())
+        for _i in range(5):
+            formula_2.add(lettere_greche[_i].copy())
+            if _i < 4:
+                formula_2.add(cong.copy())
+        formula_2.arrange_in_grid(2, 9, buff=(.25, .1)).next_to(formula_1, 2*DOWN)
 
-        # self.play(*[FadeOut(x) for x in archi])
+        dinamo = []
+        for _i in range(5):
+            angolo = angoli[_i].copy()
+            angolo.target = formula_2[_i * 2]
+            dinamo.append(angolo)
+            lettera = lettere[_i].copy()
+            lettera.target = formula_2[_i * 2 + 9]
+            dinamo.append(lettera)
+
+        statico = []
+        for _i in range(4):
+            statico.append(formula_2[_i * 2 + 10])
+
+        self.play(*[MoveToTarget(x) for x in dinamo])
+        to_fade_out.extend(dinamo)
+        self.wait(DELAY)
+        self.next_section()
+
+        self.play(*[Write(x) for x in statico])
+        to_fade_out.extend(statico)
+        self.wait(DELAY)
+        self.next_section()
+
+        formula_3 = VGroup(
+            MathTex(r"5 \cdot"),
+            template_angolo.copy(),
+            MathTex(r"="),
+            pi
+        ).arrange(RIGHT).next_to(formula_2, 2*DOWN)
+
+        dinamo = []
+        for _i in range(5):
+            angolo = formula_2[_i * 2].copy()
+            angolo.target = formula_3[1]
+            dinamo.append(angolo)
+        pi_greco = formula_1[21].copy()
+        pi_greco.target = formula_3[3]
+        dinamo.append(pi_greco)
+
+        self.play(*[MoveToTarget(x) for x in dinamo], Write(formula_3[0]), Write(formula_3[2]))
+        to_fade_out.extend(dinamo)
+        to_fade_out.append(formula_3[0])
+        to_fade_out.append(formula_3[2])
+        self.wait(DELAY)
+        self.next_section()
+
+        formula_4 = VGroup(
+            template_angolo.copy(),
+            MathTex(r"=\dfrac{\pi}{5}")
+        ).arrange(RIGHT).next_to(formula_3, 2*DOWN)
+
+        dinamo = formula_3[1].copy()
+        dinamo.target = formula_4[0]
+
+        self.play(MoveToTarget(dinamo), Write(formula_4[1]))
+        to_fade_out.append(dinamo)
+        to_fade_out.append(formula_4[1])
+        self.wait(DELAY)
+        self.next_section()
+
+        dinamo = []
+        for _i in range(5):
+            misura = MathTex(r"\dfrac{\pi}{5}").move_to(formula_4[1][0][1:])
+            misura.target = MathTex(r"\dfrac{\pi}{5}").scale(.7).move_to(lettere[_i])
+            dinamo.append(misura)
+        self.play(*[MoveToTarget(x) for x in dinamo],
+                  *[FadeOut(x) for x in lettere]),
+        to_fade_out.extend(dinamo)
+        self.wait(DELAY)
+        self.next_section()
+
+        self.play(*[FadeOut(x) for x in to_fade_out])
+
+    def triangolo_abd(self, vertici):
+        scala_misura_angoli = .6
+        raggio_misura_angoli = .7
+
+        to_fade_out = []
+        to_fade_out_temp = []
+
+        diagonale_ad = Line(start=vertici["a"], end=vertici["d"], color=BLUE)
+        diagonale_bd = Line(start=vertici["b"], end=vertici["d"], color=BLUE)
+
+        triangolo_abd = Polygon(vertici["a"], vertici["b"], vertici["d"], color=YELLOW,
+                                fill_color=YELLOW, fill_opacity=.7)
+        self.play(Create(triangolo_abd))
+        to_fade_out.append(triangolo_abd)
+        self.wait(DELAY)
+        self.next_section()
+
+        segno_lato = MathTex("||", color=YELLOW).scale(.5)
+        segno_lato_ad = segno_lato.copy().move_to(diagonale_ad).rotate(diagonale_ad.get_angle())
+        segno_lato_bd = segno_lato.copy().move_to(diagonale_bd).rotate(diagonale_bd.get_angle())
+        self.play(Write(segno_lato_ad), Write(segno_lato_bd))
+        to_fade_out_temp.append(segno_lato_ad)
+        to_fade_out_temp.append(segno_lato_bd)
+        self.wait(DELAY)
+        self.next_section()
+
+        misura_angolo_adb = MathTex(r"\dfrac{\pi}{5}", color=BLACK, z_index=100).scale(scala_misura_angoli).move_to(
+                Arc(radius=raggio_misura_angoli, start_angle=7 * PI / 5, angle=PI / 5, arc_center=vertici["d"]).get_center())
+        self.play(Write(misura_angolo_adb))
+        to_fade_out_temp.append(misura_angolo_adb)
+        self.wait(DELAY)
+        self.next_section()
+
+        misura_angolo_dab = MathTex(r"\dfrac{2}{5}\pi", color=BLACK, z_index=100).scale(scala_misura_angoli).move_to(
+                Arc(radius=raggio_misura_angoli, start_angle=0, angle=2 * PI / 5, arc_center=vertici["a"]).get_center())
+        misura_angolo_dba = MathTex(r"\dfrac{2}{5}\pi", color=BLACK, z_index=100).scale(scala_misura_angoli).move_to(
+                Arc(radius=raggio_misura_angoli, start_angle=3 * PI / 5, angle=2 * PI / 5, arc_center=vertici["b"]).get_center())
+        self.play(Write(misura_angolo_dab), Write(misura_angolo_dba))
+        to_fade_out_temp.append(misura_angolo_dab)
+        to_fade_out_temp.append(misura_angolo_dba)
+        self.wait(DELAY)
+        self.next_section()
+
+        diagonale_ac = Line(start=vertici["a"], end=vertici["c"], color=YELLOW)
+        diagonale_be = Line(start=vertici["b"], end=vertici["e"], color=YELLOW)
+
+        self.play(Create(diagonale_ac), Create(diagonale_be))
+        to_fade_out.append(diagonale_ac)
+        to_fade_out_temp.append(diagonale_be)
+        self.wait(DELAY)
+        self.next_section()
+
+        self.play(*[FadeOut(x) for x in to_fade_out_temp])
+        f = line_intersection(
+            [diagonale_bd.get_start(), diagonale_bd.get_end()],
+            [diagonale_ac.get_start(), diagonale_ac.get_end()],
+        )
+        lettera_f = MathTex("F").next_to(f, RIGHT, buff=.15)
+        self.play(Write(lettera_f))
+        self.wait(DELAY)
+        self.next_section()
+
+        to_fade_out_temp = []
+
+        misura_angolo_fab = MathTex(r"\dfrac{\pi}{5}", color=BLACK, z_index=100).scale(scala_misura_angoli).move_to(
+                Arc(radius=raggio_misura_angoli, start_angle=0, angle=PI / 5, arc_center=vertici["a"]).get_center())
+        self.play(Write(misura_angolo_fab), Write(misura_angolo_dba))
+        to_fade_out_temp.append(misura_angolo_fab)
+        to_fade_out_temp.append(misura_angolo_dba)
+        self.wait(DELAY)
+        self.next_section()
+
+        misura_angolo_afb = MathTex(r"\dfrac{2}{5}\pi", color=BLACK, z_index=100).scale(scala_misura_angoli).move_to(
+                Arc(radius=raggio_misura_angoli, start_angle=-2*PI/5, angle=-PI / 5, arc_center=f).get_center())
+        self.play(Write(misura_angolo_afb))
+        to_fade_out_temp.append(misura_angolo_afb)
         self.wait(DELAY)
         self.next_section()
