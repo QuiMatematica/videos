@@ -6,9 +6,13 @@ DELAY = 1
 RIGHT_CENTER = 3.5 * RIGHT
 PENTAGONO_CENTER = 3.5 * LEFT
 PENTAGONO_RADIUS = 2.5
+RAGGIO_DOT = .6
+PI_QUINTI = PI / 5
 
 
 class Scene(MovingCameraScene):
+    vertici = {}
+    misure_angoli = {}
 
     def construct(self):
         self.wait(1)
@@ -21,6 +25,21 @@ class Scene(MovingCameraScene):
                    "c": vertici_pentagono[4],
                    "d": vertici_pentagono[0],
                    "e": vertici_pentagono[1]}
+
+        self.misure_angoli["bac"] = Dot().move_to(
+            Arc(radius=RAGGIO_DOT, start_angle=0, angle=PI_QUINTI, arc_center=vertici["a"]).get_center())
+        self.misure_angoli["cad"] = Dot().move_to(
+            Arc(radius=RAGGIO_DOT, start_angle=PI_QUINTI, angle=PI_QUINTI, arc_center=vertici["a"]).get_center())
+        self.misure_angoli["bad"] = VGroup(self.misure_angoli["bac"], self.misure_angoli["cad"])
+
+        self.misure_angoli["abe"] = Dot().move_to(
+            Arc(radius=RAGGIO_DOT, start_angle=4 * PI_QUINTI, angle=PI_QUINTI, arc_center=vertici["b"]).get_center())
+        self.misure_angoli["ebd"] = Dot().move_to(
+            Arc(radius=RAGGIO_DOT, start_angle=3 * PI_QUINTI, angle=PI_QUINTI, arc_center=vertici["b"]).get_center())
+        self.misure_angoli["abd"] = VGroup(self.misure_angoli["abe"], self.misure_angoli["ebd"])
+
+        self.misure_angoli["adb"] = Dot().move_to(
+            Arc(radius=RAGGIO_DOT, start_angle=7 * PI_QUINTI, angle=PI_QUINTI, arc_center=vertici["d"]).get_center())
 
         lettere_vertici = {"a": Tex('A').next_to(vertici["a"], DOWN),
                            "b": Tex('B').next_to(vertici["b"], DOWN),
@@ -43,15 +62,32 @@ class Scene(MovingCameraScene):
         self.wait(DELAY)
         self.next_section()
 
-        angolo_abc = self.angoli_interni(vertici)
+        self.legenda_angoli()
 
-        self.angoli_esterni(vertici, angolo_abc)
-
-        self.suddivisione_angolo(vertici, lettere_vertici)
+        # angolo_abc = self.angoli_interni(vertici)
+        #
+        # self.angoli_esterni(vertici, angolo_abc)
+        #
+        # self.suddivisione_angolo(vertici, lettere_vertici)
 
         self.triangolo_abd(vertici)
 
         self.wait(30)
+
+    def legenda_angoli(self):
+        legenda = VGroup(
+            Dot(),
+            MathTex(r"= \dfrac{1}{5}\pi;").scale(.6),
+            Dot(),
+            Dot(),
+            MathTex(r"= \dfrac{2}{5}\pi;").scale(.6),
+            Dot(),
+            Dot(),
+            Dot(),
+            MathTex(r"= \dfrac{3}{5}\pi").scale(.6),
+        ).arrange(RIGHT).to_edge(DOWN).shift(3*RIGHT)
+        cornice = SurroundingRectangle(legenda)
+        self.play(Create(cornice), Write(legenda))
 
     def disegna_angolo_piatto(self, center=ORIGIN):
         radius = .3
@@ -182,7 +218,7 @@ class Scene(MovingCameraScene):
             MathTex(r"5 \cdot"),
             angolo_interno.copy(),
             MathTex(r"= 3 \pi")
-        ).arrange(RIGHT).next_to(somma_1, 2*DOWN)
+        ).arrange(RIGHT).next_to(somma_1, 2 * DOWN)
 
         archi_dinamici_2 = []
 
@@ -201,7 +237,7 @@ class Scene(MovingCameraScene):
         somma_3 = VGroup(
             angolo_interno.copy(),
             MathTex(r"= \dfrac{3}{5} \pi")
-        ).arrange(RIGHT).next_to(somma_2, 2*DOWN)
+        ).arrange(RIGHT).next_to(somma_2, 2 * DOWN)
 
         archi_dinamici_3 = []
         for x in somma_2:
@@ -274,7 +310,7 @@ class Scene(MovingCameraScene):
             AngleWithArc(),
             MathTex("-"),
             angolo_abc[0].copy()
-        ).arrange(RIGHT).next_to(formula_1, 2*DOWN)
+        ).arrange(RIGHT).next_to(formula_1, 2 * DOWN)
 
         esterno = esterno.copy()
         esterno.target = formula_2[0]
@@ -299,7 +335,7 @@ class Scene(MovingCameraScene):
             MathTex(r"\pi"),
             MathTex("-"),
             MathTex(r"\dfrac{3}{5}\pi")
-        ).arrange(RIGHT).next_to(formula_2, 2*DOWN)
+        ).arrange(RIGHT).next_to(formula_2, 2 * DOWN)
 
         esterno = esterno.copy()
         esterno.target = formula_3[0]
@@ -322,7 +358,7 @@ class Scene(MovingCameraScene):
             angolo_esterno_b.copy(),
             MathTex("="),
             MathTex(r"\dfrac{2}{5}\pi")
-        ).arrange(RIGHT).next_to(formula_3, 2*DOWN)
+        ).arrange(RIGHT).next_to(formula_3, 2 * DOWN)
 
         esterno = esterno.copy()
         esterno.target = formula_4[0]
@@ -526,7 +562,7 @@ class Scene(MovingCameraScene):
         )
 
         template_archi = ArcBetweenPoints(start=vertici["a"], end=vertici["b"], arc_center=circonferenza.get_center(),
-                                          angle=2*PI/5, color=BLUE)
+                                          angle=2 * PI / 5, color=BLUE)
         equivalenza_archi = VGroup(
             template_archi.copy(),
             MathTex(r"\cong"),
@@ -540,15 +576,20 @@ class Scene(MovingCameraScene):
         ).arrange(DOWN).next_to(formula_1, 3 * DOWN)
 
         archi = [
-            ArcBetweenPoints(start=vertici["a"], end=vertici["b"], arc_center=circonferenza.get_center(), angle=2*PI/5,
+            ArcBetweenPoints(start=vertici["a"], end=vertici["b"], arc_center=circonferenza.get_center(),
+                             angle=2 * PI / 5,
                              color=BLUE),
-            ArcBetweenPoints(start=vertici["b"], end=vertici["c"], arc_center=circonferenza.get_center(), angle=2*PI/5,
+            ArcBetweenPoints(start=vertici["b"], end=vertici["c"], arc_center=circonferenza.get_center(),
+                             angle=2 * PI / 5,
                              color=BLUE),
-            ArcBetweenPoints(start=vertici["c"], end=vertici["d"], arc_center=circonferenza.get_center(), angle=2*PI/5,
+            ArcBetweenPoints(start=vertici["c"], end=vertici["d"], arc_center=circonferenza.get_center(),
+                             angle=2 * PI / 5,
                              color=BLUE),
-            ArcBetweenPoints(start=vertici["d"], end=vertici["e"], arc_center=circonferenza.get_center(), angle=2*PI/5,
+            ArcBetweenPoints(start=vertici["d"], end=vertici["e"], arc_center=circonferenza.get_center(),
+                             angle=2 * PI / 5,
                              color=BLUE),
-            ArcBetweenPoints(start=vertici["e"], end=vertici["a"], arc_center=circonferenza.get_center(), angle=2*PI/5,
+            ArcBetweenPoints(start=vertici["e"], end=vertici["a"], arc_center=circonferenza.get_center(),
+                             angle=2 * PI / 5,
                              color=BLUE),
         ]
 
@@ -618,7 +659,7 @@ class Scene(MovingCameraScene):
             formula_2.add(lettere_greche[_i].copy())
             if _i < 4:
                 formula_2.add(cong.copy())
-        formula_2.arrange_in_grid(2, 9, buff=(.25, .1)).next_to(formula_1, 2*DOWN)
+        formula_2.arrange_in_grid(2, 9, buff=(.25, .1)).next_to(formula_1, 2 * DOWN)
 
         dinamo = []
         for _i in range(5):
@@ -648,7 +689,7 @@ class Scene(MovingCameraScene):
             template_angolo.copy(),
             MathTex(r"="),
             pi
-        ).arrange(RIGHT).next_to(formula_2, 2*DOWN)
+        ).arrange(RIGHT).next_to(formula_2, 2 * DOWN)
 
         dinamo = []
         for _i in range(5):
@@ -669,7 +710,7 @@ class Scene(MovingCameraScene):
         formula_4 = VGroup(
             template_angolo.copy(),
             MathTex(r"=\dfrac{\pi}{5}")
-        ).arrange(RIGHT).next_to(formula_3, 2*DOWN)
+        ).arrange(RIGHT).next_to(formula_3, 2 * DOWN)
 
         dinamo = formula_3[1].copy()
         dinamo.target = formula_4[0]
@@ -694,9 +735,6 @@ class Scene(MovingCameraScene):
         self.play(*[FadeOut(x) for x in to_fade_out])
 
     def triangolo_abd(self, vertici):
-        scala_misura_angoli = .6
-        raggio_misura_angoli = .7
-
         to_fade_out = []
         to_fade_out_temp = []
 
@@ -704,7 +742,7 @@ class Scene(MovingCameraScene):
         diagonale_bd = Line(start=vertici["b"], end=vertici["d"], color=BLUE)
 
         triangolo_abd = Polygon(vertici["a"], vertici["b"], vertici["d"], color=YELLOW,
-                                fill_color=YELLOW, fill_opacity=.7)
+                                fill_color=YELLOW, fill_opacity=.5)
         self.play(Create(triangolo_abd))
         to_fade_out.append(triangolo_abd)
         self.wait(DELAY)
@@ -716,23 +754,32 @@ class Scene(MovingCameraScene):
         self.play(Write(segno_lato_ad), Write(segno_lato_bd))
         to_fade_out_temp.append(segno_lato_ad)
         to_fade_out_temp.append(segno_lato_bd)
+        formula_1 = MathTex(r"AD \cong BD").to_edge(UP).shift(3*RIGHT)
+        formula_2 = MathTex("\Rightarrow").rotate(-PI/2).next_to(formula_1, 2*DOWN)
+        formula_3 = Tex(r"$ABD$ isoscele").next_to(formula_2, 2*DOWN)
+        self.play(Write(formula_1))
+        self.play(Write(formula_2))
+        self.play(Write(formula_3))
+        to_fade_out_temp.append(formula_1)
+        to_fade_out_temp.append(formula_2)
+        to_fade_out_temp.append(formula_3)
         self.wait(DELAY)
         self.next_section()
 
-        misura_angolo_adb = MathTex(r"\dfrac{\pi}{5}", color=BLACK, z_index=100).scale(scala_misura_angoli).move_to(
-                Arc(radius=raggio_misura_angoli, start_angle=7 * PI / 5, angle=PI / 5, arc_center=vertici["d"]).get_center())
-        self.play(Write(misura_angolo_adb))
-        to_fade_out_temp.append(misura_angolo_adb)
+        self.play(Create(self.misure_angoli["adb"].set_color(BLACK)))
+        to_fade_out.append(self.misure_angoli["adb"])
         self.wait(DELAY)
         self.next_section()
 
-        misura_angolo_dab = MathTex(r"\dfrac{2}{5}\pi", color=BLACK, z_index=100).scale(scala_misura_angoli).move_to(
-                Arc(radius=raggio_misura_angoli, start_angle=0, angle=2 * PI / 5, arc_center=vertici["a"]).get_center())
-        misura_angolo_dba = MathTex(r"\dfrac{2}{5}\pi", color=BLACK, z_index=100).scale(scala_misura_angoli).move_to(
-                Arc(radius=raggio_misura_angoli, start_angle=3 * PI / 5, angle=2 * PI / 5, arc_center=vertici["b"]).get_center())
-        self.play(Write(misura_angolo_dab), Write(misura_angolo_dba))
-        to_fade_out_temp.append(misura_angolo_dab)
-        to_fade_out_temp.append(misura_angolo_dba)
+        formula_4 = MathTex("\Rightarrow").rotate(-PI/2).next_to(formula_3, 2*DOWN)
+        formula_5 = MathTex(r"\widehat{BAD} = \widehat{ABD} = \dfrac{2}{5}\pi").next_to(formula_4, 2*DOWN)
+        self.play(Write(formula_4))
+        self.play(Write(formula_5))
+        to_fade_out_temp.append(formula_4)
+        to_fade_out_temp.append(formula_5)
+        self.play(Create(self.misure_angoli["bad"].set_color(BLACK)), Create(self.misure_angoli["abd"].set_color(BLACK)))
+        to_fade_out.append(self.misure_angoli["bad"])
+        to_fade_out.append(self.misure_angoli["abd"])
         self.wait(DELAY)
         self.next_section()
 
@@ -746,6 +793,7 @@ class Scene(MovingCameraScene):
         self.next_section()
 
         self.play(*[FadeOut(x) for x in to_fade_out_temp])
+        to_fade_out_temp = []
         f = line_intersection(
             [diagonale_bd.get_start(), diagonale_bd.get_end()],
             [diagonale_ac.get_start(), diagonale_ac.get_end()],
@@ -755,19 +803,66 @@ class Scene(MovingCameraScene):
         self.wait(DELAY)
         self.next_section()
 
+        formula_1 = MathTex(r"\widehat{BAF} = \dfrac{1}{5}\pi \quad \widehat{ABF} = \dfrac{2}{5}\pi").to_edge(UP).shift(3*RIGHT)
+        self.play(Write(formula_1))
+        to_fade_out_temp.append(formula_1)
+        self.wait(DELAY)
+        self.next_section()
+
+        formula_2 = MathTex("\Rightarrow").rotate(-PI/2).next_to(formula_1, 2*DOWN)
+        formula_3 = MathTex(r"\widehat{AFB} = \dfrac{2}{5}\pi").next_to(formula_2, 2*DOWN)
+        self.play(Write(formula_2))
+        self.play(Write(formula_3))
+        to_fade_out_temp.append(formula_2)
+        to_fade_out_temp.append(formula_3)
+        misura_angolo_afx = Dot(color=BLACK).move_to(
+            Arc(radius=RAGGIO_DOT, start_angle=-2 * PI / 5, angle=-PI / 5, arc_center=f).get_center())
+        misura_angolo_bfx = Dot(color=BLACK).move_to(
+            Arc(radius=RAGGIO_DOT, start_angle=-4 * PI / 5, angle=PI / 5, arc_center=f).get_center())
+        misura_angolo_afb = VGroup(misura_angolo_afx, misura_angolo_bfx)
+        self.play(Create(misura_angolo_afb))
+        to_fade_out.append(misura_angolo_afb)
+        self.wait(DELAY)
+        self.next_section()
+
+        formula_4 = MathTex("\Rightarrow").rotate(-PI/2).next_to(formula_3, 2*DOWN)
+        formula_5 = Tex(r"$ABF$ isoscele").next_to(formula_4, 2*DOWN)
+        self.play(Write(formula_4))
+        self.play(Write(formula_5))
+        to_fade_out_temp.append(formula_4)
+        to_fade_out_temp.append(formula_5)
+        triplo_segno_lato = MathTex("|||", color=YELLOW).scale(.5)
+        af = Line(start=vertici["a"], end=f)
+        ab = Line(start=vertici["a"], end=vertici["b"])
+        segno_lato_ad = triplo_segno_lato.copy().move_to(af).rotate(af.get_angle())
+        segno_lato_bd = triplo_segno_lato.copy().move_to(ab).rotate(ab.get_angle())
+        self.play(Write(segno_lato_ad), Write(segno_lato_bd))
+        to_fade_out.append(segno_lato_ad)
+        to_fade_out.append(segno_lato_bd)
+        self.wait(DELAY)
+        self.next_section()
+
+        self.play(*[FadeOut(x) for x in to_fade_out_temp])
         to_fade_out_temp = []
 
-        misura_angolo_fab = MathTex(r"\dfrac{\pi}{5}", color=BLACK, z_index=100).scale(scala_misura_angoli).move_to(
-                Arc(radius=raggio_misura_angoli, start_angle=0, angle=PI / 5, arc_center=vertici["a"]).get_center())
-        self.play(Write(misura_angolo_fab), Write(misura_angolo_dba))
-        to_fade_out_temp.append(misura_angolo_fab)
-        to_fade_out_temp.append(misura_angolo_dba)
+        formula_1 = MathTex(r"\widehat{DAF} = \dfrac{1}{5}\pi \quad \widehat{ADF} = \dfrac{1}{5}\pi").to_edge(UP).shift(3*RIGHT)
+        self.play(Write(formula_1))
+        to_fade_out_temp.append(formula_1)
         self.wait(DELAY)
         self.next_section()
 
-        misura_angolo_afb = MathTex(r"\dfrac{2}{5}\pi", color=BLACK, z_index=100).scale(scala_misura_angoli).move_to(
-                Arc(radius=raggio_misura_angoli, start_angle=-2*PI/5, angle=-PI / 5, arc_center=f).get_center())
-        self.play(Write(misura_angolo_afb))
-        to_fade_out_temp.append(misura_angolo_afb)
+        formula_2 = MathTex("\Rightarrow").rotate(-PI/2).next_to(formula_1, 2*DOWN)
+        formula_3 = Tex(r"$ADF$ isoscele").next_to(formula_2, 2*DOWN)
+        self.play(Write(formula_2))
+        self.play(Write(formula_3))
+        to_fade_out_temp.append(formula_2)
+        to_fade_out_temp.append(formula_3)
+        df = Line(start=vertici["d"], end=f)
+        segno_lato_df = triplo_segno_lato.copy().move_to(df).rotate(df.get_angle())
+        self.play(Write(segno_lato_df))
+        to_fade_out.append(segno_lato_df)
         self.wait(DELAY)
         self.next_section()
+
+        self.play(*[FadeOut(x) for x in to_fade_out_temp])
+        to_fade_out_temp = []
