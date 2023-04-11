@@ -3,15 +3,17 @@ from manim import *
 from qgeo import AngleWithArc
 
 DELAY = 1
+LEFT_CENTER = 3.5 * LEFT
 RIGHT_CENTER = 3.5 * RIGHT
-PENTAGONO_CENTER = 3.5 * LEFT
-PENTAGONO_RADIUS = 2.5
+PENTAGONO_CENTER = LEFT_CENTER + .5 * UP
+PENTAGONO_RADIUS = 2.4
 RAGGIO_DOT = .6
 PI_QUINTI = PI / 5
 
 
 class Scene(MovingCameraScene):
     vertici = {}
+    lettere_vertici = {}
     misure_angoli = {}
 
     def construct(self):
@@ -20,35 +22,38 @@ class Scene(MovingCameraScene):
         pentagono = RegularPolygon(n=5, fill_opacity=.2, fill_color=BLUE, z_index=-2).scale(PENTAGONO_RADIUS).shift(
             PENTAGONO_CENTER)
         vertici_pentagono = pentagono.get_vertices()
-        vertici = {"a": vertici_pentagono[2],
-                   "b": vertici_pentagono[3],
-                   "c": vertici_pentagono[4],
-                   "d": vertici_pentagono[0],
-                   "e": vertici_pentagono[1]}
+        self.vertici = {"a": vertici_pentagono[2],
+                        "b": vertici_pentagono[3],
+                        "c": vertici_pentagono[4],
+                        "d": vertici_pentagono[0],
+                        "e": vertici_pentagono[1]}
 
         self.misure_angoli["bac"] = Dot().move_to(
-            Arc(radius=RAGGIO_DOT, start_angle=0, angle=PI_QUINTI, arc_center=vertici["a"]).get_center())
+            Arc(radius=RAGGIO_DOT, start_angle=0, angle=PI_QUINTI, arc_center=self.vertici["a"]).get_center())
         self.misure_angoli["cad"] = Dot().move_to(
-            Arc(radius=RAGGIO_DOT, start_angle=PI_QUINTI, angle=PI_QUINTI, arc_center=vertici["a"]).get_center())
+            Arc(radius=RAGGIO_DOT, start_angle=PI_QUINTI, angle=PI_QUINTI, arc_center=self.vertici["a"]).get_center())
         self.misure_angoli["bad"] = VGroup(self.misure_angoli["bac"], self.misure_angoli["cad"])
 
         self.misure_angoli["abe"] = Dot().move_to(
-            Arc(radius=RAGGIO_DOT, start_angle=4 * PI_QUINTI, angle=PI_QUINTI, arc_center=vertici["b"]).get_center())
+            Arc(radius=RAGGIO_DOT, start_angle=4 * PI_QUINTI, angle=PI_QUINTI,
+                arc_center=self.vertici["b"]).get_center())
         self.misure_angoli["ebd"] = Dot().move_to(
-            Arc(radius=RAGGIO_DOT, start_angle=3 * PI_QUINTI, angle=PI_QUINTI, arc_center=vertici["b"]).get_center())
+            Arc(radius=RAGGIO_DOT, start_angle=3 * PI_QUINTI, angle=PI_QUINTI,
+                arc_center=self.vertici["b"]).get_center())
         self.misure_angoli["abd"] = VGroup(self.misure_angoli["abe"], self.misure_angoli["ebd"])
 
         self.misure_angoli["adb"] = Dot().move_to(
-            Arc(radius=RAGGIO_DOT, start_angle=7 * PI_QUINTI, angle=PI_QUINTI, arc_center=vertici["d"]).get_center())
+            Arc(radius=RAGGIO_DOT, start_angle=7 * PI_QUINTI, angle=PI_QUINTI,
+                arc_center=self.vertici["d"]).get_center())
 
-        lettere_vertici = {"a": Tex('A').next_to(vertici["a"], DOWN),
-                           "b": Tex('B').next_to(vertici["b"], DOWN),
-                           "c": Tex('C').next_to(vertici["c"], RIGHT),
-                           "d": Tex('D').next_to(vertici["d"], UP),
-                           "e": Tex('E').next_to(vertici["e"], LEFT)}
+        self.lettere_vertici = {"a": Tex('A').next_to(self.vertici["a"], DOWN, buff=.15),
+                                "b": Tex('B').next_to(self.vertici["b"], DOWN, buff=.15),
+                                "c": Tex('C').next_to(self.vertici["c"], RIGHT, buff=.15),
+                                "d": Tex('D').next_to(self.vertici["d"], UP, buff=.15),
+                                "e": Tex('E').next_to(self.vertici["e"], LEFT, buff=.15)}
 
         self.play(Create(pentagono))
-        self.play(*[Write(x) for x in lettere_vertici.values()])
+        self.play(*[Write(x) for x in self.lettere_vertici.values()])
         self.wait(DELAY)
         self.next_section()
 
@@ -70,7 +75,7 @@ class Scene(MovingCameraScene):
         #
         # self.suddivisione_angolo(vertici, lettere_vertici)
 
-        self.triangolo_abd(vertici)
+        self.triangolo_abd()
 
         self.wait(30)
 
@@ -85,7 +90,7 @@ class Scene(MovingCameraScene):
             Dot(),
             Dot(),
             MathTex(r"= \dfrac{3}{5}\pi").scale(.6),
-        ).arrange(RIGHT).to_edge(DOWN).shift(3*RIGHT)
+        ).arrange(RIGHT).to_edge(DOWN).shift(LEFT_CENTER)
         cornice = SurroundingRectangle(legenda)
         self.play(Create(cornice), Write(legenda))
 
@@ -734,14 +739,14 @@ class Scene(MovingCameraScene):
 
         self.play(*[FadeOut(x) for x in to_fade_out])
 
-    def triangolo_abd(self, vertici):
+    def triangolo_abd(self):
         to_fade_out = []
         to_fade_out_temp = []
 
-        diagonale_ad = Line(start=vertici["a"], end=vertici["d"], color=BLUE)
-        diagonale_bd = Line(start=vertici["b"], end=vertici["d"], color=BLUE)
+        diagonale_ad = Line(start=self.vertici["a"], end=self.vertici["d"], color=BLUE)
+        diagonale_bd = Line(start=self.vertici["b"], end=self.vertici["d"], color=BLUE)
 
-        triangolo_abd = Polygon(vertici["a"], vertici["b"], vertici["d"], color=YELLOW,
+        triangolo_abd = Polygon(self.vertici["a"], self.vertici["b"], self.vertici["d"], color=YELLOW,
                                 fill_color=YELLOW, fill_opacity=.5)
         self.play(Create(triangolo_abd))
         to_fade_out.append(triangolo_abd)
@@ -754,9 +759,9 @@ class Scene(MovingCameraScene):
         self.play(Write(segno_lato_ad), Write(segno_lato_bd))
         to_fade_out_temp.append(segno_lato_ad)
         to_fade_out_temp.append(segno_lato_bd)
-        formula_1 = MathTex(r"AD \cong BD").to_edge(UP).shift(3*RIGHT)
-        formula_2 = MathTex("\Rightarrow").rotate(-PI/2).next_to(formula_1, 2*DOWN)
-        formula_3 = Tex(r"$ABD$ isoscele").next_to(formula_2, 2*DOWN)
+        formula_1 = MathTex(r"AD \cong BD").to_edge(UP).shift(3 * RIGHT)
+        formula_2 = MathTex("\Rightarrow").rotate(-PI / 2).next_to(formula_1, 2 * DOWN)
+        formula_3 = Tex(r"$ABD$ isoscele").next_to(formula_2, 2 * DOWN)
         self.play(Write(formula_1))
         self.play(Write(formula_2))
         self.play(Write(formula_3))
@@ -771,20 +776,21 @@ class Scene(MovingCameraScene):
         self.wait(DELAY)
         self.next_section()
 
-        formula_4 = MathTex("\Rightarrow").rotate(-PI/2).next_to(formula_3, 2*DOWN)
-        formula_5 = MathTex(r"\widehat{BAD} = \widehat{ABD} = \dfrac{2}{5}\pi").next_to(formula_4, 2*DOWN)
+        formula_4 = MathTex("\Rightarrow").rotate(-PI / 2).next_to(formula_3, 2 * DOWN)
+        formula_5 = MathTex(r"\widehat{BAD} = \widehat{ABD} = \dfrac{2}{5}\pi").next_to(formula_4, 2 * DOWN)
         self.play(Write(formula_4))
         self.play(Write(formula_5))
         to_fade_out_temp.append(formula_4)
         to_fade_out_temp.append(formula_5)
-        self.play(Create(self.misure_angoli["bad"].set_color(BLACK)), Create(self.misure_angoli["abd"].set_color(BLACK)))
+        self.play(Create(self.misure_angoli["bad"].set_color(BLACK)),
+                  Create(self.misure_angoli["abd"].set_color(BLACK)))
         to_fade_out.append(self.misure_angoli["bad"])
         to_fade_out.append(self.misure_angoli["abd"])
         self.wait(DELAY)
         self.next_section()
 
-        diagonale_ac = Line(start=vertici["a"], end=vertici["c"], color=YELLOW)
-        diagonale_be = Line(start=vertici["b"], end=vertici["e"], color=YELLOW)
+        diagonale_ac = Line(start=self.vertici["a"], end=self.vertici["c"], color=YELLOW)
+        diagonale_be = Line(start=self.vertici["b"], end=self.vertici["e"], color=YELLOW)
 
         self.play(Create(diagonale_ac), Create(diagonale_be))
         to_fade_out.append(diagonale_ac)
@@ -803,14 +809,15 @@ class Scene(MovingCameraScene):
         self.wait(DELAY)
         self.next_section()
 
-        formula_1 = MathTex(r"\widehat{BAF} = \dfrac{1}{5}\pi \quad \widehat{ABF} = \dfrac{2}{5}\pi").to_edge(UP).shift(3*RIGHT)
+        formula_1 = MathTex(r"\widehat{BAF} = \dfrac{1}{5}\pi \quad \widehat{ABF} = \dfrac{2}{5}\pi").to_edge(UP).shift(
+            3 * RIGHT)
         self.play(Write(formula_1))
         to_fade_out_temp.append(formula_1)
         self.wait(DELAY)
         self.next_section()
 
-        formula_2 = MathTex("\Rightarrow").rotate(-PI/2).next_to(formula_1, 2*DOWN)
-        formula_3 = MathTex(r"\widehat{AFB} = \dfrac{2}{5}\pi").next_to(formula_2, 2*DOWN)
+        formula_2 = MathTex("\Rightarrow").rotate(-PI / 2).next_to(formula_1, 2 * DOWN)
+        formula_3 = MathTex(r"\widehat{AFB} = \dfrac{2}{5}\pi").next_to(formula_2, 2 * DOWN)
         self.play(Write(formula_2))
         self.play(Write(formula_3))
         to_fade_out_temp.append(formula_2)
@@ -825,15 +832,15 @@ class Scene(MovingCameraScene):
         self.wait(DELAY)
         self.next_section()
 
-        formula_4 = MathTex("\Rightarrow").rotate(-PI/2).next_to(formula_3, 2*DOWN)
-        formula_5 = Tex(r"$ABF$ isoscele").next_to(formula_4, 2*DOWN)
+        formula_4 = MathTex("\Rightarrow").rotate(-PI / 2).next_to(formula_3, 2 * DOWN)
+        formula_5 = Tex(r"$ABF$ isoscele").next_to(formula_4, 2 * DOWN)
         self.play(Write(formula_4))
         self.play(Write(formula_5))
         to_fade_out_temp.append(formula_4)
         to_fade_out_temp.append(formula_5)
         triplo_segno_lato = MathTex("|||", color=YELLOW).scale(.5)
-        af = Line(start=vertici["a"], end=f)
-        ab = Line(start=vertici["a"], end=vertici["b"])
+        af = Line(start=self.vertici["a"], end=f)
+        ab = Line(start=self.vertici["a"], end=self.vertici["b"])
         segno_lato_ad = triplo_segno_lato.copy().move_to(af).rotate(af.get_angle())
         segno_lato_bd = triplo_segno_lato.copy().move_to(ab).rotate(ab.get_angle())
         self.play(Write(segno_lato_ad), Write(segno_lato_bd))
@@ -845,19 +852,20 @@ class Scene(MovingCameraScene):
         self.play(*[FadeOut(x) for x in to_fade_out_temp])
         to_fade_out_temp = []
 
-        formula_1 = MathTex(r"\widehat{DAF} = \dfrac{1}{5}\pi \quad \widehat{ADF} = \dfrac{1}{5}\pi").to_edge(UP).shift(3*RIGHT)
+        formula_1 = MathTex(r"\widehat{DAF} = \dfrac{1}{5}\pi \quad \widehat{ADF} = \dfrac{1}{5}\pi").to_edge(UP).shift(
+            3 * RIGHT)
         self.play(Write(formula_1))
         to_fade_out_temp.append(formula_1)
         self.wait(DELAY)
         self.next_section()
 
-        formula_2 = MathTex("\Rightarrow").rotate(-PI/2).next_to(formula_1, 2*DOWN)
-        formula_3 = Tex(r"$ADF$ isoscele").next_to(formula_2, 2*DOWN)
+        formula_2 = MathTex("\Rightarrow").rotate(-PI / 2).next_to(formula_1, 2 * DOWN)
+        formula_3 = Tex(r"$ADF$ isoscele").next_to(formula_2, 2 * DOWN)
         self.play(Write(formula_2))
         self.play(Write(formula_3))
         to_fade_out_temp.append(formula_2)
         to_fade_out_temp.append(formula_3)
-        df = Line(start=vertici["d"], end=f)
+        df = Line(start=self.vertici["d"], end=f)
         segno_lato_df = triplo_segno_lato.copy().move_to(df).rotate(df.get_angle())
         self.play(Write(segno_lato_df))
         to_fade_out.append(segno_lato_df)
@@ -866,3 +874,134 @@ class Scene(MovingCameraScene):
 
         self.play(*[FadeOut(x) for x in to_fade_out_temp])
         to_fade_out_temp = []
+
+        template_triangolo_abd = triangolo_abd.copy()
+        template_triangolo_abf = Polygon(self.vertici["a"], self.vertici["b"], f).rotate(-3 * PI / 5)
+        template_triangoli = VGroup(template_triangolo_abd, template_triangolo_abf) \
+            .arrange(RIGHT, buff=1).to_edge(UP) \
+            .shift(3 * RIGHT + .5 * DOWN)
+
+        moving_triangolo_abd = VGroup(
+            triangolo_abd.copy(),
+            self.misure_angoli["adb"].copy(),
+            self.misure_angoli["abd"].copy(),
+            self.misure_angoli["bad"].copy()
+        )
+        moving_a = self.lettere_vertici["a"].copy()
+        moving_b = self.lettere_vertici["b"].copy()
+        moving_d = self.lettere_vertici["d"].copy()
+
+        moving_triangolo_abf = VGroup(
+            Polygon(self.vertici["a"], self.vertici["b"], f, color=YELLOW, fill_color=YELLOW, fill_opacity=.5),
+            misura_angolo_afb.copy(),
+            self.misure_angoli["abd"].copy(),
+            self.misure_angoli["bac"].copy()
+        )
+        moving_a_bis = self.lettere_vertici["a"].copy()
+        moving_b_bis = self.lettere_vertici["b"].copy()
+        moving_f_bis = lettera_f.copy()
+
+        self.play(
+            moving_triangolo_abd.animate.move_to(template_triangolo_abd),
+            moving_a.animate.next_to(template_triangolo_abd.get_vertices()[0], DOWN, buff=.15),
+            moving_b.animate.next_to(template_triangolo_abd.get_vertices()[1], DOWN, buff=.15),
+            moving_d.animate.next_to(template_triangolo_abd.get_vertices()[2], UP, buff=.15),
+            moving_triangolo_abf.animate.rotate(-3*PI/5).move_to(template_triangolo_abf),
+            moving_a_bis.animate.next_to(template_triangolo_abf.get_vertices()[0], UP, buff=.15),
+            moving_b_bis.animate.next_to(template_triangolo_abf.get_vertices()[1], DOWN, buff=.15),
+            moving_f_bis.animate.next_to(template_triangolo_abf.get_vertices()[2], DOWN, buff=.15),
+        )
+        to_fade_out_temp.append(moving_triangolo_abd)
+        to_fade_out_temp.append(moving_triangolo_abf)
+        to_fade_out_temp.append(moving_a)
+        to_fade_out_temp.append(moving_a_bis)
+        to_fade_out_temp.append(moving_b)
+        to_fade_out_temp.append(moving_b_bis)
+        to_fade_out_temp.append(moving_d)
+        to_fade_out_temp.append(moving_f_bis)
+        self.wait(DELAY)
+        self.next_section()
+
+        formula_1 = MathTex(r"\overline{AD} : \overline{AB} = \overline{AB} : \overline{BF}")
+        formula_1.next_to(template_triangoli, 4*DOWN)
+        self.play(Write(formula_1))
+
+        self.play(*[FadeOut(x) for x in to_fade_out_temp])
+        to_fade_out_temp = []
+        self.play(formula_1.animate.to_edge(UP))
+        to_fade_out_temp.append(formula_1)
+        self.wait(DELAY)
+        self.next_section()
+
+        formula_2 = MathTex(r"\overline{AD} : \overline{AB} = \overline{AB} : (\overline{BD} - \overline{DF})")
+        formula_2.next_to(formula_1, 2*DOWN)
+        self.play(Write(formula_2))
+        to_fade_out_temp.append(formula_2)
+        self.wait(DELAY)
+        self.next_section()
+
+        formula_3 = MathTex(r"\overline{AD} : \overline{AB} = \overline{AB} : (\overline{AD} - \overline{DF})")
+        formula_3.next_to(formula_2, 2*DOWN)
+        self.play(Write(formula_3))
+        to_fade_out_temp.append(formula_3)
+        self.wait(DELAY)
+        self.next_section()
+
+        formula_4 = MathTex(r"\overline{AD} : \overline{AB} = \overline{AB} : (\overline{AD} - \overline{AF})")
+        formula_4.next_to(formula_3, 2*DOWN)
+        self.play(Write(formula_4))
+        to_fade_out_temp.append(formula_4)
+        self.wait(DELAY)
+        self.next_section()
+
+        formula_5 = MathTex(r"\overline{AD} : \overline{AB} = \overline{AB} : (\overline{AD} - \overline{AB})")
+        formula_5.next_to(formula_4, 2*DOWN)
+        self.play(Write(formula_5))
+        self.wait(DELAY)
+        self.next_section()
+
+        self.play(*[FadeOut(x) for x in to_fade_out_temp])
+        to_fade_out_temp = []
+        self.play(formula_5.animate.to_edge(UP))
+        to_fade_out_temp.append(formula_5)
+        self.wait(DELAY)
+        self.next_section()
+
+        self.play(Circumscribe(formula_5[0][4:7]), Circumscribe(formula_5[0][8:11]))
+        self.play(Circumscribe(formula_5[0][4:7]), Circumscribe(formula_5[0][8:11]))
+        self.wait(DELAY)
+        self.next_section()
+
+        self.play(Circumscribe(formula_5[0][:3]))
+        self.play(Circumscribe(formula_5[0][:3]))
+        self.wait(DELAY)
+        self.next_section()
+
+        self.play(Circumscribe(formula_5[0][12:]))
+        self.play(Circumscribe(formula_5[0][12:]))
+        self.wait(DELAY)
+        self.next_section()
+
+        formula_6 = MathTex(r"d : l = l : (d - l)")
+        formula_6.next_to(formula_5, 2*DOWN)
+        self.play(Write(formula_6))
+        self.wait(DELAY)
+        self.next_section()
+
+        formula_7 = MathTex(r"d \cdot (d-l) = l \cdot l")
+        formula_7.next_to(formula_6, 2*DOWN)
+        self.play(Write(formula_7))
+        self.wait(DELAY)
+        self.next_section()
+
+        formula_8 = MathTex(r"d^2 - ld = l^2")
+        formula_8.next_to(formula_7, 2*DOWN)
+        self.play(Write(formula_8))
+        self.wait(DELAY)
+        self.next_section()
+
+        formula_9 = MathTex(r"d^2 - ld - l^2 = 0")
+        formula_9.next_to(formula_8, 2*DOWN)
+        self.play(Write(formula_9))
+        self.wait(DELAY)
+        self.next_section()
