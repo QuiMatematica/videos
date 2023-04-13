@@ -916,3 +916,5 @@ class Scene(MovingCameraScene):
     def teorema_poligoni_regolari_inscrivibili(self):
         teorema = Tex(r"Ogni poligono regolare\\"
                       r"è inscrivibile in una circonferenza.")
+
+        self.teorema(teorema)
