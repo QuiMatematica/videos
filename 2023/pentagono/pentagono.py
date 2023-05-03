@@ -2,7 +2,7 @@ from manim import *
 
 from qgeo import AngleWithArc
 
-DELAY = 1
+DELAY = 30
 LEFT_CENTER = 3.5 * LEFT
 RIGHT_CENTER = 3.5 * RIGHT
 PENTAGONO_CENTER = LEFT_CENTER + .5 * UP
