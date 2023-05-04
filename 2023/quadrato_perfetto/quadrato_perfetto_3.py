@@ -6,7 +6,7 @@ import util
 class Scene(MovingCameraScene):
 
     def construct(self):
-        delay = 30
+        delay = 1
 
         self.wait(1)
 
