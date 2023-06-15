@@ -22,16 +22,26 @@ class Scene(MovingCameraScene):
         pera = ImageMobject('img/frutta/pera.png').scale(.25)
         albicocca = ImageMobject('img/frutta/albicocca.png').scale(.15)
 
-        self.play(FadeIn(ananas.copy().move_to(LEFT*5.8 + UP*1.5)))
-        self.play(FadeIn(ananas.copy().move_to(LEFT*4.6 + UP*1.5)))
+        ananas_1_a = Group(
+            ananas.copy().move_to(LEFT*5.8 + UP*1.5),
+            ananas.copy().move_to(LEFT*4.6 + UP*1.5)
+        )
+        for f in ananas_1_a:
+            self.play(FadeIn(f, run_time=1/ananas_1_a.dim))
+
         self.play(FadeIn(mela.copy().move_to(LEFT*6.3 + UP*mela_baseline)))
         self.play(FadeIn(mela.copy().move_to(LEFT*5.4 + UP*mela_baseline)))
         self.play(FadeIn(mela.copy().move_to(LEFT*4.5 + UP*mela_baseline)))
         self.play(FadeIn(pera.copy().move_to(LEFT*5.9 + UP*0.45)))
         self.play(FadeIn(pera.copy().move_to(LEFT*4.9 + UP*0.45)))
 
-        self.play(FadeIn(ananas.copy().move_to(LEFT*2.3 + UP*1.5)))
-        self.play(FadeIn(ananas.copy().move_to(LEFT*1.1 + UP*1.5)))
+        ananas_1_b = Group(
+            ananas.copy().move_to(LEFT*2.3 + UP*1.5),
+            ananas.copy().move_to(LEFT*1.1 + UP*1.5)
+        )
+        for f in ananas_1_b:
+            self.play(FadeIn(f, run_time=1/ananas_1_b.dim))
+
         self.play(FadeIn(mela.copy().move_to(LEFT*2.5 + UP*mela_baseline)))
         self.play(FadeIn(mela.copy().move_to(LEFT*1.3 + UP*mela_baseline)))
         first = 2.9
@@ -68,6 +78,13 @@ class Scene(MovingCameraScene):
         self.play(FadeIn(albicocca.copy().move_to(RIGHT*(first + shift*7) + UP*0.16)))
         self.play(FadeIn(albicocca.copy().move_to(RIGHT*(first + shift*8) + UP*0.16)))
         self.play(FadeIn(albicocca.copy().move_to(RIGHT*(first + shift*9) + UP*0.16)))
+
+        self.wait(delay)
+        self.next_section()
+
+        self.play(*[FadeOut(f) for f in ananas_1_a], *[FadeOut(f) for f in ananas_1_b])
+        self.wait(delay)
+        self.next_section()
 
         self.wait(30)
 

@@ -18,24 +18,29 @@ class Scene(MovingCameraScene):
 
         ananas = ImageMobject('img/frutta/ananas.png', z_index=-1).scale(1.2 * scale)
         mela = ImageMobject('img/frutta/mela.png').scale(.7 * scale)
-        pera = ImageMobject('img/frutta/pera.png').scale(.5 * scale)
         albicocca = ImageMobject('img/frutta/albicocca.png').scale(.3 * scale)
 
-        self.play(FadeIn(mela.copy().move_to(4 * LEFT + -.35 * UP)))
-        self.play(FadeIn(mela.copy().move_to(2.3 * LEFT + -.35 * UP)))
+        mele = Group(
+            mela.copy().move_to(4 * LEFT + -.35 * UP),
+            mela.copy().move_to(2.3 * LEFT + -.35 * UP)
+        )
+        for m in mele:
+            self.play(FadeIn(m, run_time=1/mele.dim))
 
         first = 1.15
         shift = .6
         baseline = -0.88
-        self.play(FadeIn(albicocca.copy().move_to(RIGHT*(first + shift*0) + UP*baseline)))
-        self.play(FadeIn(albicocca.copy().move_to(RIGHT*(first + shift*1) + UP*baseline)))
-        self.play(FadeIn(albicocca.copy().move_to(RIGHT*(first + shift*2) + UP*baseline)))
-        self.play(FadeIn(albicocca.copy().move_to(RIGHT*(first + shift*3) + UP*baseline)))
-        self.play(FadeIn(albicocca.copy().move_to(RIGHT*(first + shift*4) + UP*baseline)))
-        self.play(FadeIn(albicocca.copy().move_to(RIGHT*(first + shift*5) + UP*baseline)))
-        self.play(FadeIn(albicocca.copy().move_to(RIGHT*(first + shift*6) + UP*baseline)))
+        albicocche = Group()
+        for _i in range(7):
+            albicocche.add(albicocca.copy().move_to(RIGHT*(first + shift*_i) + UP*baseline))
+
+        for m in albicocche:
+            self.play(FadeIn(m, run_time=1/albicocche.dim))
         self.wait(delay)
         self.next_section()
 
-        self.play(FadeIn(ananas.copy().move_to(2.8 * LEFT + 1.25 * UP)))
-        self.play(FadeIn(ananas.copy().move_to(2.8 * RIGHT + 1.25 * UP)))
+        self.play(
+            FadeIn(ananas.copy().move_to(2.8 * LEFT + 1.25 * UP)),
+            FadeIn(ananas.copy().move_to(2.8 * RIGHT + 1.25 * UP)))
+
+        self.wait(30)
