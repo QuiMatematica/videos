@@ -4,10 +4,9 @@ from manim import *
 class Scene(MovingCameraScene):
 
     def construct(self):
-        delay = 1
-        move_camera = False
+        delay = 30
 
-        self.wait(delay)
+        self.wait(.5)
 
         lettere = [
             Tex("$M$", " = ", "M", "ele"),

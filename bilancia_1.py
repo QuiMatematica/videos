@@ -6,7 +6,7 @@ from bilancia import Bilancia
 class Scene(MovingCameraScene):
 
     def construct(self):
-        delay = 1
+        delay = 30
 
         self.wait(delay)
 
