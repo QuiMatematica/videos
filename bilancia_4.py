@@ -6,7 +6,7 @@ from bilancia import Bilancia
 class Scene(MovingCameraScene):
 
     def construct(self):
-        self.delay = 1
+        self.delay = 30
 
         self.wait(self.delay)
 
@@ -73,9 +73,37 @@ class Scene(MovingCameraScene):
         self.wait(self.delay)
         self.next_section()
 
-        melanzane_3_a = bilancia_destra.place_on_left(melanzana, 3)
-        carote_3_a = bilancia_destra.place_on_left(carota, 6)
+        melanzane_3_a = bilancia_destra.place_on_left(melanzana, 4)
+        carote_3_a = bilancia_destra.place_on_left(carota, 6, carota_h_shift)
         cipolle_3_b = bilancia_destra.place_on_right(cipolla, 9)
+
+        to_fade = [melanzane_2_a[2], *carote_2_a[2:4], *cipolle_2_b]
+        self.play(*[FadeOut(f) for f in to_fade],
+                  *[FadeIn(f) for f in melanzane_3_a[:3]],
+                  *[FadeIn(f) for f in carote_3_a],
+                  *[FadeIn(f) for f in cipolle_3_b])
+        self.wait(self.delay)
+        self.next_section()
+
+        cipolle_3_a = bilancia_destra.place_on_left(cipolla, 1)
+        to_fade = carote_3_a
+        self.play(*[FadeOut(f) for f in to_fade],
+                  FadeIn(melanzane_3_a[3]),
+                  *[FadeIn(f) for f in cipolle_3_a])
+        self.wait(self.delay)
+        self.next_section()
+
+        to_fade = [*cipolle_3_a, cipolle_3_b[4]]
+        self.play(*[FadeOut(f) for f in to_fade])
+        self.wait(self.delay)
+        self.next_section()
+
+        to_fade = [*melanzane_3_a[:2], melanzane_3_a[3], *cipolle_3_b[:3], *cipolle_3_b[6:]]
+        self.play(*[FadeOut(f) for f in to_fade])
+        self.wait(self.delay)
+        self.next_section()
+
+        self.play(self.camera.frame.animate.move_to(bilancia_destra.get_center() + UP).scale(.5))
 
         self.wait(30)
 
