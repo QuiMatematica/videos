@@ -16,9 +16,9 @@ class Scene(MovingCameraScene):
         bilancia_destra = Bilancia().scale(.5).move_to(RIGHT * 3.5 + DOWN)
         self.play(Create(bilancia_destra))
 
-        melanzana = ImageMobject('img/verdura/melanzana.png').scale(.6)
-        cipolla = ImageMobject('img/verdura/cipolla.png').scale(.35)
-        carota = ImageMobject('img/verdura/carota.png').scale(.35)
+        melanzana = ImageMobject('../../img/verdura/melanzana.png').scale(.6)
+        cipolla = ImageMobject('../../img/verdura/cipolla.png').scale(.35)
+        carota = ImageMobject('../../img/verdura/carota.png').scale(.35)
         melanzana_h_shift = -.2
         carota_h_shift = -.3
 

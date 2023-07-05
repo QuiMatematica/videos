@@ -16,11 +16,11 @@ class Scene(MovingCameraScene):
         bilancia_destra = Bilancia().scale(.5).move_to(RIGHT*3.5 + DOWN)
         self.play(Create(bilancia_destra))
 
-        ananas = ImageMobject('img/frutta/ananas.png').scale(.6)
-        mela = ImageMobject('img/frutta/mela.png').scale(.35)
+        ananas = ImageMobject('../../img/frutta/ananas.png').scale(.6)
+        mela = ImageMobject('../../img/frutta/mela.png').scale(.35)
         mela_baseline = 0.5
-        pera = ImageMobject('img/frutta/pera.png').scale(.25)
-        albicocca = ImageMobject('img/frutta/albicocca.png').scale(.15)
+        pera = ImageMobject('../../img/frutta/pera.png').scale(.25)
+        albicocca = ImageMobject('../../img/frutta/albicocca.png').scale(.15)
 
         ananas_1_a = [
             ananas.copy().move_to(LEFT*5.8 + UP*1.5),

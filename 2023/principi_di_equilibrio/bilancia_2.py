@@ -16,9 +16,9 @@ class Scene(MovingCameraScene):
         self.wait(delay)
         self.next_section()
 
-        ananas = ImageMobject('img/frutta/ananas.png', z_index=-1).scale(1.2 * scale)
-        mela = ImageMobject('img/frutta/mela.png').scale(.7 * scale)
-        albicocca = ImageMobject('img/frutta/albicocca.png').scale(.3 * scale)
+        ananas = ImageMobject('../../img/frutta/ananas.png', z_index=-1).scale(1.2 * scale)
+        mela = ImageMobject('../../img/frutta/mela.png').scale(.7 * scale)
+        albicocca = ImageMobject('../../img/frutta/albicocca.png').scale(.3 * scale)
 
         mele = Group(
             mela.copy().move_to(4 * LEFT + -.35 * UP),

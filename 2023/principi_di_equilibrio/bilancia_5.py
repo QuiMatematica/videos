@@ -16,8 +16,8 @@ class Scene(MovingCameraScene):
         self.wait(self.delay)
         self.next_section()
 
-        mela = ImageMobject('img/frutta/mela.png').scale(.7 * scale)
-        albicocca = ImageMobject('img/frutta/albicocca.png').scale(.3 * scale)
+        mela = ImageMobject('../../img/frutta/mela.png').scale(.7 * scale)
+        albicocca = ImageMobject('../../img/frutta/albicocca.png').scale(.3 * scale)
 
         mele = bilancia.place_on_left(mela, 5)
         self.mostra_frutta([mele[1], mele[3]])
