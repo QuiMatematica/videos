@@ -7,16 +7,16 @@ class EqSystem(VMobject, ABC):
 
     def __init__(self, *equation_texs, **kwargs):
         super().__init__(**kwargs)
-        eqs = VGroup()
+        self.eqs = VGroup()
         for tex in equation_texs:
-            eqs.add(tex)
-        eqs.arrange(DOWN, aligned_edge=LEFT)
+            self.eqs.add(tex)
+        self.eqs.arrange(DOWN, aligned_edge=LEFT)
 
-        bracket = MathTex(r"\{")
-        bracket.scale(2)
-        bracket.stretch_to_fit_height(eqs.height + 2 * MED_SMALL_BUFF)
-        bracket.next_to(eqs, LEFT, MED_SMALL_BUFF)
-        self.add(bracket, eqs)
+        self.bracket = MathTex(r"\{")
+        self.bracket.scale(2)
+        self.bracket.stretch_to_fit_height(self.eqs.height + 2 * MED_SMALL_BUFF)
+        self.bracket.next_to(self.eqs, LEFT, MED_SMALL_BUFF)
+        self.add(self.bracket, self.eqs)
         self.center()
 
 

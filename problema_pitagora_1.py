@@ -80,16 +80,77 @@ class Risoluzione(VGroup):
         self.equazione_1 = mid_math_tex(r"4x^2-28x+49=x^2+x^2+14x+49")
         self.add(self.equazione_1)
 
+        self.equazione_2 = mid_math_tex(r"4x^2-28x=2x^2+14x")
+        self.add(self.equazione_2)
+
+        self.equazione_3 = mid_math_tex(r"4x^2-2x^2-28x-14x=0")
+        self.add(self.equazione_3)
+
+        self.equazione_4 = mid_math_tex(r"2x^2-42x=0")
+        self.add(self.equazione_4)
+
+        self.equazione_5 = mid_math_tex(r"x^2-21x=0")
+        self.add(self.equazione_5)
+
+        self.equazione_6 = mid_math_tex(r"x(x-21)=0")
+        self.add(self.equazione_6)
+
+        self.equazione_7 = mid_math_tex(r"x = 0 \quad\lor\quad x=21")
+        self.add(self.equazione_7)
+
+        self.sistema_5 = EqSystem(
+            MathTex(r"x=21"),
+            MathTex(r"y=x+7"),
+            MathTex(r"z=2x-7")
+        ).scale(.5)
+        self.add(self.sistema_5)
+
+        self.sistema_6 = EqSystem(
+            MathTex(r"x=21"),
+            MathTex(r"y=28"),
+            MathTex(r"z=35")
+        ).scale(.5)
+        self.add(self.sistema_6)
+
+        self.formula_1 = mid_math_tex(r"\overline{AC} = x = 21")
+        self.formula_2 = mid_math_tex(r"\overline{BC} = y = 28")
+        self.formula_3 = mid_math_tex(r"\overline{AB} = z = 35")
+        self.add(self.formula_1)
+        self.add(self.formula_2)
+        self.add(self.formula_3)
+
+        self.formula_4 = mid_math_tex(r"2P &= \overline{AC} + \overline{BC} + \overline{AB} = \\ &= 21 + 28 + 35 = 84")
+        self.add(self.formula_4)
+
+        self.risposta = Tex(r"Il perimetro del triangolo \\ è 84 cm.").scale(.5)
+        self.add(self.risposta)
+
         vert_buff = .3
         colonna1 = VGroup(self.definizioni, self.sistema_1, self.sistema_2)
         colonna1.arrange(DOWN, buff=vert_buff, aligned_edge=LEFT)
 
-        colonna2 = VGroup(self.sistema_3, self.sistema_4, self.equazione_1)
+        colonna2 = VGroup(self.sistema_3, self.sistema_4, self.equazione_1, self.equazione_2, self.equazione_3)
         colonna2.arrange(DOWN, buff=vert_buff, aligned_edge=LEFT)
 
-        VGroup(colonna1, colonna2).arrange(RIGHT, aligned_edge=UP)
+        colonna3 = VGroup(self.equazione_4, self.equazione_5, self.equazione_6,self.equazione_7, self.sistema_5, self.sistema_6)
+        colonna3.arrange(DOWN, buff=vert_buff, aligned_edge=LEFT)
 
-        self.shift(DOWN)
+        colonna4 = VGroup(self.formula_1, self.formula_2, self.formula_3, self.formula_4, self.risposta)
+        colonna4.arrange(DOWN, buff=vert_buff, aligned_edge=LEFT)
+
+        VGroup(colonna1, colonna2, colonna3, colonna4).arrange(RIGHT, buff=.8, aligned_edge=UP)
+
+        self.shift(1.5 * DOWN)
+
+
+def align_left(new_one, old_one):
+    new_one.move_to(old_one)
+    new_one.shift(old_one.get_left() - old_one.get_center() + new_one.get_center() - new_one.get_left())
+
+
+def crea_riquadro(obj):
+    return SurroundingRectangle(obj, color=YELLOW, fill_opacity=1, fill_color=BLACK, buff=.25, z_index=1)
+
 
 
 class Scene(MovingCameraScene):
@@ -99,9 +160,9 @@ class Scene(MovingCameraScene):
 
         self.wait(.5)
 
-        for _i in range(-8, 8):
-            for _j in range(-5, 5):
-                self.add(Dot(_i * RIGHT + _j * UP, color=DARK_GRAY))
+        # for _i in range(-8, 8):
+        #     for _j in range(-5, 5):
+        #         self.add(Dot(_i * RIGHT + _j * UP, color=DARK_GRAY))
 
         # In un triangolo rettangolo, un cateto misura 7 cm in più dell'altro cateto e l'ipotenusa 14 cm in meno della
         # somma dei due cateti. Determina il perimetro del triangolo.
@@ -165,14 +226,19 @@ class Scene(MovingCameraScene):
 
         self.costruisci_risoluzione()
 
+        self.definizione_variabili()
+
         # Devo scrivere anche le condizioni di esistenza delle incognite: visto che rappresentano le lunghezze dei
         # lati di un triangolo devono essere positive. Posso evitare di scrivere le altre condizioni sui lati perché
         # sono garantite dal teorema di Pitagora.
 
+        self.condizioni_variabili()
+
         # La prima relazione del testo diventa y = x + 7, la seconda relazione diventa z = x + y - 14 e il teorema di
         # Pitagora lo scrivo come z^2 = x^2 + y^2.
-
         # Metto a sistema queste tre equazioni.
+
+        self.trasformazione_equazioni()
 
         # Noto che le prime due equazioni sono di primo grado, mentre la terza equazione (il teorema di Pitagora) è di
         # secondo grado. Il grado del sistema è dato dal prodotto dei gradi delle equazioni, quindi il sistema è di
@@ -182,31 +248,91 @@ class Scene(MovingCameraScene):
         # dice già che y è uguale a x + 7, quindi posso sostituire le y della seconda e della terza equazione con
         # x + 7. Occhio alle parentesi.
 
-        # Semplifico il secondo membro della seconda equazione. Ottengo che z è uguale a 2x - 7. Quindi nella terza
-        # equazione sostituisco la z con 2x - 7.
+        self.sistema_2()
+
+        # Semplifico il secondo membro della seconda equazione. Ottengo che z è uguale a 2x - 7.
+
+        self.sistema_3()
+
+        # Quindi nella terza equazione sostituisco la z con 2x - 7.
+
+        self.sistema_4()
 
         # Bene, adesso la terza equazione contiene solo l'incognita x. Quindi la porto fuori dal sistema e la risolvo.
+        # Svolgo i quadrati di binomio.
 
-        # Svolgo i quadrati di binomio. Ho il termine 49 sia al primo membro, sia al secondo membro: li posso
-        # cancellare. Inoltre al secondo membro posso sommare i due x^2. Porto tutto al primo membro ... e sommo i
+        self.equazione_1()
+
+        # Ho il termine 49 sia al primo membro, sia al secondo membro: li posso
+        # cancellare. Inoltre al secondo membro posso sommare i due x^2.
+
+        self.play(Write(self.risoluzione.equazione_2))
+        self.cut_and_wait()
+
+        # Porto tutto al primo membro ...
+
+        self.play(Write(self.risoluzione.equazione_3))
+        self.cut_and_wait()
+
+        # e sommo i
         # monomi simili.
 
-        # Interessante. L'equazione di secondo grado ha perso il termine noto: è un'equazione spuria. Tutti i
-        # coefficienti sono pari, quindi li posso dividere per 2. Raccolgo una x a fattor comune e applico la legge
-        # dell'annullamento del prodotto. Ottengo x = 0 o x = 21. La prima soluzione non è accettabile perché x, che è
-        # la lunghezza del lato AC, deve essere maggiore di 0. Quindi ho un'unica soluzione accettabile: x = 21.
+        self.play(Write(self.risoluzione.equazione_4))
+        self.cut_and_wait()
 
-        # Ritorno nel sistema e trovo i valori delle altre due incognite. La soluzione accettabile per il problema è
+        # Interessante. L'equazione di secondo grado ha perso il termine noto: è un'equazione spuria. Tutti i
+        # coefficienti sono pari, quindi li posso dividere per 2.
+
+        self.play(Write(self.risoluzione.equazione_5))
+        self.cut_and_wait()
+
+        # Raccolgo una x a fattor comune
+
+        self.play(Write(self.risoluzione.equazione_6))
+        self.cut_and_wait()
+
+        # e applico la legge
+        # dell'annullamento del prodotto. Ottengo x = 0 o x = 21.
+
+        self.play(Write(self.risoluzione.equazione_7))
+        self.cut_and_wait()
+
+        # La prima soluzione non è accettabile perché x, che è
+        # la lunghezza del lato AC, deve essere maggiore di 0.
+
+        self.play(Indicate(self.risoluzione.definizioni.condizione_x))
+
+        # Quindi ho un'unica soluzione accettabile: x = 21.
+
+        # Ritorno nel sistema e trovo i valori delle altre due incognite.
+
+        self.play(Write(self.risoluzione.sistema_5))
+        self.cut_and_wait()
+
+        # La soluzione accettabile per il problema è
         # x = 21, y = 28 e z = 35.
+
+        self.play(Write(self.risoluzione.sistema_6))
+        self.cut_and_wait()
 
         # A questo punto conosco le lunghezze dei lati. E' una terna pitagorica che conosco già: è la terza 3,4,5
         # moltiplicata per 7.
 
+        self.play(Write(self.risoluzione.formula_1))
+        self.play(Write(self.risoluzione.formula_2))
+        self.play(Write(self.risoluzione.formula_3))
+        self.cut_and_wait()
+
         # Per calcolare il perimetro mi basta sommare le lunghezze dei lati.
 
-        # E, nella risposta, devo ricordarmi di aggiungere l'unità di misura.
+        self.play(Write(self.risoluzione.formula_4))
+        self.cut_and_wait()
 
+        # E, nella risposta, devo ricordarmi di aggiungere l'unità di misura.
         # Il perimetro del triangolo è 84 cm.
+
+        self.play(Write(self.risoluzione.risposta))
+        self.cut_and_wait()
 
         self.wait(30)
 
@@ -280,7 +406,7 @@ class Scene(MovingCameraScene):
             VGroup(self.dato_1, self.dato_2, self.richiesta))
 
     def scala_disegno_e_dati(self):
-        self.play(self.gruppo_triangolo_e_dati.animate.scale(.5).move_to(3.5 * LEFT + 3 * UP))
+        self.play(self.gruppo_triangolo_e_dati.animate.scale(.5).move_to(3.5 * LEFT + 2.5 * UP))
         self.cut_and_wait()
 
     def costruzione_primo_grafico(self):
@@ -298,8 +424,8 @@ class Scene(MovingCameraScene):
         self.dati_grafico = self.build_row('BC=AC+7', 'AB=AC+BC-14', buff=buff_schema)
         lati_grafico = self.build_row('AC', 'BC', 'AB', buff=buff_schema)
         self.richiesta_grafico = self.build_row('2P')
-        self.grafico = VGroup(self.dati_grafico, lati_grafico, self.richiesta_grafico).\
-            arrange(DOWN, buff=buff_schema).shift(DOWN)
+        self.grafico = VGroup(self.dati_grafico, lati_grafico, self.richiesta_grafico). \
+            arrange(DOWN, buff=buff_schema).shift(1.3 * DOWN)
 
     def build_row(self, *node_names, buff=1.):
         nodes = []
@@ -343,9 +469,9 @@ class Scene(MovingCameraScene):
         self.play(Write(ab))
         self.cut_and_wait()
 
-        arrow_to_schema_ac = get_down_arrow(ac, richiesta, end_shift=.4*LEFT)
+        arrow_to_schema_ac = get_down_arrow(ac, richiesta, end_shift=.4 * LEFT)
         arrow_to_schema_bc = get_down_arrow(bc, richiesta)
-        arrow_to_schema_ab = get_down_arrow(ab, richiesta, end_shift=.4*RIGHT)
+        arrow_to_schema_ab = get_down_arrow(ab, richiesta, end_shift=.4 * RIGHT)
 
         self.grafico.add(arrow_to_schema_ac)
         self.grafico.add(arrow_to_schema_bc)
@@ -416,6 +542,7 @@ class Scene(MovingCameraScene):
         self.riquadro_bc = SurroundingRectangle(schema_bc, color=BLUE, fill_opacity=.2, buff=.25, corner_radius=.4)
         self.riquadro_ab = SurroundingRectangle(schema_ab, color=BLUE, fill_opacity=.2, buff=.25, corner_radius=.4)
         self.play(Create(self.riquadro_ac), Create(self.riquadro_bc), Create(self.riquadro_ab))
+        self.cut_and_wait()
         self.grafico.add(self.riquadro_ab)
         self.grafico.add(self.riquadro_ac)
         self.grafico.add(self.riquadro_bc)
@@ -462,6 +589,7 @@ class Scene(MovingCameraScene):
         )
 
         self.play(schema_dato_1.animate.move_to(schema_dato_1_bis), schema_dato_2.animate.move_to(schema_dato_2_bis))
+        self.cut_and_wait()
 
         arrow_ac_to_dato_1.clear_updaters()
         arrow_bc_to_dato_1.clear_updaters()
@@ -471,21 +599,54 @@ class Scene(MovingCameraScene):
         self.riquadro_dati.clear_updaters()
 
         self.play(Write(schema_dato_3))
+        self.cut_and_wait()
 
         arrow_ac_to_dato_3 = get_up_arrow(schema_ac, schema_dato_3, end_shift=1 * LEFT)
         arrow_bc_to_dato_3 = get_up_arrow(schema_bc, schema_dato_3)
         arrow_ab_to_dato_3 = get_up_arrow(schema_ab, schema_dato_3, start_shift=.2 * LEFT, end_shift=1 * RIGHT)
 
         self.play(Create(arrow_ac_to_dato_3), Create(arrow_bc_to_dato_3), Create(arrow_ab_to_dato_3))
+        self.cut_and_wait()
 
         self.grafico.add(schema_dato_3, arrow_ac_to_dato_3, arrow_bc_to_dato_3, arrow_ab_to_dato_3)
 
     def scala_grafico(self):
         pass
-        self.play(self.grafico.animate.scale(.5).move_to(3.5 * RIGHT + 2.7 * UP))
+        self.play(self.grafico.animate.scale(.5).move_to(3.5 * RIGHT + 2.2 * UP))
 
     def costruisci_risoluzione(self):
         self.risoluzione = Risoluzione()
-        self.add(self.risoluzione)
+        # self.add(self.risoluzione)
 
+    def definizione_variabili(self):
+        self.play(Write(self.risoluzione.definizioni.definizione_x))
+        self.play(Write(self.risoluzione.definizioni.definizione_y))
+        self.play(Write(self.risoluzione.definizioni.definizione_z))
+        self.cut_and_wait()
+
+    def condizioni_variabili(self):
+        self.play(Write(self.risoluzione.definizioni.condizione_x))
+        self.play(Write(self.risoluzione.definizioni.condizione_y))
+        self.play(Write(self.risoluzione.definizioni.condizione_z))
+        self.cut_and_wait()
+
+    def trasformazione_equazioni(self):
+        self.play(Write(self.risoluzione.sistema_1))
+        self.cut_and_wait()
+
+    def sistema_2(self):
+        self.play(Write(self.risoluzione.sistema_2))
+        self.cut_and_wait()
+
+    def sistema_3(self):
+        self.play(Write(self.risoluzione.sistema_3))
+        self.cut_and_wait()
+
+    def sistema_4(self):
+        self.play(Write(self.risoluzione.sistema_4))
+        self.cut_and_wait()
+
+    def equazione_1(self):
+        self.play(Write(self.risoluzione.equazione_1))
+        self.cut_and_wait()
 
