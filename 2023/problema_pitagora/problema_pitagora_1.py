@@ -156,7 +156,7 @@ def crea_riquadro(obj):
 class Scene(MovingCameraScene):
 
     def construct(self):
-        self.delay = 0
+        self.delay = 30
 
         self.wait(.5)
 

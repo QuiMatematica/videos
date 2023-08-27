@@ -9,7 +9,7 @@ DATA_2 = 'AB=AC+BC-14'
 class Scene(MovingCameraScene):
 
     def construct(self):
-        delay = 0
+        delay = 30
 
         self.wait(.5)
 
