@@ -393,7 +393,7 @@ class Scene(MovingCameraScene):
             self.next_section()
 
     def situazioni_intermedie(self, estremo_sn, estremo_dx):
-        copy_view = estremo_sn.get_view().copy()
+        copy_view = estremo_sn.get_view().copy().set_z_index(10)
         self.add(copy_view)
         self.play(
             estremo_sn.get_view().animate.set_color(GRAY_E),
@@ -408,7 +408,35 @@ class Scene(MovingCameraScene):
 
         copy_view.add_updater(lambda c: move_view(c))
 
-        self.play(tracker.animate.set_value(23))
+        def update_no_pranzo_no_yogurt(old_tex):
+            tex = Tex(str(23 - int(tracker.get_value())) + r"\%", font_size=BASE_FONT_SIZE).move_to(old_tex)
+            old_tex.become(tex)
+
+        def update_no_pranzo_si_yogurt(old_tex):
+            tex = Tex(str(int(tracker.get_value())) + r"\%", font_size=BASE_FONT_SIZE).move_to(old_tex)
+            old_tex.become(tex)
+
+        def update_si_pranzo_no_yogurt(old_tex):
+            tex = Tex(str(10 + int(tracker.get_value())) + r"\%", font_size=BASE_FONT_SIZE).move_to(old_tex)
+            old_tex.become(tex)
+
+        def update_si_pranzo_si_yogurt(old_tex):
+            tex = Tex(str(67 - int(tracker.get_value())) + r"\%", font_size=BASE_FONT_SIZE).move_to(old_tex)
+            old_tex.become(tex)
+
+        no_pranzo_no_yogurt = copy_view[len(copy_view) - 4]
+        no_pranzo_no_yogurt.add_updater(lambda b: update_no_pranzo_no_yogurt(b))
+
+        no_pranzo_si_yogurt = copy_view[len(copy_view) - 3]
+        no_pranzo_si_yogurt.add_updater(lambda b: update_no_pranzo_si_yogurt(b))
+
+        si_pranzo_no_yogurt = copy_view[len(copy_view) - 2]
+        si_pranzo_no_yogurt.add_updater(lambda b: update_si_pranzo_no_yogurt(b))
+
+        si_pranzo_si_yogurt = copy_view[len(copy_view) - 1]
+        si_pranzo_si_yogurt.add_updater(lambda b: update_si_pranzo_si_yogurt(b))
+
+        self.play(tracker.animate.set_value(23), run_time=5, rate_func=linear)
 
         copy_view.clear_updaters()
         self.play(
