@@ -1,6 +1,6 @@
 from manim import *
 
-DELAY = 0
+DELAY = 30
 
 
 class Scene(MovingCameraScene):

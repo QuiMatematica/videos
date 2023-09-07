@@ -5,7 +5,7 @@ from util import TableHelper
 
 SMALL_FONT_SIZE = 20
 BASE_FONT_SIZE = 40
-DELAY = 0
+DELAY = 30
 SCALE_RATIO = 1.5
 
 
@@ -384,6 +384,14 @@ class Scene(MovingCameraScene):
         self.play(cancella_risposta_a.animate.scale(1 / SCALE_RATIO).move_to(testo[1][0]),
                   FadeOut(risposta_a), FadeOut(borders[0]), FadeOut(borders[1]))
         self.cut_and_wait()
+
+        # Rimane solo la risposta D, e visto che è l'unica rimasta potremo già darla per buona senza ulteriori
+        # ragionamenti.
+        # Ma siamo proprio sicuri che sia la risposta giusta?
+
+        risposta_d = testo[1][3].copy()
+        risposta_d.target = testo[1][3].copy().scale(SCALE_RATIO).move_to(3 * DOWN)
+        self.play(MoveToTarget(risposta_d))
 
         self.wait(30)
 
