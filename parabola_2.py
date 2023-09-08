@@ -33,6 +33,7 @@ def get_p_point(h_point, m_point):
     return Dot(p_coord, color=YELLOW, z_index=10)
 
 
+
 class Scene(MovingCameraScene):
 
     def construct(self):
@@ -77,16 +78,18 @@ class Scene(MovingCameraScene):
 
         self.play(Create(h_point), Write(h_point_label))
 
+        h_point.add_updater(lambda point: point.move_to(Y_DIRETTRICE + 6 * np.sin(tracker.get_value()) * RIGHT))
         h_point_label.add_updater(lambda label: label.next_to(h_point, POINT_DISTANCE_RATIO * DL))
-        h_point.add_updater(lambda point: point.move_to(Y_DIRETTRICE + 6 * np.sin(tracker.get_value()) * LEFT))
 
         tracker = ValueTracker()
 
-        self.play(tracker.animate.set_value(10), run_time=5, rate_func=linear)
+        self.play(tracker.animate.set_value(9), run_time=5, rate_func=linear)
         self.cut_and_wait()
 
         h_point.clear_updaters()
         h_point_label.clear_updaters()
+
+        # Costruzione LUNGA START
 
         fh = Line(start=FUOCO.get_center(), end=h_point.get_center(), color=RED, z_index=-1)
         self.play(Create(fh))
@@ -114,6 +117,8 @@ class Scene(MovingCameraScene):
         self.play(Create(pf))
         self.cut_and_wait()
 
+        # Costruzione LUNGA END
+
         segnetti_1 = Tex("//", color=RED).scale(.5)
         segnetti_2 = segnetti_1.copy()
         segnetti_1.rotate(pf.get_angle()).move_to(pf.get_center())
@@ -127,16 +132,63 @@ class Scene(MovingCameraScene):
 
         # Mega animazione START
 
+        self.para_min = h_point.get_center()[0]
+        self.para_max = h_point.get_center()[0]
+
+        # self.para_min = h_point.get_center()[0] - 0.1
+        # self.para_max = h_point.get_center()[0] + 0.1
+
+        parabola = FunctionGraph(
+            lambda t: (t**2 - Y_DIRETTRICE[1]**2 - COORD_FUOCO[1]**2) / (2 * COORD_FUOCO[1] - 2 * Y_DIRETTRICE[1]),
+            color=YELLOW,
+            x_range=[self.para_min, self.para_max]
+        )
+        self.add(parabola)
+
+        def update_perpendicula(old):
+            perp = perpendicular_bisector([FUOCO.get_center(), h_point.get_center()])
+            old.become(Line(start=perp[0], end=perp[1], color=RED, z_index=-1).scale(2))
+
+        def update_parabola(old):
+            x_h = 6 * np.sin(tracker.get_value())
+            if x_h < self.para_min:
+                self.para_min = x_h
+            if x_h > self.para_max:
+                self.para_max = x_h
+            old.become(FunctionGraph(
+                lambda t: (t**2 - Y_DIRETTRICE[1]**2 - COORD_FUOCO[1]**2) / (2 * COORD_FUOCO[1] - 2 * Y_DIRETTRICE[1]),
+                color=YELLOW,
+                x_range=[self.para_min, self.para_max]
+            ))
+
+        h_point.add_updater(lambda point: point.move_to(Y_DIRETTRICE + 6 * np.sin(tracker.get_value()) * RIGHT))
         h_point_label.add_updater(lambda label: label.next_to(h_point, POINT_DISTANCE_RATIO * DL))
-        h_point.add_updater(lambda point: point.move_to(Y_DIRETTRICE + 6 * np.sin(10 + tracker.get_value()) * LEFT))
+        fh.add_updater(lambda old: old.become(Line(start=FUOCO.get_center(), end=h_point.get_center(), color=RED, z_index=-1)))
+        m_point.add_updater(lambda old: old.move_to((FUOCO.get_center() + h_point.get_center()) / 2))
+        m_point_label.add_updater(lambda label: label.next_to(m_point, POINT_DISTANCE_RATIO * DL))
+        pm.add_updater(lambda old: update_perpendicula(old))
+        ph.add_updater(lambda old: old.become(Line(start=h_point.get_center() + 7 * UP, end=h_point.get_center() + 2 * DOWN, color=RED, z_index=-1)))
+        p_point.add_updater(lambda old: old.move_to(get_p_point(h_point, m_point)))
+        p_point_label.add_updater(lambda old: old.next_to(p_point, POINT_DISTANCE_RATIO * DL))
+        pf.add_updater(lambda old: old.become(Line(start=p_point.get_center(), end=FUOCO.get_center(), color=RED, z_index=-1)))
 
-        tracker = ValueTracker()
+        parabola.add_updater(lambda old: update_parabola(old))
 
-        self.play(tracker.animate.set_value(10), run_time=5, rate_func=linear)
+        self.play(tracker.animate.set_value(15.3), run_time=5, rate_func=linear)
         self.cut_and_wait()
 
         h_point.clear_updaters()
         h_point_label.clear_updaters()
+        fh.clear_updaters()
+        m_point.clear_updaters()
+        m_point_label.clear_updaters()
+        pm.clear_updaters()
+        ph.clear_updaters()
+        p_point.clear_updaters()
+        p_point_label.clear_updaters()
+        pf.clear_updaters()
+
+        parabola.clear_updaters()
 
         # Mega animazione END
 
