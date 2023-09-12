@@ -1,6 +1,6 @@
 from manim import *
 
-from qmath import EqSystem
+from qui_matematica.qmath import EqSystem
 
 DATO_1_LABEL = 'BC=AC+7'
 DATO_2_LABEL = 'AB=AC+BC-14'

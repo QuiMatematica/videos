@@ -1,6 +1,6 @@
 from manim import *
 
-from bilancia import Bilancia
+from qui_matematica.bilancia import Bilancia
 
 
 class Scene(MovingCameraScene):

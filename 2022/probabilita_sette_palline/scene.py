@@ -1,6 +1,6 @@
 from manim import *
 
-from object import Ball
+from qui_matematica.object import Ball
 
 
 class Scene(MovingCameraScene):

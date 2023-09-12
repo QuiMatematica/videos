@@ -1,7 +1,7 @@
 from manim import *
 
-from qmath import PascalTriangle
-from util import set_color, FromFormulaToFormula
+from qui_matematica.qmath import PascalTriangle
+from qui_matematica.util import set_color
 
 
 class Scene(MovingCameraScene):

@@ -1,6 +1,6 @@
 from manim import *
 
-from object import Coin, CROSS, HEAD
+from qui_matematica.object import Coin, CROSS, HEAD
 
 
 class Scene(MovingCameraScene):

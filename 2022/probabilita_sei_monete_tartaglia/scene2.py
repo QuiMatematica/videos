@@ -1,8 +1,6 @@
-from manim import *
-
-from qmath import PascalTriangle
-from object import *
-from util import *
+from qui_matematica.qmath import PascalTriangle
+from qui_matematica.object import *
+from qui_matematica.util import *
 
 
 class Scene(MovingCameraScene):

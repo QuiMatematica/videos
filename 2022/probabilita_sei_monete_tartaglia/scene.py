@@ -1,7 +1,5 @@
-from manim import *
-
-from object import *
-from util import *
+from qui_matematica.object import *
+from qui_matematica.util import *
 
 
 class Scene(MovingCameraScene):

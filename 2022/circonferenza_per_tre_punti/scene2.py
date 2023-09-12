@@ -1,4 +1,4 @@
-from qmath import sqrt, EqSystem
+from qui_matematica.qmath import sqrt, EqSystem
 
 from manim import *
 

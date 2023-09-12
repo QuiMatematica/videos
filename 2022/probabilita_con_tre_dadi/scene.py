@@ -1,6 +1,6 @@
 from manim import *
 
-from object.dice import Dice
+from qui_matematica.object import Dice
 
 
 class Riempi(MovingCameraScene):

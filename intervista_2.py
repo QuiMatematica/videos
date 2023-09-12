@@ -1,7 +1,7 @@
 from manim import *
 
-from qpercentage import Percentage
-from util import TableHelper
+from qui_matematica.qpercentage import Percentage
+from qui_matematica.util import TableHelper
 
 SMALL_FONT_SIZE = 20
 BASE_FONT_SIZE = 40

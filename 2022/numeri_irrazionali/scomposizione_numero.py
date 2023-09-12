@@ -1,6 +1,6 @@
 from manim import *
 
-from util import TableHelper
+from qui_matematica.util import TableHelper
 
 
 class Scene(MovingCameraScene):

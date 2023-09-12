@@ -1,6 +1,6 @@
 from manim import *
 
-import util
+from qui_matematica import util
 
 
 class Scene(MovingCameraScene):

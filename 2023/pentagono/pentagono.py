@@ -1,6 +1,6 @@
 from manim import *
 
-from qgeo import AngleWithArc
+from qui_matematica.qgeo import AngleWithArc
 
 DELAY = 30
 LEFT_CENTER = 3.5 * LEFT

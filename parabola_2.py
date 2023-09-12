@@ -1,37 +1,10 @@
 from manim import *
 
+from qui_matematica.piano_cartesiano.punto import Punto
+from qui_matematica.piano_cartesiano.retta import RettaParallelaAsseX
+from qui_matematica.piano_cartesiano.segmento import Segmento, CongruenzaSegmenti
+
 DELAY = 1
-
-LINE_DISTANCE_RATIO = .5
-POINT_DISTANCE_RATIO = LINE_DISTANCE_RATIO * .7
-
-COORD_FUOCO = ORIGIN
-Y_DIRETTRICE = 2 * DOWN
-
-FUOCO = Dot(COORD_FUOCO)
-DIRETTRICE = Line(start=8 * LEFT + Y_DIRETTRICE, end=8 * RIGHT + Y_DIRETTRICE)
-
-ASSE = Line(start=4 * UP, end=4 * DOWN, color=WHITE)
-VERTICE = Dot(Y_DIRETTRICE / 2, color=YELLOW)
-D = Dot(Y_DIRETTRICE)
-
-
-def get_p_point(h_point, m_point):
-    h_coord = h_point.get_center()
-    m_coord = m_point.get_center()
-
-    x_h = h_coord[0]
-    y_h = h_coord[1]
-
-    x_m = m_coord[0]
-    y_m = m_coord[1]
-
-    x_p = x_h
-    y_p = (x_h - x_m) * (x_h - x_m) / (y_m - y_h) + y_m
-    p_coord = [x_p, y_p, 0]
-
-    return Dot(p_coord, color=YELLOW, z_index=10)
-
 
 
 class Scene(MovingCameraScene):
@@ -39,47 +12,68 @@ class Scene(MovingCameraScene):
     def construct(self):
         self.wait(.5)
 
-        self.play(Create(FUOCO))
-        self.play(Write(MathTex("F").next_to(FUOCO, POINT_DISTANCE_RATIO * DL)))
+        fuoco = Punto(0, 0, nome="F")
+        direttrice = RettaParallelaAsseX(-2, nome="d")
 
-        self.play(Create(DIRETTRICE))
-        self.play(Write(MathTex("d").next_to(DIRETTRICE, LINE_DISTANCE_RATIO * DOWN).shift(6.8 * LEFT)))
+        asse = direttrice.perpendicolare_per_punto(fuoco, nome="a", color=WHITE)
 
-        self.cut_and_wait()
+        punto_d = direttrice.intersezione(asse, nome="D")
+        vertice = Segmento(fuoco, punto_d).punto_medio(nome="V", color=YELLOW)
 
-        self.play(Create(ASSE))
-        self.play(Write(MathTex("a").next_to(ASSE, LINE_DISTANCE_RATIO * LEFT).shift(3.8 * UP)))
+        legenda = VGroup(
+            Tex("$F$: fuoco"),
+            Tex("$d$: direttrice"),
+            Tex("$a$: asse"),
+            Tex("$V$: vertice")
+        ).arrange(DOWN, aligned_edge=LEFT).to_edge(DR)
 
-        self.cut_and_wait()
+        self.play(Create(fuoco))
+        self.play(Write(fuoco.get_label()))
 
-        self.play(Create(D))
-        self.play(Write(MathTex("D").next_to(D, POINT_DISTANCE_RATIO * DL)))
+        self.play(Write(legenda[0]))
 
-        self.cut_and_wait()
+        self.play(Create(direttrice))
+        self.play(Write(direttrice.get_label()))
 
-        self.play(Create(VERTICE))
-        self.play(Write(MathTex("V", color=YELLOW).next_to(VERTICE, POINT_DISTANCE_RATIO * DL)))
-
-        self.cut_and_wait()
-
-        segnetti_1 = Tex("//", color=RED).scale(.5).rotate(PI / 2).move_to((FUOCO.get_center() + VERTICE.get_center()) / 2)
-        segnetti_2 = segnetti_1.copy().move_to((D.get_center() + VERTICE.get_center()) / 2)
-
-        self.play(Write(segnetti_1), Write(segnetti_2))
+        self.play(Write(legenda[1]))
 
         self.cut_and_wait()
 
-        self.play(FadeOut(segnetti_1), FadeOut(segnetti_2))
+        self.play(Create(asse))
+        self.play(Write(asse.get_label()))
+
+        self.play(Write(legenda[2]))
 
         self.cut_and_wait()
 
-        h_point = D.copy().set_color(RED)
-        h_point_label = MathTex("H", color=RED).next_to(h_point, POINT_DISTANCE_RATIO * DL)
+        self.play(Create(punto_d))
+        self.play(Write(punto_d.get_label()))
+
+        self.cut_and_wait()
+
+        self.play(Create(vertice))
+        self.play(Write(vertice.get_label()))
+
+        self.play(Write(legenda[3]))
+
+        self.cut_and_wait()
+
+        congruenza = CongruenzaSegmenti(Segmento(fuoco, vertice), Segmento(vertice, punto_d), "//", color=RED)
+        self.play(Write(congruenza))
+
+        self.cut_and_wait()
+
+        self.play(FadeOut(congruenza), FadeOut(legenda))
+
+        self.cut_and_wait()
+
+        h_point = Punto(punto_d.get_ascissa(), punto_d.get_ordinata(), "H", color=RED)
+        h_point_label = h_point.get_label()
 
         self.play(Create(h_point), Write(h_point_label))
 
-        h_point.add_updater(lambda point: point.move_to(Y_DIRETTRICE + 6 * np.sin(tracker.get_value()) * RIGHT))
-        h_point_label.add_updater(lambda label: label.next_to(h_point, POINT_DISTANCE_RATIO * DL))
+        h_point.add_updater(lambda point: point.sposta_in(6 * np.sin(tracker.get_value()), point.get_ordinata()))
+        h_point_label.add_updater(lambda label: label.move_to(h_point.get_label().get_center()))
 
         tracker = ValueTracker()
 
@@ -91,43 +85,54 @@ class Scene(MovingCameraScene):
 
         # Costruzione LUNGA START
 
-        fh = Line(start=FUOCO.get_center(), end=h_point.get_center(), color=RED, z_index=-1)
+        fh = Segmento(fuoco, h_point, color=RED, z_index=-1)
         self.play(Create(fh))
         self.cut_and_wait()
 
-        m_point = Dot((FUOCO.get_center() + h_point.get_center()) / 2, color=RED)
-        m_point_label = MathTex("M", color=RED).next_to(m_point, POINT_DISTANCE_RATIO * DL)
+        m_point = fh.punto_medio(nome="M", color=RED)
+        m_point_label = m_point.get_label()
         self.play(Create(m_point), Write(m_point_label))
         self.cut_and_wait()
 
-        perp = perpendicular_bisector([FUOCO.get_center(), h_point.get_center()])
-        pm = Line(start=perp[0], end=perp[1], color=RED, z_index=-1).scale(2)
+        pm = fh.asse(color=RED, z_index=-1)
         self.play(Create(pm))
         self.cut_and_wait()
 
-        ph = Line(start=h_point.get_center() + 7 * UP, end=h_point.get_center() + 2 * DOWN, color=RED, z_index=-1)
+        ph = direttrice.perpendicolare_per_punto(h_point, color=RED, z_index=-1)
         self.play(Create(ph))
         self.cut_and_wait()
 
-        p_point = get_p_point(h_point, m_point)
-        p_point_label = MathTex("P", color=YELLOW, z_index=10).next_to(p_point, POINT_DISTANCE_RATIO * DL)
+        p_point = ph.intersezione(pm, "P", color=YELLOW, z_index=10)
+        p_point_label = p_point.get_label()
         self.play(Create(p_point), Write(p_point_label))
 
-        pf = Line(start=p_point.get_center(), end=FUOCO.get_center(), color=RED, z_index=-1)
+        pf = Segmento(fuoco, p_point, color=RED, z_index=-1)
         self.play(Create(pf))
         self.cut_and_wait()
 
         # Costruzione LUNGA END
 
-        segnetti_1 = Tex("//", color=RED).scale(.5)
-        segnetti_2 = segnetti_1.copy()
-        segnetti_1.rotate(pf.get_angle()).move_to(pf.get_center())
-        segnetti_2.rotate(ph.get_angle()).move_to((h_point.get_center() + p_point.get_center()) / 2)
-
-        self.play(Write(segnetti_1), Write(segnetti_2))
+        triangolo_fmp = Polygon(fuoco.get_center(), m_point.get_center(), p_point.get_center(), fill_color=GREEN, fill_opacity=1, z_index=-20)
+        triangolo_hmp = Polygon(h_point.get_center(), m_point.get_center(), p_point.get_center(), fill_color=BLUE, fill_opacity=1, z_index=-20)
+        self.play(Create(triangolo_fmp), Create(triangolo_hmp))
         self.cut_and_wait()
 
-        self.play(FadeOut(segnetti_1), FadeOut(segnetti_2))
+        angolo_retto_1 = RightAngle(pm, fh, color=RED, length=0.3, quadrant=(1, -1))
+        angolo_retto_2 = RightAngle(pm, fh, color=RED, length=0.3, quadrant=(1, 1))
+        self.play(Create(angolo_retto_1), Create(angolo_retto_2))
+        self.cut_and_wait()
+
+        congruenza_cateti = CongruenzaSegmenti(
+            Segmento(fuoco, m_point), Segmento(m_point, h_point), "/", color=RED)
+        self.play(Write(congruenza_cateti))
+        self.cut_and_wait()
+
+        congruenza = CongruenzaSegmenti(pf, Segmento(p_point, h_point), "//", color=RED)
+        self.play(Write(congruenza))
+        self.cut_and_wait()
+
+        self.play(FadeOut(congruenza), FadeOut(congruenza_cateti), FadeOut(angolo_retto_1), FadeOut(angolo_retto_2),
+                  FadeOut(triangolo_fmp), FadeOut(triangolo_hmp))
         self.cut_and_wait()
 
         # Mega animazione START
@@ -135,19 +140,13 @@ class Scene(MovingCameraScene):
         self.para_min = h_point.get_center()[0]
         self.para_max = h_point.get_center()[0]
 
-        # self.para_min = h_point.get_center()[0] - 0.1
-        # self.para_max = h_point.get_center()[0] + 0.1
-
         parabola = FunctionGraph(
-            lambda t: (t**2 - Y_DIRETTRICE[1]**2 - COORD_FUOCO[1]**2) / (2 * COORD_FUOCO[1] - 2 * Y_DIRETTRICE[1]),
+            lambda t: (t ** 2 - direttrice.get_ordinata() ** 2 - fuoco.get_ascissa() ** 2) / (
+                        2 * fuoco.get_ascissa() - 2 * direttrice.get_ordinata()),
             color=YELLOW,
             x_range=[self.para_min, self.para_max]
         )
         self.add(parabola)
-
-        def update_perpendicula(old):
-            perp = perpendicular_bisector([FUOCO.get_center(), h_point.get_center()])
-            old.become(Line(start=perp[0], end=perp[1], color=RED, z_index=-1).scale(2))
 
         def update_parabola(old):
             x_h = 6 * np.sin(tracker.get_value())
@@ -156,21 +155,22 @@ class Scene(MovingCameraScene):
             if x_h > self.para_max:
                 self.para_max = x_h
             old.become(FunctionGraph(
-                lambda t: (t**2 - Y_DIRETTRICE[1]**2 - COORD_FUOCO[1]**2) / (2 * COORD_FUOCO[1] - 2 * Y_DIRETTRICE[1]),
+                lambda t: (t ** 2 - direttrice.get_ordinata() ** 2 - fuoco.get_ascissa() ** 2) / (
+                            2 * fuoco.get_ascissa() - 2 * direttrice.get_ordinata()),
                 color=YELLOW,
                 x_range=[self.para_min, self.para_max]
             ))
 
-        h_point.add_updater(lambda point: point.move_to(Y_DIRETTRICE + 6 * np.sin(tracker.get_value()) * RIGHT))
-        h_point_label.add_updater(lambda label: label.next_to(h_point, POINT_DISTANCE_RATIO * DL))
-        fh.add_updater(lambda old: old.become(Line(start=FUOCO.get_center(), end=h_point.get_center(), color=RED, z_index=-1)))
-        m_point.add_updater(lambda old: old.move_to((FUOCO.get_center() + h_point.get_center()) / 2))
-        m_point_label.add_updater(lambda label: label.next_to(m_point, POINT_DISTANCE_RATIO * DL))
-        pm.add_updater(lambda old: update_perpendicula(old))
-        ph.add_updater(lambda old: old.become(Line(start=h_point.get_center() + 7 * UP, end=h_point.get_center() + 2 * DOWN, color=RED, z_index=-1)))
-        p_point.add_updater(lambda old: old.move_to(get_p_point(h_point, m_point)))
-        p_point_label.add_updater(lambda old: old.next_to(p_point, POINT_DISTANCE_RATIO * DL))
-        pf.add_updater(lambda old: old.become(Line(start=p_point.get_center(), end=FUOCO.get_center(), color=RED, z_index=-1)))
+        h_point.add_updater(lambda point: point.sposta_in(6 * np.sin(tracker.get_value()), point.get_ordinata()))
+        h_point_label.add_updater(lambda label: label.move_to(h_point.get_label().get_center()))
+        fh.add_updater(lambda old: old.become(Segmento(fuoco, h_point, color=RED, z_index=-1)))
+        m_point.add_updater(lambda old: old.move_to(fh.punto_medio().get_center()))
+        m_point_label.add_updater(lambda label: label.move_to(m_point.get_label().get_center()))
+        pm.add_updater(lambda old: old.diventa(fh.asse(color=RED, z_index=-1)))
+        ph.add_updater(lambda old: old.diventa(direttrice.perpendicolare_per_punto(h_point, color=RED, z_index=-1)))
+        p_point.add_updater(lambda old: old.move_to(ph.intersezione(pm).get_center()))
+        p_point_label.add_updater(lambda old: old.move_to(p_point.get_label().get_center()))
+        pf.add_updater(lambda old: old.become(Segmento(fuoco, p_point, color=RED, z_index=-1)))
 
         parabola.add_updater(lambda old: update_parabola(old))
 
@@ -198,4 +198,3 @@ class Scene(MovingCameraScene):
         if DELAY > 0:
             self.wait(DELAY)
             self.next_section()
-

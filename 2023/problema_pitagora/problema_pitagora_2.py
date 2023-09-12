@@ -1,6 +1,4 @@
-from manim import *
-
-from qproblem import *
+from qui_matematica.qproblem import *
 
 REQUEST = '2P'
 DATA_1 = 'BC=AC+7'

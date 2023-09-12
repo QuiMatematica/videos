@@ -1,7 +1,5 @@
 from manim import *
 
-import util
-
 
 class Scene(MovingCameraScene):
 
