@@ -4,7 +4,7 @@ from qui_matematica.piano_cartesiano.punto import Punto
 from qui_matematica.piano_cartesiano.retta import RettaParallelaAsseX
 from qui_matematica.piano_cartesiano.segmento import Segmento
 
-DELAY = 1
+DELAY = 30
 
 
 class Scene(MovingCameraScene):

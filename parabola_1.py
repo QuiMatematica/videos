@@ -1,6 +1,6 @@
 from manim import *
 
-DELAY = 1
+DELAY = 30
 
 A = 2 * UP
 B = 2 * DOWN
@@ -53,8 +53,9 @@ class Scene(MovingCameraScene):
         point_a = Dot(A)
         point_b = Dot(B)
 
-        self.play(Create(point_a))
-        self.play(Create(point_b))
+        self.play(Create(point_a), Write(MathTex("A").next_to(point_a, RIGHT)))
+        lettera_b = MathTex("B").next_to(point_b, RIGHT)
+        self.play(Create(point_b), Write(lettera_b))
         self.cut_and_wait()
 
         axes = get_axes(0)
@@ -64,7 +65,13 @@ class Scene(MovingCameraScene):
         dist_bc = get_dist_bc(0)
         dist_ad = get_dist_ad(0)
         dist_bd = get_dist_bd(0)
-        self.add(axes, point_c, point_d, dist_ac, dist_ad, dist_bc, dist_bd)
+        self.play(Create(axes),
+                  Create(point_c),
+                  Create(point_d),
+                  Create(dist_ac),
+                  Create(dist_ad),
+                  Create(dist_bc),
+                  Create(dist_bd))
         self.cut_and_wait()
 
         tracker = ValueTracker(0)
@@ -95,6 +102,7 @@ class Scene(MovingCameraScene):
         axes.add_updater(lambda old: old.become(get_parable(tracker.get_value())))
         point_b.add_updater(lambda old: old.become(get_directive(tracker.get_value())))
 
+        self.remove(lettera_b)
         self.play(tracker.animate.set_value(8), run_time=5, rate_func=linear)
 
         self.wait(30)

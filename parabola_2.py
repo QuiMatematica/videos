@@ -4,7 +4,7 @@ from qui_matematica.piano_cartesiano.punto import Punto
 from qui_matematica.piano_cartesiano.retta import RettaParallelaAsseX
 from qui_matematica.piano_cartesiano.segmento import Segmento, CongruenzaSegmenti
 
-DELAY = 1
+DELAY = 30
 
 
 class Scene(MovingCameraScene):
@@ -175,20 +175,6 @@ class Scene(MovingCameraScene):
         parabola.add_updater(lambda old: update_parabola(old))
 
         self.play(tracker.animate.set_value(15.3), run_time=5, rate_func=linear)
-        self.cut_and_wait()
-
-        h_point.clear_updaters()
-        h_point_label.clear_updaters()
-        fh.clear_updaters()
-        m_point.clear_updaters()
-        m_point_label.clear_updaters()
-        pm.clear_updaters()
-        ph.clear_updaters()
-        p_point.clear_updaters()
-        p_point_label.clear_updaters()
-        pf.clear_updaters()
-
-        parabola.clear_updaters()
 
         # Mega animazione END
 
