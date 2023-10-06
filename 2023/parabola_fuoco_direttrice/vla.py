@@ -6,7 +6,7 @@ class Scene(MovingCameraScene):
     def construct(self):
         self.wait(.5)
 
-        vla = ImageMobject('img/vla.jpeg')
+        vla = ImageMobject('../../img/vla.jpeg')
 
         self.add(vla)
 

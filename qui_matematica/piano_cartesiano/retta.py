@@ -10,28 +10,6 @@ class Retta(Line):
     pass
 
 
-class RettaParallelaAsseX(Retta):
-
-    def __init__(self, ordinata, nome=None, x_range=None, **kwargs):
-        self.ordinata = ordinata
-        self.nome = nome
-        if x_range is None:
-            x_range = np.array([-config["frame_x_radius"], config["frame_x_radius"]])
-        super().__init__(start=[x_range[0], ordinata, 0], end=[x_range[1], ordinata, 0], **kwargs)
-
-    def perpendicolare_per_punto(self, punto: Punto, nome=None, **kwargs):
-        return RettaParallelaAsseY(punto.get_ascissa(), nome, **kwargs)
-
-    def intersezione(self, retta: Retta, nome=None, **kwargs):
-        if isinstance(retta, RettaParallelaAsseY):
-            return Punto(retta.get_ascissa(), self.get_ordinata(), nome, **kwargs)
-        else:
-            raise NotImplementedError
-
-    def get_label(self):
-        return MathTex(self.nome).next_to(self.get_start(), LINE_DISTANCE_RATIO * DR)
-
-
 class RettaParallelaAsseY(Retta):
 
     def __init__(self, ascissa, nome=None, y_range=None, **kwargs):
@@ -79,3 +57,28 @@ class RettaEsplicita(Retta):
         self.coefficiente_angolare = retta.coefficiente_angolare
         self.ordinata_all_origine = retta.ordinata_all_origine
         self.become(retta)
+
+
+class RettaParallelaAsseX(RettaEsplicita):
+
+    def __init__(self, ordinata, nome=None, x_range=None, **kwargs):
+        self.ordinata = ordinata
+        super().__init__(0, ordinata, nome=nome, x_range=x_range)
+
+    def perpendicolare_per_punto(self, punto: Punto, nome=None, **kwargs):
+        return RettaParallelaAsseY(punto.get_ascissa(), nome, **kwargs)
+
+    def intersezione(self, retta: Retta, nome=None, **kwargs):
+        if isinstance(retta, RettaParallelaAsseY):
+            return Punto(retta.get_ascissa(), self.get_ordinata(), nome, **kwargs)
+        else:
+            raise NotImplementedError
+
+    def get_label(self):
+        return MathTex(self.nome).next_to(self.get_start(), LINE_DISTANCE_RATIO * DR)
+
+
+def retta_per_due_punti(punto_a: Punto, punto_b: Punto):
+    coefficiente_angolare = (punto_a.get_ordinata() - punto_b.get_ordinata()) / (punto_a.get_ascissa() - punto_b.get_ascissa())
+    ordinata_all_origine = punto_a.get_ordinata() - coefficiente_angolare * punto_a.get_ascissa()
+    return RettaEsplicita(coefficiente_angolare, ordinata_all_origine)
