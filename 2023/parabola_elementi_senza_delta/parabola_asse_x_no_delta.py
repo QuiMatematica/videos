@@ -8,8 +8,6 @@ DELAY = 30
 class Scene(MovingCameraScene):
 
     def construct(self):
-        self.wait(.5)
-
         a = 1
         b = -2
         c = -3
@@ -46,25 +44,38 @@ class Scene(MovingCameraScene):
         intersezione_asse_y = Dot(riferimento.coords_to_point(0, -3), color=colore_parabola)
 
         equazione = MathTex(r"y = x^2 - 2x - 3", color=colore_parabola).shift(3*RIGHT).shift(3.2*UP)
-        self.play(Write(equazione))
-        self.cut_and_wait()
+        delta = MathTex(r"\Delta = 16").next_to(equazione, DOWN).shift(2 * RIGHT)
+        self.add(equazione)
+        self.add(asse)
+        self.add(vertice)
+        self.add(delta)
 
         testo = VGroup(
-            Tex("ASSE:"),
-            MathTex("y=ax^2 + bx + c"),
-            MathTex(r"\text{asse: } &x = -\dfrac{b}{2a} \\ {{ &x = -\dfrac{-2}{2 \cdot 1} }} \\ &x = 1"),
+            Tex("INTERSEZIONI ASSE x:"),
+            MathTex(r"\begin{cases} y = x^2 - 2x - 3 \\ y = 0 \\ \end{cases}"),
+            MathTex(r"x^2 - 2x - 3 = 0"),
+            MathTex(r"(x + 1)(x - 3) = 0"),
+            MathTex(r"x + 1 = 0 \quad\lor\quad x - 3 = 0"),
+            MathTex(r"x = -1 \quad\lor\quad x = 3"),
+            MathTex(r"(-1, 0) \quad\quad (3, 0)"),
             ).arrange(DOWN, buff=.5).shift(3 * LEFT)
+        # self.add(testo)
+
         self.play(Write(testo[0]))
         self.cut_and_wait()
         self.play(Write(testo[1]))
         self.cut_and_wait()
-        self.play(Write(testo[2][0]))
+        self.play(Write(testo[2]))
         self.cut_and_wait()
-        self.play(Write(testo[2][1]))
+        self.play(Write(testo[3]))
         self.cut_and_wait()
-        self.play(Write(testo[2][2]))
+        self.play(Write(testo[4]))
         self.cut_and_wait()
-        self.play(Create(asse))
+        self.play(Write(testo[5]))
+        self.cut_and_wait()
+        self.play(Create(intersezione_asse_x_1), Create(intersezione_asse_x_2), Write(testo[6]))
+        self.play(Flash(intersezione_asse_x_1), Flash(intersezione_asse_x_2))
+        self.play(Flash(intersezione_asse_x_1), Flash(intersezione_asse_x_2))
 
         self.wait(30)
 
