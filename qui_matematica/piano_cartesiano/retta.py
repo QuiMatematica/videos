@@ -63,7 +63,7 @@ class RettaParallelaAsseX(RettaEsplicita):
 
     def __init__(self, ordinata, nome=None, x_range=None, **kwargs):
         self.ordinata = ordinata
-        super().__init__(0, ordinata, nome=nome, x_range=x_range)
+        super().__init__(0, ordinata, nome=nome, x_range=x_range, **kwargs)
 
     def perpendicolare_per_punto(self, punto: Punto, nome=None, **kwargs):
         return RettaParallelaAsseY(punto.get_ascissa(), nome, **kwargs)
@@ -75,7 +75,7 @@ class RettaParallelaAsseX(RettaEsplicita):
             raise NotImplementedError
 
     def get_label(self):
-        return MathTex(self.nome).next_to(self.get_start(), LINE_DISTANCE_RATIO * DR)
+        return MathTex(self.nome, color=self.get_color()).next_to(self.get_start(), LINE_DISTANCE_RATIO * DR)
 
 
 def retta_per_due_punti(punto_a: Punto, punto_b: Punto):
