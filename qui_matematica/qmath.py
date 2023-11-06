@@ -14,7 +14,8 @@ class EqSystem(VMobject, ABC):
 
         self.bracket = MathTex(r"\{")
         self.bracket.scale(2)
-        self.bracket.stretch_to_fit_height(self.eqs.height + 2 * MED_SMALL_BUFF)
+        # self.bracket.stretch_to_fit_height(self.eqs.height + 2 * MED_SMALL_BUFF)
+        self.bracket.stretch_to_fit_height(self.eqs.height)
         self.bracket.next_to(self.eqs, LEFT, MED_SMALL_BUFF)
         self.add(self.bracket, self.eqs)
         self.center()

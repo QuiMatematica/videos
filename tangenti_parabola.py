@@ -1,6 +1,8 @@
 from manim import *
 
-DELAY = 1
+from qui_matematica.qmath import EqSystem
+
+DELAY = 30
 
 
 class Scene(MovingCameraScene):
@@ -32,7 +34,7 @@ class Scene(MovingCameraScene):
         self.play(Write(equazione_parabola))
         self.cut_and_wait()
 
-        equazione_asse = MathTex(r"\text{asse: } x = \dfrac{-b}{2a} = \dfrac{4}{2} = 2").next_to(equazione_parabola, DOWN, buff=1)
+        equazione_asse = MathTex(r"\text{asse: } x = \dfrac{-b}{2a} = \dfrac{4}{2} = {{ 2 }}").next_to(equazione_parabola, DOWN, buff=1)
         self.play(Write(equazione_asse))
         self.cut_and_wait()
 
@@ -40,11 +42,34 @@ class Scene(MovingCameraScene):
         self.play(Create(asse))
         self.cut_and_wait()
 
-        coordinate_vertice = MathTex(r"x_V &= 2 \\ "
-                                     r"y_V &= x_V^2 - 4x_V + 3 = \\ "
-                                     r"&=2^2 - 4 \cdot 2 + 3 = \\ "
-                                     r"&= -1").next_to(equazione_asse, DOWN, buff=1)
-        self.play(Write(coordinate_vertice))
+        coordinate_vertice = VGroup(
+            MathTex(r"x_V = {{ 2 }}"),
+            MathTex(r"y_V = x_V^2 - 4x_V + 3 ="),
+            MathTex(r"= {{ 2 }} ^2 - 4 \cdot {{ 2 }} + 3 ="),
+            MathTex(r"= -1")
+        ).arrange(DOWN, aligned_edge=LEFT).next_to(equazione_asse, DOWN, buff=1)
+        coordinate_vertice[2].shift(.8*RIGHT)
+        coordinate_vertice[3].shift(.8*RIGHT)
+        clone1 = equazione_asse[1].copy()
+        clone1.target = coordinate_vertice[0][1]
+        self.play(Write(coordinate_vertice[0][0]), MoveToTarget(clone1))
+        self.add(coordinate_vertice[0])
+        self.remove(clone1)
+        self.play(Write(coordinate_vertice[1]))
+        clone1 = coordinate_vertice[0][1].copy()
+        clone1.target = coordinate_vertice[2][1]
+        clone2 = coordinate_vertice[0][1].copy()
+        clone2.target = coordinate_vertice[2][3]
+        self.play(
+            Write(coordinate_vertice[2][0]),
+            Write(coordinate_vertice[2][2]),
+            Write(coordinate_vertice[2][4]),
+            MoveToTarget(clone1),
+            MoveToTarget(clone2)
+        )
+        self.add(coordinate_vertice)
+        self.remove(clone1, clone2)
+        self.play(Write(coordinate_vertice[3]))
         self.cut_and_wait()
 
         vertice = Dot(riferimento.coords_to_point(2, -1), color=YELLOW)
@@ -55,13 +80,21 @@ class Scene(MovingCameraScene):
         self.play(FadeOut(equazione_asse), FadeOut(coordinate_vertice))
 
         intersezioni_asse_x = VGroup(
-            MathTex(r"\begin{cases} y=x^2 - 4x + 3 \\ y=0 \end{cases}"),
-            MathTex(r"x^2 - 4x + 3 = 0"),
+            EqSystem(MathTex(r"y= {{ x^2 - 4x + 3 }}"), MathTex(r"y = {{ 0 }}")),
+            MathTex(r"x^2 - 4x + 3 {{ = }} 0"),
             MathTex(r"(x-1)(x-3) = 0"),
             MathTex(r"x = 1 \lor x = 3")
         ).arrange(DOWN).next_to(equazione_parabola, DOWN, buff=1)
-        for linea in intersezioni_asse_x:
-            self.play(Write(linea))
+        self.play(Write(intersezioni_asse_x[0]))
+        clone1 = intersezioni_asse_x[0].eqs[0][1].copy()
+        clone1.target = intersezioni_asse_x[1][0]
+        clone2 = intersezioni_asse_x[0].eqs[1][1].copy()
+        clone2.target = intersezioni_asse_x[1][2]
+        self.play(Write(intersezioni_asse_x[1][1]), MoveToTarget(clone1), MoveToTarget(clone2))
+        self.add(intersezioni_asse_x[1])
+        self.remove(clone1, clone2)
+        self.play(Write(intersezioni_asse_x[2]))
+        self.play(Write(intersezioni_asse_x[3]))
 
         int_x_1 = Dot(riferimento.coords_to_point(1, 0), color=YELLOW)
         int_x_2 = Dot(riferimento.coords_to_point(3, 0), color=YELLOW)
@@ -71,7 +104,7 @@ class Scene(MovingCameraScene):
         self.play(FadeOut(intersezioni_asse_x))
 
         intersezioni_asse_y = VGroup(
-            MathTex(r"\begin{cases} y=x^2 - 4x + 3 \\ x=0 \end{cases}"),
+            EqSystem(MathTex(r"y=x^2 - 4x + 3"), MathTex(r"x=0")),
             MathTex(r"y = 3")
         ).arrange(DOWN).next_to(equazione_parabola, DOWN, buff=1)
         for linea in intersezioni_asse_y:
@@ -114,14 +147,29 @@ class Scene(MovingCameraScene):
         self.play(Write(fascio_di_rette_4))
         self.cut_and_wait()
 
-        intersezione_fascio = MathTex(r"\begin{cases} y=x^2 - 4x + 3 \\ y = mx - 2m - 2 \end{cases}").next_to(fascio_di_rette_4, DOWN, buff=1)
-        self.play(Write(intersezione_fascio))
+        intersezione_fascio = EqSystem(
+            MathTex(r"y= {{ x^2 - 4x + 3 }}"),
+            MathTex(r"y = {{ mx - 2m - 2 }}")
+        ).next_to(fascio_di_rette_4, DOWN, buff=1)
+        clone1 = equazione_parabola.copy()
+        clone1.target = intersezione_fascio.eqs[0]
+        clone2 = fascio_di_rette_4.copy()
+        clone2.target = intersezione_fascio.eqs[1]
+        self.play(Write(intersezione_fascio.bracket), MoveToTarget(clone1), MoveToTarget(clone2))
+        self.add(intersezione_fascio)
+        self.remove(clone1, clone2)
         self.play(FadeOut(fascio_di_rette_1), FadeOut(fascio_di_rette_2), FadeOut(fascio_di_rette_3), FadeOut(fascio_di_rette_4))
         self.play(intersezione_fascio.animate.next_to(equazione_parabola, DOWN, buff=1))
 
-        equazione_risolvente_1 = MathTex(r"x^2 - 4x + 3 = mx - 2m - 2").next_to(intersezione_fascio, DOWN, buff=1)
-        equazione_risolvente_2 = MathTex(r"x^2 - (m + 4)x + 2m + 5 = 0").next_to(equazione_risolvente_1, DOWN)
-        self.play(Write(equazione_risolvente_1))
+        equazione_risolvente_1 = MathTex(r"x^2 - 4x + 3 {{ = }} mx - 2m - 2").next_to(intersezione_fascio, DOWN, buff=1)
+        equazione_risolvente_2 = MathTex(r"x^2 - {{ (m + 4) }} x + {{ 2m + 5 }} = 0").next_to(equazione_risolvente_1, DOWN)
+        clone1 = intersezione_fascio.eqs[0][1].copy()
+        clone1.target = equazione_risolvente_1[0]
+        clone2 = intersezione_fascio.eqs[1][1].copy()
+        clone2.target = equazione_risolvente_1[2]
+        self.play(Write(equazione_risolvente_1[1]), MoveToTarget(clone1), MoveToTarget(clone2))
+        self.add(equazione_risolvente_1)
+        self.remove(clone1, clone2)
         self.play(Write(equazione_risolvente_2))
         self.play(FadeOut(intersezione_fascio), FadeOut(equazione_risolvente_1))
         self.play(equazione_risolvente_2.animate.next_to(equazione_parabola, DOWN, buff=1))
@@ -135,8 +183,14 @@ class Scene(MovingCameraScene):
         self.play(Write(delta_2))
         self.cut_and_wait()
 
-        delta_3 = MathTex(r"(m + 4)^2 - 4(2m + 5) = 0").next_to(delta_2, DOWN)
-        self.play(Write(delta_3))
+        delta_3 = MathTex(r"{{ (m + 4) }} ^2 - 4( {{ 2m + 5 }} ) = 0").next_to(delta_2, DOWN)
+        clone1 = equazione_risolvente_2[1].copy()
+        clone1.target = delta_3[0]
+        clone2 = equazione_risolvente_2[3].copy()
+        clone2.target = delta_3[2]
+        self.play(Write(delta_3[1]), Write(delta_3[3]), MoveToTarget(clone1), MoveToTarget(clone2))
+        self.add(delta_3)
+        self.remove(clone1, clone2)
         self.cut_and_wait()
 
         delta_4 = MathTex(r"m^2 + 8m + 16 - 8m - 20 = 0").next_to(delta_3, DOWN)
