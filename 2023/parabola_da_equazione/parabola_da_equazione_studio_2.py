@@ -2,7 +2,7 @@ from manim import *
 
 from qui_matematica.qmath import EqSystem
 
-DELAY = 1
+DELAY = 30
 
 
 class Scene(MovingCameraScene):
@@ -72,7 +72,7 @@ class Scene(MovingCameraScene):
 
         pre_x_fuoco.target = fuoco[1].eqs[0]
         self.play(MoveToTarget(pre_x_fuoco))
-        mid_y_fuoco = MathTex("y_F = {{ \dfrac{1}{4a} - \dfrac{\Delta}{4a} }}").move_to(fuoco[1].eqs[1])
+        mid_y_fuoco = MathTex(r"y_F = {{ \dfrac{1}{4a} - \dfrac{\Delta}{4a} }}").move_to(fuoco[1].eqs[1])
         pre_y_fuoco.target = mid_y_fuoco
         self.play(MoveToTarget(pre_y_fuoco))
         self.cut_and_wait()

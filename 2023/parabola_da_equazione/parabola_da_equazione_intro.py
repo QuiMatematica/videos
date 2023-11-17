@@ -1,8 +1,6 @@
-import math
-
 from manim import *
 
-DELAY = 1
+DELAY = 30
 
 
 class Scene(MovingCameraScene):
@@ -79,7 +77,7 @@ class Scene(MovingCameraScene):
         self.cut_and_wait()
 
         colore_coefficienti = BLUE
-        equazione = MathTex(r"y = a x^2 + bx + c", color=YELLOW).scale(1.3).shift(4*RIGHT)
+        equazione = MathTex(r"y = a x^2 + bx + c", color=PURPLE).scale(1.3).shift(4*RIGHT)
         equazione[0][2].set_color(colore_coefficienti)
         equazione[0][6].set_color(colore_coefficienti)
         equazione[0][9].set_color(colore_coefficienti)
