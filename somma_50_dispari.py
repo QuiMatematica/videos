@@ -11,10 +11,13 @@ class Scene(MovingCameraScene):
             self.next_section()
 
     def construct(self):
+        title = Title("Somma dei primi 50 numeri dispari").set_color(GREEN)
+        self.play(Create(title))
+
         max_x = 14
         n_colonne = 17
         shift_x = (n_colonne - 1) / 2
-        max_y = 8
+        max_y = 4
 
         riga1 = VGroup(
             Tex("1°"),
@@ -34,7 +37,7 @@ class Scene(MovingCameraScene):
             Tex("49°"),
             MathTex(""),
             Tex("50°"),
-        )
+        ).set_color(RED)
 
         riga2 = VGroup(
             MathTex("1"),
@@ -96,19 +99,61 @@ class Scene(MovingCameraScene):
             MathTex("1"),
         )
 
-        tabella = VGroup(riga1, riga2, riga3, riga4)
+        riga5 = VGroup(
+            Line(start=ORIGIN, end=RIGHT),
+            MathTex(""),
+            Line(start=ORIGIN, end=RIGHT),
+            MathTex(""),
+            Line(start=ORIGIN, end=RIGHT),
+            MathTex(""),
+            Line(start=ORIGIN, end=RIGHT),
+            MathTex(""),
+            MathTex(""),
+            MathTex(""),
+            Line(start=ORIGIN, end=RIGHT),
+            MathTex(""),
+            Line(start=ORIGIN, end=RIGHT),
+            MathTex(""),
+            Line(start=ORIGIN, end=RIGHT),
+            MathTex(""),
+            Line(start=ORIGIN, end=RIGHT),
+        )
+
+        riga6 = VGroup(
+            MathTex("100"),
+            MathTex("+"),
+            MathTex("100"),
+            MathTex("+"),
+            MathTex("100"),
+            MathTex("+"),
+            MathTex("100"),
+            MathTex("+"),
+            MathTex(r"\dots"),
+            MathTex("+"),
+            MathTex("100"),
+            MathTex("+"),
+            MathTex("100"),
+            MathTex("+"),
+            MathTex("100"),
+            MathTex("+"),
+            MathTex("100"),
+        )
+
+        tabella = VGroup(riga1, riga2, riga3, riga4, riga5, riga6)
 
         n_righe = len(tabella)
         shift_y = (n_righe - 1) / 2
 
         for _riga in range(n_righe):
             for _colonna in range(n_colonne):
-                tabella[_riga][_colonna].move_to([(_colonna - shift_x) * max_x / n_colonne, (_riga - shift_y) * max_y / n_righe, 0])
+                tabella[_riga][_colonna].move_to(
+                    [(_colonna - shift_x) * max_x / n_colonne, (shift_y - _riga) * max_y / n_righe, 0])
 
+        # tabella.shift(UP)
 
         riga_2_mostrata = VGroup()
         for _i in range(n_colonne):
-            if (_i % 2 == 1) | (_i == ((n_colonne - 1)/2)):
+            if (_i % 2 == 1) | (_i == ((n_colonne - 1) / 2)):
                 riga_2_mostrata.add(riga2[_i])
 
         self.play(Write(riga_2_mostrata))
@@ -200,12 +245,9 @@ class Scene(MovingCameraScene):
         self.play(riga_2_mostrata.animate.shift(-shift_amount))
 
         inversioni = []
-        for _i in range(4):
+        for _i in range(9):
             inversione = riga2[_i * 2].copy()
             inversione.target = riga4[16 - _i * 2]
-            inversioni.append(inversione)
-            inversione = riga2[16 - _i * 2].copy()
-            inversione.target = riga4[_i * 2]
             inversioni.append(inversione)
 
         self.play(*[MoveToTarget(_i) for _i in inversioni])
@@ -222,5 +264,63 @@ class Scene(MovingCameraScene):
 
         self.play(*[MoveToTarget(_s) for _s in spostamenti_piu])
         self.cut_and_wait()
+
+        self.play(Write(riga5))
+        self.cut_and_wait()
+
+        self.play(Write(riga6[0]))
+        self.cut_and_wait()
+        self.play(Write(riga6[2]))
+        self.cut_and_wait()
+        self.play(Write(riga6[4]))
+        self.cut_and_wait()
+
+        riga6_visualizzata = VGroup()
+        riga6_visualizzata.add(riga6[6])
+        riga6_visualizzata.add(riga6[8])
+        riga6_visualizzata.add(riga6[10])
+        riga6_visualizzata.add(riga6[12])
+        riga6_visualizzata.add(riga6[14])
+        riga6_visualizzata.add(riga6[16])
+        self.play(Write(riga6_visualizzata))
+        self.cut_and_wait()
+
+        riga6_piu = VGroup()
+        for _i in range(8):
+            riga6_piu.add(riga6[_i * 2 + 1])
+
+        self.play(Write(riga6_piu))
+        self.cut_and_wait()
+
+        graffona = Brace(riga6, color=YELLOW)
+        self.play(Create(graffona))
+
+        moltiplicazione = MathTex(r"50 \cdot 100").next_to(graffona, DOWN)
+        self.play(Write(moltiplicazione))
+        self.cut_and_wait()
+
+        risultato_moltiplicazione = MathTex("= 5000").next_to(moltiplicazione, RIGHT)
+        self.play(Write(risultato_moltiplicazione))
+        self.cut_and_wait()
+
+        self.play(Flash(riga2[0]), Flash(riga4[16]))
+        self.cut_and_wait()
+
+        self.play(Flash(riga2[2]), Flash(riga4[14]))
+        self.cut_and_wait()
+
+        self.play(Flash(riga2[16]), Flash(riga4[0]))
+        self.cut_and_wait()
+
+        finale1 = MathTex(r"\dfrac{50 \cdot 100}{2}", color=YELLOW).next_to(graffona, DOWN)
+        finale2 = MathTex(r"1 + 3 + \dots + 97 + 99 =", color=YELLOW).next_to(finale1, LEFT)
+        finale3 = MathTex(r"= 2500", color=YELLOW).next_to(finale1, RIGHT)
+        self.play(
+            FadeOut(moltiplicazione),
+            FadeOut(risultato_moltiplicazione),
+            FadeIn(finale1),
+            FadeIn(finale2),
+            FadeIn(finale3),
+        )
 
         self.wait(30)
