@@ -4,7 +4,7 @@ from manim import *
 
 from qui_matematica.qmath import EqSystem
 
-DELAY = 1
+DELAY = 30
 
 
 class Scene(MovingCameraScene):
