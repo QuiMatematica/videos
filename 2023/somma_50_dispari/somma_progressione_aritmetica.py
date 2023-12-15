@@ -1,6 +1,6 @@
 from manim import *
 
-DELAY = 1
+DELAY = 30
 
 
 class Scene(MovingCameraScene):
@@ -82,6 +82,7 @@ class Scene(MovingCameraScene):
             Line(start=ORIGIN, end=RIGHT),
         )
 
+        scala_riga_6 = .8
         riga6 = VGroup(
             MathTex("a_1 + a_n"),
             MathTex("+"),
@@ -96,7 +97,7 @@ class Scene(MovingCameraScene):
             MathTex("a_{n-1} + a_2"),
             MathTex("+"),
             MathTex("a_n + a_1"),
-        ).scale(.8)
+        ).scale(scala_riga_6)
 
         tabella = VGroup(riga2, riga3, riga4, riga5, riga6)
 
@@ -117,30 +118,25 @@ class Scene(MovingCameraScene):
         self.play(Write(riga_2_mostrata))
         self.cut_and_wait()
 
-        differenze = VGroup(
-            MathTex(""),
-            MathTex("a_2 - a_1"),
-            MathTex("="),
-            MathTex("a_3 - a_2"),
-            MathTex("="),
-            MathTex("\dots"),
-            MathTex("="),
-            MathTex("\dots"),
-            MathTex("="),
-            MathTex("a_{n-1} - a_{n-2}"),
-            MathTex("="),
-            MathTex("a_n - a_{n-1}"),
-            MathTex(""),
-        ).scale(.7)
-        for _i in range(n_colonne):
-            differenze[_i].move_to(riga3[_i].get_center())
-        self.play(Write(differenze))
+        buff = .1
+        _y = riga2[0].get_top()[1]+buff
+        for _i in range(6):
+            start = riga2[_i * 2].get_top()+[+buff, 0, 0]
+            start[1] = _y
+            end = riga2[_i * 2 + 2].get_top()+[-buff, 0, 0]
+            end[1] = _y
+            arco = CurvedArrow(
+                start_point=start,
+                end_point=end,
+                angle=-TAU / 6,
+                color=YELLOW)
+            self.play(Create(arco))
+            ragione = MathTex("+r", color=YELLOW).next_to(arco, UP, buff=buff)
+            self.play(Write(ragione))
         self.cut_and_wait()
 
         self.play(Create(title))
         self.cut_and_wait()
-
-        self.play(FadeOut(differenze))
 
         segni_piu = VGroup()
         for _i in range(6):
@@ -155,6 +151,8 @@ class Scene(MovingCameraScene):
             inversioni.append(inversione)
 
         self.play(*[MoveToTarget(_i) for _i in inversioni])
+        self.add(riga4)
+        self.remove(*inversioni)
         self.cut_and_wait()
 
         spostamenti_piu = []
@@ -178,12 +176,39 @@ class Scene(MovingCameraScene):
         self.play(Write(riga6_visualizzata))
         self.cut_and_wait()
 
-        alterazioni_riga6 = []
-        for _i in range(6):
-            alterato = riga6[0].copy()
-            alterazioni_riga6.append(alterato.animate.move_to(riga6[_i * 2 + 2]))
-            alterazioni_riga6.append(FadeOut(riga6[_i * 2 + 2]))
-        self.play(*alterazioni_riga6)
+        self.play(Flash(riga2[2]))
+        self.play(Transform(riga2[2], MathTex(r"a_1 + r").move_to(riga2[2])))
+        self.cut_and_wait()
+
+        self.play(Flash(riga4[2]))
+        arco = CurvedArrow(
+            start_point=riga4[0].get_top() + [+buff, +buff, 0],
+            end_point=riga4[2].get_top() + [-buff, +buff, 0],
+            angle=-TAU / 6,
+            color=YELLOW)
+        self.play(Create(arco))
+        ragione = MathTex("-r", color=YELLOW).next_to(arco, UP, buff=buff)
+        self.play(Write(ragione))
+        self.play(Transform(riga4[2], MathTex(r"a_n - r").move_to(riga4[2])))
+        self.cut_and_wait()
+
+        self.play(Transform(riga6[2], MathTex(r"a_1 + r + a_n - r").scale(scala_riga_6).move_to(riga6[2])))
+        self.play(Transform(riga6[2], MathTex(r"a_1 + a_n").scale(scala_riga_6).move_to(riga6[2])))
+        self.cut_and_wait()
+
+        self.play(
+            Transform(riga2[4], MathTex(r"a_1 + 2r").move_to(riga2[4])),
+            Transform(riga2[8], MathTex(r"a_n -2r").move_to(riga2[8])),
+            Transform(riga2[10], MathTex(r"a_n - r").move_to(riga2[10])),
+            Transform(riga4[4], MathTex(r"a_n - 2r").move_to(riga4[4])),
+            Transform(riga4[8], MathTex(r"a_1 + 2r").move_to(riga4[8])),
+            Transform(riga4[10], MathTex(r"a_1 + r").move_to(riga4[10])),
+        )
+
+        for _i in range(5):
+            if _i != 1:
+                self.play(Transform(riga6[_i*2+4], MathTex(r"a_1 + a_n").scale(scala_riga_6).move_to(riga6[_i*2+4])))
+        self.cut_and_wait()
 
         graffona = Brace(riga6, color=YELLOW)
         self.play(Create(graffona))
