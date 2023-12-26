@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Sequence
 
 from manim import *
 
@@ -50,3 +51,44 @@ class PascalTriangle(VGroup, ABC):
                 items.add(MathTex(str(number)).set_x(items[-1].get_x() + 1))
         self.lines.append(numbers)
         self.add(items)
+
+
+class NumericalTriangle(VGroup):
+
+    def __init__(self, n_rows, rect_width=3, rect_height=1.6):
+        super().__init__()
+        self.rect_width = rect_width
+        self.rect_height = rect_height
+        self.values = [None] * n_rows
+        self.value_objects = [None] * n_rows
+        for _i in range(n_rows):
+            self.add_line()
+
+    def add_line(self):
+        items = VGroup()
+        line_index = len(self.submobjects)
+        for _pos in range(line_index + 1):
+            items.add(self.get_rect())
+        items.arrange(RIGHT, buff=0)
+        self.add(items)
+        self.arrange(DOWN, buff=0)
+        self.values[line_index] = [None] * (line_index + 1)
+        self.value_objects[line_index] = [None] * (line_index + 1)
+
+    def get_rect(self):
+        return Rectangle(width=self.rect_width, height=self.rect_height)
+
+    def get_cell(self, pos: Sequence[int]) -> Rectangle:
+        return self[pos[0]][pos[1]]
+
+    def put_value(self, pos: Sequence[int], value, value_color=WHITE, value_scale=2):
+        self.values[pos[0]][pos[1]] = value
+        value_object = MathTex(str(value), color=value_color).scale(value_scale).move_to(self.get_cell(pos))
+        self.value_objects[pos[0]][pos[1]] = value_object
+        return value_object
+
+    def get_value(self, pos: Sequence[int]):
+        return self.values[pos[0]][pos[1]]
+
+    def get_value_object(self, pos: Sequence[int]):
+        return self.value_objects[pos[0]][pos[1]]
