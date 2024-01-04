@@ -2,7 +2,7 @@ from manim import *
 
 from qui_matematica.qmath import NumericalTriangle
 
-DELAY = 1
+DELAY = 30
 
 SCALE = 2
 
@@ -28,7 +28,7 @@ class Scene(MovingCameraScene):
         numero_5 = Tex("5").scale(SCALE).move_to(triangolo.get_cell((2, 2)))
         self.play(Write(numero_2), Write(numero_5))
 
-        addizione = Tex("2 + 5", color=YELLOW).scale(1.3).move_to(triangolo.get_cell((1, 1)))
+        addizione = Tex("2 + 5", color=YELLOW).scale(SCALE).move_to(triangolo.get_cell((1, 1)))
         n2 = numero_2.copy()
         n5 = numero_5.copy()
         n2.target = addizione[0][0]

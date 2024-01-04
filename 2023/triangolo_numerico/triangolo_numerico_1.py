@@ -2,7 +2,7 @@ from manim import *
 
 from qui_matematica.qmath import NumericalTriangle
 
-DELAY = 1
+DELAY = 30
 
 SUM_SCALE = 1.3
 SCALE = 2
@@ -54,14 +54,14 @@ class Scene(MovingCameraScene):
             if p2_value < 10:
                 c2.target = temp[0][2]
             else:
-                c2.target = temp[0][2:3]
+                c2.target = temp[0][2:4]
         else:
             plus = temp[0][2]
-            c1.target = temp[0][0:1]
+            c1.target = temp[0][0:2]
             if p2_value < 10:
                 c2.target = temp[0][3]
             else:
-                c2.target = temp[0][3:4]
+                c2.target = temp[0][3:5]
         self.play(
             Write(plus),
             MoveToTarget(c1),
@@ -111,7 +111,7 @@ class Scene(MovingCameraScene):
         c1 = triangolo.get_value_object(pos_1).copy()
         c2 = triangolo.get_value_object(pos_2).copy()
 
-        temp = triangolo.put_value(pos, str(p1_value) + "+" + str(p2_value), value_scale=SUM_SCALE, value_color=TARTA_COLOR)
+        temp = triangolo.put_value(pos, str(p1_value) + "+" + str(p2_value), value_color=TARTA_COLOR)
         c1.target = temp[0][0]
         c2.target = temp[0][2]
         self.play(
