@@ -2,7 +2,7 @@ import math
 
 from manim import *
 
-DELAY = 1
+DELAY = 30
 
 LATO = 5
 
@@ -65,7 +65,7 @@ class Scene(MovingCameraScene):
         self.cut_and_wait()
 
         o_point = Dot(center)
-        o_label = MathTex("O").next_to(o_point, DL, buff=ABCD_LABEL_BUFF)
+        o_label = MathTex("O").next_to(o_point, UL, buff=ABCD_LABEL_BUFF)
         self.play(Create(o_point), Write(o_label))
         self.cut_and_wait()
 
