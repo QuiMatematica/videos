@@ -2,7 +2,7 @@ import math
 
 from manim import *
 
-DELAY = 1
+DELAY = 30
 
 ANGLE_RADIUS = .9
 

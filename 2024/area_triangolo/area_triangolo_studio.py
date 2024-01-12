@@ -1,6 +1,6 @@
 from manim import *
 
-DELAY = 1
+DELAY = 30
 
 STROKE = 8
 
