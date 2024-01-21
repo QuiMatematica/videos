@@ -1,10 +1,8 @@
-import math
-
 from manim import *
 
 from qui_matematica.axes.parable import parable_from_coefficients
 
-DELAY = 1
+DELAY = 30
 
 WRONG_COLOR = RED
 PARABOLA_COLOR = RED

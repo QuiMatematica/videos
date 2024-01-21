@@ -1,18 +1,9 @@
-import math
-
 from manim import *
 
 from qui_matematica.axes.parable import parable_from_coefficients
 
-DELAY = 30
-
 
 class Video(MovingCameraScene):
-
-    def cut_and_wait(self):
-        if DELAY > 0:
-            self.wait(DELAY)
-            self.next_section()
 
     def construct(self):
         self.wait(.5)
