@@ -171,6 +171,8 @@ class Video(MovingCameraScene):
                 radius=VALUE_ANGLE_RADIUS).get_midpoint()
         )
         self.play(Create(ado_angle), Write(ado_angle_value))
+        self.cut_and_wait()
+
         aod_angle = get_angle_group(a_dot, o_dot, d_dot, BLUE)
         aod_angle_value = MathTex(r"90^{\circ}", color=BLUE)
         aod_angle_value.move_to(
