@@ -40,7 +40,6 @@ class Video(MovingCameraScene):
         p_coords = (b_dot.get_center() - a_dot.get_center()) / 3 + a_dot.get_center()
         p_dot = Dot(p_coords)
         p_label = MathTex("P").next_to(p_dot, DOWN)
-        self.play(Create(p_dot), Write(p_label))
 
         dato0 = MathTex(r"\overline{AP} = \dfrac{1}{3} \cdot \overline{AB}")
         dato1 = MathTex(r"\overline{CO} = \dfrac{1}{3} \cdot \overline{CP}")
@@ -51,7 +50,7 @@ class Video(MovingCameraScene):
             dato0, dato1, dato2, dato3
         ).arrange(DOWN).move_to(3.5 * RIGHT)
 
-        self.play(Write(dato0))
+        self.play(Create(p_dot), Write(p_label), Write(dato0))
 
         cp_line = Line(c_dot.get_center(), p_dot.get_center())
         self.play(Create(cp_line))
@@ -59,9 +58,7 @@ class Video(MovingCameraScene):
         o_coords = (p_dot.get_center() - c_dot.get_center()) / 3 + c_dot.get_center()
         o_dot = Dot(o_coords)
         o_label = MathTex("O").next_to(o_dot, RIGHT)
-        self.play(Create(o_dot), Write(o_label))
-
-        self.play(Write(dato1))
+        self.play(Create(o_dot), Write(o_label), Write(dato1))
 
         d_coord = line_intersection([b_dot.get_center(), c_dot.get_center()], [a_dot.get_center(), o_dot.get_center()])
         d_dot = Dot(d_coord)
@@ -83,5 +80,27 @@ class Video(MovingCameraScene):
 
         self.play(Write(dato3))
         self.cut_and_wait()
+
+        # Come prima cosa nota che la retta AO e il punto D non servono per la costruzione della figura e non ci
+        # serviranno neanche per la soluzione del problema.
+
+        self.play(
+            ShowPassingFlash(
+                ad_line.copy().set_stroke(width=8).set_color(YELLOW),
+                run_time=2,
+                time_width=2
+            ),
+            Flash(d_dot, run_time=3, lag_ratio=.6)
+        )
+        self.cut_and_wait()
+
+        # Quindi li possiamo rimuovere e ignorare fin da subito.
+
+        self.play(FadeOut(ad_line), FadeOut(d_dot), FadeOut(d_label))
+        self.cut_and_wait()
+
+        # Seconda osservazione: siamo partiti da un triangolo ABC qualunque, conosciamo solo la misura di un lato e ci
+        # viene chiesta la misura di una parte di questo lato. Curioso: sembra quindi che la soluzione del problema sia
+        # indipendente dalla scelta del triangolo. E un po' di grafica computerizzata ci conferma che è proprio così.
 
         self.wait(30)
