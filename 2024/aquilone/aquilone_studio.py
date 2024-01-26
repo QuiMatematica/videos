@@ -2,7 +2,7 @@ import math
 
 from manim import *
 
-DELAY = 1
+DELAY = 30
 
 SQRT_3 = math.sqrt(3)
 SQRT_3_DIV_2 = SQRT_3 / 2

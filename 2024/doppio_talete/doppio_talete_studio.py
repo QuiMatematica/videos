@@ -2,7 +2,7 @@ import math
 
 from manim import *
 
-DELAY = 1
+DELAY = 30
 
 
 class Video(MovingCameraScene):
@@ -23,9 +23,9 @@ class Video(MovingCameraScene):
         b_dot = Dot(b_coord)
         c_dot = Dot(c_coord)
 
-        a_label = MathTex("A").next_to(a_dot, LEFT)
-        b_label = MathTex("B").next_to(b_dot, RIGHT)
-        c_label = MathTex("C").next_to(c_dot, UP)
+        a_label = MathTex("A").next_to(a_dot, LEFT, buff=.1)
+        b_label = MathTex("B").next_to(b_dot, RIGHT, buff=.1)
+        c_label = MathTex("C").next_to(c_dot, UP, buff=.1)
 
         ab_line = Line(a_coord, b_coord)
         bc_line = Line(b_coord, c_coord)
@@ -39,7 +39,7 @@ class Video(MovingCameraScene):
 
         p_coords = (b_dot.get_center() - a_dot.get_center()) / 3 + a_dot.get_center()
         p_dot = Dot(p_coords)
-        p_label = MathTex("P").next_to(p_dot, DOWN)
+        p_label = MathTex("P").next_to(p_dot, DOWN, buff=.1)
 
         dato0 = MathTex(r"\overline{AP} = \dfrac{1}{3} \cdot \overline{AB}")
         dato1 = MathTex(r"\overline{CO} = \dfrac{1}{3} \cdot \overline{CP}")
@@ -57,12 +57,12 @@ class Video(MovingCameraScene):
 
         o_coords = (p_dot.get_center() - c_dot.get_center()) / 3 + c_dot.get_center()
         o_dot = Dot(o_coords)
-        o_label = MathTex("O").next_to(o_dot, RIGHT)
+        o_label = MathTex("O").next_to(o_dot, RIGHT, buff=.1).shift(.15*UP)
         self.play(Create(o_dot), Write(o_label), Write(dato1))
 
         d_coord = line_intersection([b_dot.get_center(), c_dot.get_center()], [a_dot.get_center(), o_dot.get_center()])
         d_dot = Dot(d_coord)
-        d_label = MathTex("D").next_to(d_dot, UR)
+        d_label = MathTex("D").next_to(d_dot, UR, buff=.1)
         ad_line = Line(a_dot.get_center(), d_dot.get_center())
 
         self.play(Create(ad_line))
@@ -70,7 +70,7 @@ class Video(MovingCameraScene):
 
         e_coord = line_intersection([a_dot.get_center(), c_dot.get_center()], [b_dot.get_center(), o_dot.get_center()])
         e_dot = Dot(e_coord)
-        e_label = MathTex("E").next_to(e_dot, UL)
+        e_label = MathTex("E").next_to(e_dot, LEFT, buff=.1)
         be_line = Line(b_dot.get_center(), e_dot.get_center())
 
         self.play(Create(be_line))

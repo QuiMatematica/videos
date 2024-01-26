@@ -21,9 +21,9 @@ class Video(MovingCameraScene):
         b_dot = Dot(b_coord)
         c_dot = Dot(c_coord)
 
-        a_label = MathTex("A").next_to(a_dot, LEFT)
-        b_label = MathTex("B").next_to(b_dot, RIGHT)
-        c_label = MathTex("C").next_to(c_dot, UP)
+        a_label = MathTex("A").next_to(a_dot, LEFT, buff=.1)
+        b_label = MathTex("B").next_to(b_dot, RIGHT, buff=.1)
+        c_label = MathTex("C").next_to(c_dot, UP, buff=.1)
 
         def get_ab_line():
             return Line(a_dot.get_center(), b_dot.get_center())
@@ -45,7 +45,7 @@ class Video(MovingCameraScene):
             return (b_dot.get_center() - a_dot.get_center()) / 3 + a_dot.get_center()
 
         p_dot = Dot(get_p_position())
-        p_label = MathTex("P").next_to(p_dot, DOWN)
+        p_label = MathTex("P").next_to(p_dot, DOWN, buff=.1)
 
         dato0 = MathTex(r"\overline{AP} = \dfrac{1}{3} \cdot \overline{AB}")
         dato1 = MathTex(r"\overline{CO} = \dfrac{1}{3} \cdot \overline{CP}")
@@ -68,12 +68,12 @@ class Video(MovingCameraScene):
             return (p_dot.get_center() - c_dot.get_center()) / 3 + c_dot.get_center()
 
         o_dot = Dot(get_o_position())
-        o_label = MathTex("O").next_to(o_dot, RIGHT)
+        o_label = MathTex("O").next_to(o_dot, RIGHT, buff=.1).shift(.15*UP)
         self.add(o_dot, o_label, dato1)
 
         e_coord = line_intersection([a_dot.get_center(), c_dot.get_center()], [b_dot.get_center(), o_dot.get_center()])
         e_dot = Dot(e_coord)
-        e_label = MathTex("E").next_to(e_dot, UL)
+        e_label = MathTex("E").next_to(e_dot, LEFT, buff=.1)
 
         def get_be_line():
             return Line(b_dot.get_center(), e_dot.get_center())
@@ -96,7 +96,7 @@ class Video(MovingCameraScene):
         path = Ellipse(width=2.0, height=4.0).move_to(b_dot.get_center() + RIGHT).rotate(PI)
 
         b_label.add_updater(
-            lambda l: l.next_to(b_dot, RIGHT)
+            lambda l: l.next_to(b_dot, RIGHT, buff=.1)
         )
         ab_line.add_updater(
             lambda l: l.become(get_ab_line())
@@ -106,13 +106,12 @@ class Video(MovingCameraScene):
         )
         p_dot.add_updater(lambda p: p.move_to(get_p_position()))
         o_dot.add_updater(lambda p: p.move_to(get_o_position()))
-        p_label.add_updater(lambda p: p.next_to(p_dot, DOWN))
-        o_label.add_updater(lambda p: p.next_to(o_dot, RIGHT))
+        p_label.add_updater(lambda p: p.next_to(p_dot, DOWN, buff=.1))
+        o_label.add_updater(lambda p: p.next_to(o_dot, RIGHT, buff=.1).shift(.15*UP))
         cp_line.add_updater(lambda l: l.become(get_cp_line()))
         be_line.add_updater(lambda l: l.become(get_be_line()))
 
         self.play(MoveAlongPath(b_dot, path, run_time=4))
-        self.cut_and_wait()
 
         b_label.clear_updaters()
         ab_line.clear_updaters()
