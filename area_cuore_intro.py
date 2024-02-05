@@ -55,6 +55,7 @@ class Scene(MovingCameraScene):
             tracker.animate.set_value(TAU), Create(circle_1), Create(circle_2),
         )
         radius_1.clear_updaters()
+        radius_2.clear_updaters()
 
         radius_1_value = Tex("1 cm").next_to(radius_1, UP, buff=.1)
         radius_2_value = Tex("1 cm").next_to(radius_2, UP, buff=.1)
@@ -115,7 +116,7 @@ class Scene(MovingCameraScene):
 
         # sceglie poi un punto P su r in modo che si abbia O1PO2 = 60°
 
-        p_point = Dot((0, center_y - unit, 0))
+        p_point = Dot((0, center_y - unit, 0), z_index=5)
         p_label = MathTex(r"P").next_to(p_point, DR, buff=.1)
         self.play(Create(p_point), Write(p_label))
 
