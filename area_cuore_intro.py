@@ -179,7 +179,7 @@ class Scene(MovingCameraScene):
             p_point.get_center())
         cuore = Union(circle_1, circle_2)
         diff = Difference(polygon, cuore)
-        cuore = Union(cuore, diff, color=BLUE_E, fill_opacity=1, z_index=-1)
+        cuore = Union(cuore, diff, color=DARK_BLUE, fill_opacity=1, z_index=-1)
         self.play(Create(cuore))
 
         self.wait(30)

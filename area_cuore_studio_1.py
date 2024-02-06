@@ -75,9 +75,9 @@ class Scene(MovingCameraScene):
 
         t2_coordinates = (_unit * SQRT_3 * SQRT_3_DIV_2, center_y - _unit * SQRT_3 / 2, 0)
         t1_coordinates = (-_unit * SQRT_3 * SQRT_3_DIV_2, center_y - _unit * SQRT_3 / 2, 0)
-        tangent_1 = Line(p_point.get_center(), t1_coordinates, color=RED)
-        tangent_2 = Line(p_point.get_center(), t2_coordinates, color=RED)
-        self.add(tangent_1, tangent_2)
+        p_a_line = Line(p_point.get_center(), t1_coordinates, color=RED)
+        p_c_line = Line(p_point.get_center(), t2_coordinates, color=RED)
+        self.add(p_a_line, p_c_line)
 
         # Quanto vale l’area del cuore ottenuto?
         triangoli = Polygon(
@@ -85,10 +85,10 @@ class Scene(MovingCameraScene):
             o1_point.get_center(),
             o2_point.get_center(),
             t2_coordinates,
-            p_point.get_center(), color=GREEN, fill_opacity=1, z_index=-1)
+            p_point.get_center(), color=DARK_BLUE, fill_opacity=1, z_index=-1)
         cuore = Union(circle_1, circle_2)
         diff = Difference(triangoli, cuore)
-        cuore = Union(cuore, diff, color=BLUE_E, fill_opacity=1, z_index=-1)
+        cuore = Union(cuore, diff, color=DARK_BLUE, fill_opacity=1, z_index=-1)
         self.add(cuore)
         self.cut_and_wait()
 
@@ -126,8 +126,8 @@ class Scene(MovingCameraScene):
             FadeIn(arc2),
             FadeOut(circle_1),
             FadeOut(circle_2),
-            tangent_1.animate.set_color(WHITE),
-            tangent_2.animate.set_color(WHITE),
+            p_a_line.animate.set_color(WHITE),
+            p_c_line.animate.set_color(WHITE),
             FadeIn(p_b_line),
             FadeOut(tangent),
             FadeOut(o1_p_o2_angle),
@@ -144,13 +144,46 @@ class Scene(MovingCameraScene):
         )
         self.cut_and_wait()
 
-        #
         # I segmenti che congiungono i punti di tangenza ai centri sono tutti raggi, quindi sono congruenti.
-        #
+
+        segments = [a_o1_line, radius_1, radius_2, c_o2_line]
+        tics = []
+        for _s in segments:
+            tic = Text("//", color=YELLOW).scale(.5)
+            tic.move_to(_s.get_center())
+            tic.rotate(_s.get_angle())
+            tics.append(tic)
+        self.play(*[Write(_t) for _t in tics])
+
         # Grazie al teorema delle tangenti possiamo dire che:
         # - i segmenti di tangenza PA, PB e PC sono congruenti
+
+        segments = [p_a_line, p_b_line, p_c_line]
+        tildes = []
+        for _s in segments:
+            tilde = MathTex(r"\sim").stretch_to_fit_width(.2).set_color(GREEN).scale(2)
+            tilde.move_to(_s).rotate(_s.get_angle())
+            tildes.append(tilde)
+        self.play(*[Write(_t) for _t in tildes])
+
         # - i quattro angoli in P sono congruenti
+
+        points = [a_point.get_center(), o1_point.get_center(), b_point.get_center(), o2_point.get_center(), c_point.get_center()]
+        points.reverse()
+        dots = []
+        for _i in range(len(points) - 1):
+            dot = Dot(color=RED)
+            angle = Angle.from_three_points(points[_i], p_point.get_center(), points[_i + 1], radius=.8)
+            dot.move_to(angle.get_midpoint())
+            dots.append(dot)
+        self.play(*[Create(_d) for _d in dots])
+
         # - gli angoli formati dalle tangenti con i raggi sono perpendicolari.
+
+        rights = []
+        rights.append(RightAngle(p_a_line, a_o1_line, color=PURPLE))
+        self.play(*[Create(_a) for _a in rights])
+
         #
         # Da tutte queste informazioni deduciamo che i quattro triangoli sono tutti congruenti e quindi equivalenti. Ci basta calcolare l'area di uno dei triangoli per conoscerle tutte e quattro. Inoltre tali triangoli sono rettangoli, quindi per calcolare l'area ci basta conoscere i cateti.
         #
