@@ -154,6 +154,7 @@ class Scene(MovingCameraScene):
             tic.rotate(_s.get_angle())
             tics.append(tic)
         self.play(*[Write(_t) for _t in tics])
+        self.cut_and_wait()
 
         # Grazie al teorema delle tangenti possiamo dire che:
         # - i segmenti di tangenza PA, PB e PC sono congruenti
@@ -165,6 +166,7 @@ class Scene(MovingCameraScene):
             tilde.move_to(_s).rotate(_s.get_angle())
             tildes.append(tilde)
         self.play(*[Write(_t) for _t in tildes])
+        self.cut_and_wait()
 
         # - i quattro angoli in P sono congruenti
 
@@ -177,23 +179,205 @@ class Scene(MovingCameraScene):
             dot.move_to(angle.get_midpoint())
             dots.append(dot)
         self.play(*[Create(_d) for _d in dots])
+        self.cut_and_wait()
 
         # - gli angoli formati dalle tangenti con i raggi sono perpendicolari.
 
-        rights = []
-        rights.append(RightAngle(p_a_line, a_o1_line, color=PURPLE))
+        rights = [
+            RightAngle(p_a_line, a_o1_line, length=0.4, color=PURPLE, quadrant=(-1, 1), z_index=-1),
+            RightAngle(p_b_line, radius_1, length=0.4, color=PURPLE, quadrant=(-1, 1), z_index=-1),
+            RightAngle(p_b_line, radius_2, length=0.4, color=PURPLE, quadrant=(-1, 1), z_index=-1),
+            RightAngle(p_c_line, c_o2_line, length=0.4, color=PURPLE, quadrant=(-1, 1), z_index=-1),
+            ]
         self.play(*[Create(_a) for _a in rights])
+        self.cut_and_wait()
 
-        #
-        # Da tutte queste informazioni deduciamo che i quattro triangoli sono tutti congruenti e quindi equivalenti. Ci basta calcolare l'area di uno dei triangoli per conoscerle tutte e quattro. Inoltre tali triangoli sono rettangoli, quindi per calcolare l'area ci basta conoscere i cateti.
-        #
-        # Il triangolo O1PO2 è isoscele, perché PO1 e PO2 sono congruenti, e ha l'angolo al vertice pari a 60°. Quindi in verità è un triangolo equilatero, e il triangolo BPO1 è metà di un triangolo equilatero. Il cateto BO1 è un raggio, quindi è lungo 1, e il cateto BP è l'altezza del triangolo equilatero di lato 2, quindi è lunga radice di 3.
-        #
-        # Possiamo quindi calcolare l'area del triangolo moltiplicando la base BO1 per l'altezza BP diviso 2, che fa radice di 3 fratto 2. E gli altri tre triangoli congruenti hanno la stessa area.
-        #
-        # Dobbiamo ora calcolare l'area dei due settori circolari. Per simmetria è immediato osservare che sono congruenti, quindi sono anche equivalenti.
-        # Tornando per un attimo al triangolo BPO1, visto che l'angolo in P è di 30°, l'angolo al centro è di 60°. Quindi l'angolo AO1B è di 120°, ovvero un terzo di angolo giro.
-        # Risulta quindi che il settore circolare è 2/3 del cerchio, quindi la sua area è 2/3 pi greco r quadro, ma il raggio è 1, quindi l'area di un settore circolare è 2/3 pi greco.
+        # Da tutte queste informazioni deduciamo che i quattro triangoli sono tutti congruenti e quindi equivalenti.
+        # Ci basta calcolare l'area di uno dei triangoli per conoscerle tutte e quattro.
+
+        triangolo = Polygon(
+            p_point.get_center(), b_point.get_center(), o1_point.get_center(),
+            color=GREEN, fill_opacity=1, z_index=-2
+        )
+        self.play(
+            FadeOut(triangoli),
+            *[FadeOut(_t) for _t in tics],
+            *[FadeOut(_t) for _t in tildes],
+            *[FadeOut(_d) for _d in dots],
+            *[FadeOut(_a) for _a in rights],
+            FadeIn(triangolo),
+        )
+        self.cut_and_wait()
+
+        # Inoltre tali triangoli sono
+        # rettangoli, quindi per calcolare l'area ci basta conoscere i cateti.
+
+        self.play(Create(rights[2]))
+        self.cut_and_wait()
+
+        # Il triangolo O1PO2 è isoscele, perché PO1 e PO2 sono congruenti, e ha l'angolo al vertice pari a 60°.
+
+        triangolo2 = Polygon(
+            p_point.get_center(), b_point.get_center(), o2_point.get_center(),
+            color=GREEN_E, fill_opacity=1, z_index=-2
+        )
+        self.play(Create(triangolo2))
+        segments = [p_o1_line, p_o2_line]
+        ticss = []
+        for _s in segments:
+            tic = Text("///", color=YELLOW).scale(.5)
+            tic.move_to(_s.get_center())
+            tic.rotate(_s.get_angle())
+            ticss.append(tic)
+        self.play(*[Write(_t) for _t in ticss])
+        self.cut_and_wait()
+        self.play(Create(o1_p_o2_angle), Write(o1_p_o2_value))
+        self.cut_and_wait()
+
+        # Quindi in verità è un triangolo equilatero, e il triangolo BPO1 è metà di un triangolo equilatero.
+
+        self.play(
+            FadeOut(triangolo2),
+            FadeOut(o1_p_o2_angle), FadeOut(o1_p_o2_value),
+            *[FadeOut(_t) for _t in ticss]
+        )
+        self.cut_and_wait()
+
+        # Il cateto BO1 è un raggio, quindi è lungo 1.
+        # L'ipotenusa PO1 è lato del triangolo equilatero, doppia del cateto BO1, quindi è lunga 2,
+
+        p_o2_value = MathTex("2").move_to(p_o1_line.get_center())
+        p_o2_value.shift(.2 * rotate_vector(p_o1_line.get_unit_vector(), PI/2))
+        self.play(Write(p_o2_value))
+        self.cut_and_wait()
+
+        # e il cateto BP è l'altezza del triangolo equilatero di lato 2, quindi è lunga radice di 3.
+
+        p_b_value = MathTex(r"\sqrt{3}").move_to(p_b_line.get_center())
+        p_b_value.shift(.4 * rotate_vector(p_b_line.get_unit_vector(), -PI/2))
+        self.play(Write(p_b_value))
+        self.cut_and_wait()
+
+        # Possiamo quindi calcolare l'area del triangolo moltiplicando la base BO1 per l'altezza BP diviso 2,
+        # che fa radice di 3 fratto 2.
+
+        formula_area = MathTex(r"\dfrac{1 \cdot \sqrt{3}}{2}", color=YELLOW).move_to(triangolo.get_center_of_mass())
+        base = radius_1_value[0][0].copy()
+        base.target = formula_area[0][0]
+        altezza = p_b_value.copy()
+        altezza.target = formula_area[0][2:5]
+        self.play(MoveToTarget(base))
+        self.play(Write(formula_area[0][1]))
+        self.play(MoveToTarget(altezza))
+        self.play(Write(formula_area[0][5:]))
+        self.cut_and_wait()
+        self.add(formula_area)
+        self.remove(base, altezza)
+
+        tri = [
+            [p_point.get_center(), a_point.get_center(), o1_point.get_center()],
+            [p_point.get_center(), b_point.get_center(), o1_point.get_center()],
+            [p_point.get_center(), b_point.get_center(), o2_point.get_center()],
+            [p_point.get_center(), c_point.get_center(), o2_point.get_center()],
+        ]
+        aree = []
+        for _i in tri:
+            area = MathTex(r"\dfrac{\sqrt{3}}{2}", color=YELLOW)
+            area.move_to(Polygon(*_i).get_center_of_mass())
+            aree.append(area)
+        self.play(ReplacementTransform(formula_area, aree[1]))
+        self.cut_and_wait()
+
+        # E gli altri tre triangoli congruenti hanno la stessa area.
+        self.play(
+            FadeOut(triangolo),
+            FadeOut(p_b_value),
+            FadeOut(p_o2_value),
+            FadeOut(rights[2])
+        )
+        self.play(
+            Write(aree[0]),
+            Write(aree[2]),
+            Write(aree[3]),
+        )
+
+        # Dobbiamo ora calcolare l'area dei due settori circolari.
+        settore_1 = Difference(circle_1, triangoli, color=RED, fill_opacity=1, z_index=-5)
+        settore_2 = Difference(circle_2, triangoli, color=RED, fill_opacity=1, z_index=-5)
+        self.play(Create(settore_1), Create(settore_2))
+        self.cut_and_wait()
+
+        # Per simmetria è immediato osservare che sono congruenti, quindi sono anche equivalenti.
+
+        self.play(settore_2.animate.rotate(PI/3).move_to(settore_1))
+        self.play(FadeOut(settore_2))
+        self.cut_and_wait()
+
+        # Tornando per un attimo al triangolo BPO1, visto che l'angolo in P è di 30°,
+
+        o1_p_b_angle = Angle.from_three_points(
+                b_point.get_center(), p_point.get_center(), o1_point.get_center(), radius=0.6, color=BLUE)
+
+        o1_p_b_value = Integer(
+                o1_p_b_angle.get_value(degrees=True),
+                unit=r"^{\circ}",
+                color=BLUE,
+                z_index=5).next_to(o1_p_b_angle, UP, buff=.1)
+
+        self.play(Create(o1_p_b_angle), Write(o1_p_b_value))
+        self.cut_and_wait()
+
+        # l'angolo al centro è di 60°.
+
+        b_o1_p_angle = Angle.from_three_points(
+                p_point.get_center(), o1_point.get_center(), b_point.get_center(), radius=0.6, color=BLUE)
+
+        b_o1_p_value = Integer(
+                b_o1_p_angle.get_value(degrees=True),
+                unit=r"^{\circ}",
+                color=BLUE,
+                z_index=5)
+        b_o1_p_value.move_to(
+            Angle.from_three_points(
+                p_point.get_center(), o1_point.get_center(), b_point.get_center(), radius=1).get_midpoint()
+        )
+        self.play(Create(b_o1_p_angle), Write(b_o1_p_value))
+        self.cut_and_wait()
+
+        # Quindi l'angolo AO1B è di 120°, ovvero un terzo di angolo giro.
+
+        b_o1_a_angle = Angle.from_three_points(
+            a_point.get_center(), o1_point.get_center(), b_point.get_center(), radius=0.6, color=BLUE)
+
+        b_o1_a_value = Integer(
+            b_o1_a_angle.get_value(degrees=True),
+            unit=r"^{\circ}",
+            color=BLUE,
+            z_index=5)
+        b_o1_a_value.move_to(
+            Angle.from_three_points(
+                a_point.get_center(), o1_point.get_center(), b_point.get_center(), radius=1).get_midpoint()
+        )
+        self.play(
+            ReplacementTransform(b_o1_p_angle, b_o1_a_angle),
+            ReplacementTransform(b_o1_p_value, b_o1_a_value),
+            FadeOut(o1_p_b_angle), FadeOut(o1_p_b_value)
+        )
+        self.cut_and_wait()
+
+        # Risulta quindi che il settore circolare è 2/3 del cerchio,
+        # quindi la sua area è 2/3 pi greco r quadro,
+
+        formula_area = MathTex(r"\dfrac{2}{3} \cdot \pi \cdot r^2", color=YELLOW)
+        formula_area.move_to(o1_point.get_center() + 1.5 * UP)
+        self.play(Write(formula_area))
+
+        # ma il raggio è 1,
+
+        raggio = radius_1[0][0].copy()
+
+
+        # quindi l'area di un settore circolare è 2/3 pi greco.
         # E lo stesso vale per l'altro settore.
         #
         # Non ci rimane che sommare tutte le aree trovate. L'area del cuore è pari a 4/3 pi greco più 2 radice di 3.
