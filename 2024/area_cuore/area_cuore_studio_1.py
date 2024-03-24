@@ -2,7 +2,7 @@ import math
 
 from manim import *
 
-DELAY = 1
+DELAY = 30
 
 SQRT_3 = math.sqrt(3)
 SQRT_3_DIV_2 = SQRT_3 / 2
@@ -283,12 +283,13 @@ class Scene(MovingCameraScene):
         aree = []
         for _i in tri:
             area = MathTex(r"\dfrac{\sqrt{3}}{2}", color=YELLOW)
-            area.move_to(Polygon(*_i).get_center_of_mass())
+            area.move_to(Polygon(*tri[1]).get_center_of_mass())
             aree.append(area)
         self.play(ReplacementTransform(formula_area, aree[1]))
         self.cut_and_wait()
 
         # E gli altri tre triangoli congruenti hanno la stessa area.
+
         self.play(
             FadeOut(triangolo),
             FadeOut(p_b_value),
@@ -296,12 +297,14 @@ class Scene(MovingCameraScene):
             FadeOut(rights[2])
         )
         self.play(
-            Write(aree[0]),
-            Write(aree[2]),
-            Write(aree[3]),
+            aree[0].animate.move_to(Polygon(*tri[0]).get_center_of_mass()),
+            aree[2].animate.move_to(Polygon(*tri[2]).get_center_of_mass()),
+            aree[3].animate.move_to(Polygon(*tri[3]).get_center_of_mass()),
         )
+        self.cut_and_wait()
 
         # Dobbiamo ora calcolare l'area dei due settori circolari.
+
         settore_1 = Difference(circle_1, triangoli, color=RED, fill_opacity=1, z_index=-5)
         settore_2 = Difference(circle_2, triangoli, color=RED, fill_opacity=1, z_index=-5)
         self.play(Create(settore_1), Create(settore_2))
@@ -371,15 +374,76 @@ class Scene(MovingCameraScene):
         formula_area = MathTex(r"\dfrac{2}{3} \cdot \pi \cdot r^2", color=YELLOW)
         formula_area.move_to(o1_point.get_center() + 1.5 * UP)
         self.play(Write(formula_area))
+        self.cut_and_wait()
 
         # ma il raggio è 1,
 
-        raggio = radius_1[0][0].copy()
-
+        raggio = radius_1_value[0][0].copy()
+        self.play(
+            raggio.animate.move_to(formula_area[0][6]).set_color(YELLOW),
+            FadeOut(formula_area[0][6])
+        )
+        self.cut_and_wait()
 
         # quindi l'area di un settore circolare è 2/3 pi greco.
+
+        area_settore_1 = MathTex(r"\dfrac{2}{3}\pi", color=YELLOW)
+        area_settore_1.move_to(o1_point.get_center() + 1.5 * UP)
+        self.play(ReplacementTransform(
+            VGroup(formula_area, raggio), area_settore_1
+        ))
+        self.cut_and_wait()
+
         # E lo stesso vale per l'altro settore.
-        #
-        # Non ci rimane che sommare tutte le aree trovate. L'area del cuore è pari a 4/3 pi greco più 2 radice di 3.
+
+        area_settore_2 = MathTex(r"\dfrac{2}{3}\pi", color=YELLOW)
+        area_settore_2.move_to(o1_point.get_center() + 1.5 * UP)
+        self.play(area_settore_2.animate.move_to(o2_point.get_center() + 1.5 * UP))
+        self.play(
+            FadeOut(settore_1),
+            FadeOut(b_o1_a_angle), FadeOut(b_o1_a_value),
+            FadeOut(radius_1_value), FadeOut(radius_2_value),
+            FadeOut(a_label), FadeOut(b_label), FadeOut(c_label),
+            FadeOut(o1_label), FadeOut(o2_label), FadeOut(p_label)
+        )
+        self.cut_and_wait()
+
+        # Non ci rimane che sommare tutte le aree trovate.
+
+        somma = MathTex(
+            r"\dfrac{2}{3}\pi {{+}} \dfrac{2}{3}\pi {{+}} \dfrac{\sqrt{3}}{2} {{+}} \dfrac{\sqrt{3}}{2} {{+}} \dfrac{\sqrt{3}}{2} {{+}} \dfrac{\sqrt{3}}{2}",
+            color=YELLOW
+        ).move_to(cuore.get_center_of_mass() + DOWN)
+
+        self.play(
+            FadeOut(a_point), FadeOut(b_point), FadeOut(c_point),
+            FadeOut(o1_point), FadeOut(o2_point), FadeOut(p_point),
+            FadeOut(a_o1_line), FadeOut(radius_1), FadeOut(radius_2), FadeOut(c_o2_line),
+            FadeOut(p_b_line), FadeOut(p_o1_line), FadeOut(p_o2_line),
+            FadeIn(cuore),
+        )
+        self.play(
+            area_settore_1.animate.move_to(somma[0]),
+            area_settore_2.animate.move_to(somma[2]),
+            aree[0].animate.move_to(somma[4]),
+            aree[1].animate.move_to(somma[6]),
+            aree[2].animate.move_to(somma[8]),
+            aree[3].animate.move_to(somma[10]),
+        )
+        self.play(
+            Write(somma[1]),
+            Write(somma[3]),
+            Write(somma[5]),
+            Write(somma[7]),
+            Write(somma[9]),
+        )
+        self.add(somma)
+        self.remove(area_settore_1, area_settore_2, *aree)
+        self.cut_and_wait()
+
+        # L'area del cuore è pari a 4/3 pi greco più 2 radice di 3.
+        
+        totale = MathTex(r"\dfrac{4}{3}\pi + 2\sqrt{3}", color=YELLOW).scale(2).move_to(somma)
+        self.play(ReplacementTransform(somma, totale))
 
         self.wait(30)

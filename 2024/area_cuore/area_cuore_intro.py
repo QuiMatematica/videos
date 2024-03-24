@@ -2,7 +2,7 @@ import math
 
 from manim import *
 
-DELAY = 1
+DELAY = 30
 
 SQRT_3 = math.sqrt(3)
 SQRT_3_DIV_2 = SQRT_3 / 2
@@ -57,6 +57,9 @@ class Scene(MovingCameraScene):
         radius_1.clear_updaters()
         radius_2.clear_updaters()
 
+        o1_point = Dot(circle_1.get_center())
+        o2_point = Dot(circle_2.get_center())
+
         radius_1_value = Tex("1 cm").next_to(radius_1, UP, buff=.1)
         radius_2_value = Tex("1 cm").next_to(radius_2, UP, buff=.1)
         self.play(Write(radius_1_value), Write(radius_2_value))
@@ -65,44 +68,20 @@ class Scene(MovingCameraScene):
 
         # e centri O1,O2,
 
-        o1_point = Dot(circle_1.get_center())
         o1_label = MathTex(r"O_1").next_to(o1_point, UL, buff=.1)
-        o2_point = Dot(circle_2.get_center())
         o2_label = MathTex(r"O_2").next_to(o2_point, UR, buff=.1)
         self.play(Create(o1_point), Write(o1_label))
         self.play(Create(o2_point), Write(o2_label))
         self.cut_and_wait()
 
-        def get_radius_1_bis():
-            return Line(o1_point.get_center(), o1_point.get_center() + unit * RIGHT)
-
-        def get_radius_2_bis():
-            return Line(o2_point.get_center(), o2_point.get_center() - unit * RIGHT)
-
-        o1_point.add_updater(lambda p: p.move_to(circle_1.get_center()))
-        o2_point.add_updater(lambda p: p.move_to(circle_2.get_center()))
-        o1_label.add_updater(lambda l: l.next_to(o1_point, UL, buff=.1))
-        o2_label.add_updater(lambda l: l.next_to(o2_point, UR, buff=.1))
-        radius_1.add_updater(lambda l: l.become(get_radius_1_bis()))
-        radius_2.add_updater(lambda l: l.become(get_radius_2_bis()))
-        radius_1_value.add_updater(lambda v: v.next_to(radius_1, UP, buff=.1))
-        radius_2_value.add_updater(lambda v: v.next_to(radius_2, UP, buff=.1))
+        circ_1 = VGroup(radius_1, radius_1_value, o1_point, o1_label, circle_1)
+        circ_2 = VGroup(radius_2, radius_2_value, o2_point, o2_label, circle_2)
 
         # tangenti  esternamente.
         self.play(
-            circle_1.animate.shift((start_c2 - unit) * RIGHT),
-            circle_2.animate.shift((start_c2 - unit) * LEFT),
+            circ_1.animate.shift((start_c2 - unit) * RIGHT),
+            circ_2.animate.shift((start_c2 - unit) * LEFT),
         )
-
-        o1_point.clear_updaters()
-        o2_point.clear_updaters()
-        o1_label.clear_updaters()
-        o2_label.clear_updaters()
-        radius_1.clear_updaters()
-        radius_2.clear_updaters()
-        radius_1_value.clear_updaters()
-        radius_2_value.clear_updaters()
-
         self.cut_and_wait()
 
         # Chiamata r la tangente comune alle due circonferenze passante per il punto di contatto,
