@@ -118,4 +118,32 @@ class Scene(MovingCameraScene):
         self.play(FadeOut(freccetta))
         self.cut_and_wait()
 
+        self.play(Create(linea_verticale))
+        self.play(Create(linea_orizzontale))
+        self.cut_and_wait()
+
+        self.play(solo_il_3.animate.set_color(GREEN))
+        self.cut_and_wait()
+
+        domanda = MathTex("?^2 < 3").scale(SCALE)
+        box = SurroundingRectangle(domanda, fill_color=BLACK, fill_opacity=1, buff=.5)
+
+        self.play(Create(box))
+        self.play(Write(domanda[0][0:3]))
+        copia_del_3 = solo_il_3.copy()
+        self.play(copia_del_3.animate.move_to(domanda[0][3]))
+        self.cut_and_wait()
+
+        risposta_1 = MathTex("1", color=RED).scale(SCALE).move_to(domanda[0][0])
+        self.play(ReplacementTransform(domanda[0][0], risposta_1))
+        self.cut_and_wait()
+
+        self.play(risposta_1.animate.move_to(risultato[0][0]))
+        self.play(FadeOut(domanda[0][1:]), FadeOut(box), FadeOut(copia_del_3))
+        self.cut_and_wait()
+
+        copia_per_quadrato = risposta_1.copy()
+        quadrato_dell_uno = MathTex("1^2")
+
+
         self.wait(30)
