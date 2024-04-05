@@ -15,8 +15,6 @@ class Scene(MovingCameraScene):
             self.next_section()
 
     def construct(self):
-        self.wait(1)
-
         radice_quadrata = MathTex(r"\sqrt{3{\cdot}17,30\,}").to_edge(UP)
         self.add(radice_quadrata)
 
@@ -83,99 +81,100 @@ class Scene(MovingCameraScene):
             l_dx_1, l_dx_2, l_dx_3, l_dx_4, l_dx_5
         ).move_to(ORIGIN).scale(SCALE)
 
-        radice_quadrata[0][2:].set_color(BLACK)
+        self.add(
+            radice_quadrata,
+            linea_verticale,
+            linea_orizzontale,
+            risultato[0][0:2],
+            l_sn_1,
+            h_1,
+            l_sn_2_a, l_sn_2_b,
+            l_sn_3_a, l_sn_3_b,
+            h_2,
+            l_sn_4_a,
+            l_dx_1, l_dx_2, l_dx_3
+        )
 
-        self.play(FadeIn(radice_quadrata[0][0:2].copy()))
+        self.play(Write(risultato[0][2]))
         self.cut_and_wait()
 
-        numero = MathTex("317,3").scale(SCALE).move_to(radice_quadrata[0][2:])
-        self.play(Write(numero))
+        position = l_sn_4_b.get_center()
+        l_sn_4_b.move_to(radice_quadrata[0][7:9].get_center())
+        self.play(l_sn_4_b.animate.move_to(position))
+        self.play(l_sn_4_a.animate.set_color(GREEN), l_sn_4_b.animate.set_color(GREEN))
         self.cut_and_wait()
 
-        freccetta = Arrow(start=DOWN, end=UP, color=GOLD).move_to(numero[0][3].get_center() + DOWN)
-        self.play(Create(freccetta))
+        copia_17 = risultato[0][0:2].copy()
+        copia_17.target = l_dx_4[0][0:2]
+        self.play(Create(h_4))
+        self.play(MoveToTarget(copia_17))
         self.cut_and_wait()
 
-        self.play(freccetta.animate.shift(LEFT))
+        self.play(Write(l_dx_4[0][2:5]))
         self.cut_and_wait()
 
-        solo_il_3 = numero[0][0]
-        self.play(solo_il_3.animate.move_to(radice_quadrata[0][2]))
-        solo_il_punto = MathTex(r"\cdot").scale(SCALE).move_to(radice_quadrata[0][3])
-        self.play(Write(solo_il_punto), FadeOut(freccetta))
-        self.play(numero[0][1:].animate.move_to(radice_quadrata[0][4:8]))
+        self.play(Write(l_dx_4[0][5:]))
         self.cut_and_wait()
 
-        freccetta.move_to(numero[0][3].get_center() + DOWN)
-        self.play(Create(freccetta))
+        copia_per_9 = l_dx_4[0][:5].copy()
+        copia_per_9.target = l_dx_5[0][0:5]
+        self.play(MoveToTarget(copia_per_9))
         self.cut_and_wait()
 
-        self.play(freccetta.animate.shift(RIGHT))
+        self.play(Write(l_dx_5[0][5:]))
         self.cut_and_wait()
 
-        solo_lo_0 = MathTex("0").scale(SCALE).move_to(radice_quadrata[0][8])
-        self.play(Write(solo_lo_0))
-        self.play(FadeOut(freccetta))
+        self.play(l_dx_5[0][2].animate.set_color(RED), l_dx_5[0][4].animate.set_color(RED))
         self.cut_and_wait()
 
-        self.play(Create(linea_verticale))
-        self.play(Create(linea_orizzontale))
+        copia_1 = l_dx_5[0][2].copy()
+        copia_2 = l_dx_5[0][4].copy()
+        self.play(copia_1.animate.move_to(risultato[0][3]), copia_2.animate.move_to(risultato[0][3]))
         self.cut_and_wait()
 
-        self.play(solo_il_3.animate.set_color(GREEN))
+        posizione_27 = l_sn_5_a.get_center()
+        posizione_84 = l_sn_5_b.get_center()
+        l_sn_5_a.move_to(l_dx_5[0][6:8])
+        l_sn_5_b.move_to(l_dx_5[0][8:10])
+        self.play(
+            l_sn_5_a.animate.move_to(posizione_27),
+            l_sn_5_b.animate.move_to(posizione_84)
+        )
         self.cut_and_wait()
 
-        domanda = MathTex("?^2 \le 3").scale(SCALE)
-        box = SurroundingRectangle(domanda, fill_color=BLACK, fill_opacity=1, buff=.5)
-
-        self.play(Create(box))
-        self.play(Write(domanda[0][0:3]))
-        copia_del_3 = solo_il_3.copy()
-        self.play(copia_del_3.animate.move_to(domanda[0][3]))
+        self.play(Create(h_3))
+        self.play(Write(l_sn_6_b))
         self.cut_and_wait()
 
-        risposta_1 = MathTex("1", color=RED).scale(SCALE).move_to(domanda[0][0])
-        self.play(ReplacementTransform(domanda[0][0], risposta_1))
+        self.play(Write(l_sn_6_a))
         self.cut_and_wait()
 
-        copia_risposta_1 = risposta_1.copy()
-        self.play(copia_risposta_1.animate.move_to(risultato[0][0]))
-        self.play(FadeOut(domanda[0][1:3]), FadeOut(box), FadeOut(copia_del_3), FadeOut(risposta_1))
-        self.cut_and_wait()
-
-        copia_per_quadrato = copia_risposta_1.copy()
-        quadrato_dell_uno = MathTex("1^2").scale(SCALE).move_to(l_sn_1)
-        self.play(copia_per_quadrato.animate.move_to(quadrato_dell_uno[0][0]))
-        self.play(Write(quadrato_dell_uno[0][1:]))
-        self.play(ReplacementTransform(VGroup(quadrato_dell_uno, copia_per_quadrato), l_sn_1))
-        self.cut_and_wait()
-
-        self.play(Create(h_1))
-        self.play(Write(l_sn_2_a))
-        self.cut_and_wait()
-
-        verifica = MathTex("1^2 + 2 = 3").scale(SCALE)
+        verifica = MathTex("17,8^2 + 0,46 = 317,3").scale(SCALE)
         box = SurroundingRectangle(verifica, fill_color=BLACK, fill_opacity=1, buff=.5)
         self.play(Create(box))
-        copia_1_per_verifica = copia_risposta_1.copy()
-        self.play(copia_1_per_verifica.animate.move_to(verifica[0][0]))
-        self.play(Write(verifica[0][1]))
-        self.play(Write(verifica[0][2]))
-        copia_2_per_verifica = l_sn_2_a.copy()
-        self.play(copia_2_per_verifica.animate.move_to(verifica[0][3]))
+        copia_risultato_per_verifica = risultato.copy()
+        self.play(copia_risultato_per_verifica.animate.move_to(verifica[0][0:4]))
         self.play(Write(verifica[0][4]))
-        copia_3_per_verifica = solo_il_3.copy()
-        self.play(copia_3_per_verifica.animate.move_to(verifica[0][5]))
+        self.play(Write(verifica[0][5]))
+        copia_resto_per_verifica = VGroup(l_sn_6_a.copy(), l_sn_6_b.copy())
+        copia_resto_per_verifica.target = verifica[0][6:10]
+        self.play(MoveToTarget(copia_resto_per_verifica))
+        self.play(Write(verifica[0][10]))
+        copia_argomento_per_verifica = radice_quadrata[0][2:8].copy()
+        copia_argomento_per_verifica.target = verifica[0][11:]
+        self.play(MoveToTarget(copia_argomento_per_verifica))
         self.cut_and_wait()
 
         self.play(
             FadeOut(box),
-            FadeOut(copia_1_per_verifica),
-            FadeOut(copia_2_per_verifica),
-            FadeOut(copia_3_per_verifica),
-            FadeOut(verifica[0][1:3]),
-            FadeOut(verifica[0][4]),
+            FadeOut(copia_risultato_per_verifica),
+            FadeOut(copia_resto_per_verifica),
+            FadeOut(copia_argomento_per_verifica),
+            FadeOut(verifica[0][4:6]),
+            FadeOut(verifica[0][10]),
         )
-        self.play(solo_il_3.animate.set_color(WHITE), copia_risposta_1.animate.set_color(WHITE))
+        self.play(l_sn_4_a.animate.set_color(WHITE), l_sn_4_b.animate.set_color(WHITE),
+                  copia_1.animate.set_color(WHITE), copia_2.animate.set_color(WHITE),
+                  l_dx_5[0][2].animate.set_color(WHITE), l_dx_5[0][4].animate.set_color(WHITE))
 
         self.wait(30)
