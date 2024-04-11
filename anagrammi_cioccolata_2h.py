@@ -1,0 +1,208 @@
+import itertools
+
+from manim import *
+
+DELAY = 1
+WIDTH = 1.3
+HEIGHT = WIDTH * 1.6
+LETTER_SCALE = 3
+CARDS_BUFF = .2
+
+
+class Scene(MovingCameraScene):
+
+    def cut_and_wait(self):
+        if DELAY > 0:
+            self.wait(DELAY)
+            self.next_section()
+
+    def construct(self):
+        segnaposti = VGroup()
+        for _i in range(4):
+            riquadro = RoundedRectangle(
+                corner_radius=0.1, height=HEIGHT, width=WIDTH,
+                color=WHITE
+            )
+            segnaposti.add(riquadro)
+        segnaposti.arrange(RIGHT, buff=CARDS_BUFF)
+
+        lettere = ["N", "A", "V", "E"]
+
+        carte = VGroup()
+        for _i in range(4):
+            riquadro = RoundedRectangle(
+                corner_radius=0.1, height=HEIGHT, width=WIDTH,
+                color=BLACK, fill_color=WHITE, fill_opacity=1
+            )
+            lettera = Tex(lettere[_i], color=BLACK).scale(LETTER_SCALE)
+            carta = VGroup(riquadro, lettera)
+            carta.rotate(np.random.uniform(-2, 2) * DEGREES)
+            carta.move_to(6*UP)
+            self.play(carta.animate.move_to(segnaposti[_i]))
+            carte.add(carta)
+        self.cut_and_wait()
+
+        posizioni = [(-1.5, -.15, 0) + 3*RIGHT, (-.5, .15, 0) + 3*RIGHT, (.5, .15, 0) + 3*RIGHT, (1.5, -.15, 0) + 3*RIGHT]
+        rotazioni = [21, 7, -7, -21]
+
+        self.play(
+            *[carte[_i].animate.move_to(posizioni[_i]).rotate(rotazioni[_i] * DEGREES) for _i in range(4)]
+        )
+
+        segnaposti.shift(3*LEFT)
+
+        self.play(Create(segnaposti))
+        self.cut_and_wait()
+
+        tutto = VGroup(segnaposti, carte)
+
+        delta_v = 7 * DOWN
+        delta_h = 12 * RIGHT
+
+        self.play(self.camera.frame.animate.scale(4).shift(delta_h / 2))
+        self.cut_and_wait()
+
+        livello_1 = [tutto.copy(), tutto.copy(), tutto.copy(), tutto.copy()]
+        self.remove(*[carte[_i] for _i in range(4)])
+
+        self.play(
+            *[livello_1[_i].animate.shift(delta_v * (_i - 1.5) + delta_h) for _i in range(4)],
+        )
+        self.play(
+            *[Create(Line(segnaposti.get_right(), livello_1[_i][0].get_left(), color=GRAY)) for _i in range(4)]
+        )
+        self.cut_and_wait()
+
+        for _i in range(4):
+            self.play(
+                livello_1[_i][1][_i].animate.move_to(livello_1[_i][0][0]).rotate(-rotazioni[_i]*DEGREES)
+            )
+        self.cut_and_wait()
+
+        livello_2 = [
+            [livello_1[0].copy(), livello_1[0].copy(), livello_1[0].copy()],
+            [livello_1[1].copy(), livello_1[1].copy(), livello_1[1].copy()],
+            [livello_1[2].copy(), livello_1[2].copy(), livello_1[2].copy()],
+            [livello_1[3].copy(), livello_1[3].copy(), livello_1[3].copy()]
+        ]
+
+        for _i in range(4):
+            for _j in range(3):
+                self.add(livello_2[_i][_j])
+
+        for _i in range(4):
+            for _j in range(4):
+                if _i != _j:
+                    self.remove(livello_1[_i][1][_j])
+
+        self.play(self.camera.frame.animate.scale(1.5).shift(delta_h / 2))
+        self.cut_and_wait()
+
+        delta_v2 = 3 * DOWN
+        delta_v2_b = 6 * DOWN
+
+        self.play(
+            *[livello_2[_i // 3][_i % 3].animate.shift(delta_v2 * (_i - 5.5) - delta_v2_b * ((_i // 3) - 1.5) + delta_h)
+              for _i in range(12)],
+        )
+        self.play(
+            *[Create(Line(livello_1[_i // 3][0].get_right(), livello_2[_i // 3][_i % 3][0].get_left(), color=GRAY))
+              for _i in range(12)]
+        )
+        self.cut_and_wait()
+
+        for _i in range(1, 4):
+            self.play(
+                livello_2[0][_i - 1][1][_i].animate.move_to(livello_2[0][_i - 1][0][1]).rotate(-rotazioni[_i]*DEGREES)
+            )
+        self.cut_and_wait()
+
+        self.play(livello_2[1][0][1][0].animate.move_to(livello_2[1][0][0][1]).rotate(-rotazioni[0]*DEGREES))
+        self.play(livello_2[1][1][1][2].animate.move_to(livello_2[1][1][0][1]).rotate(-rotazioni[2]*DEGREES))
+        self.play(livello_2[1][2][1][3].animate.move_to(livello_2[1][2][0][1]).rotate(-rotazioni[3]*DEGREES))
+
+        self.play(livello_2[2][0][1][0].animate.move_to(livello_2[2][0][0][1]).rotate(-rotazioni[0]*DEGREES))
+        self.play(livello_2[2][1][1][1].animate.move_to(livello_2[2][1][0][1]).rotate(-rotazioni[1]*DEGREES))
+        self.play(livello_2[2][2][1][3].animate.move_to(livello_2[2][2][0][1]).rotate(-rotazioni[3]*DEGREES))
+
+        self.play(livello_2[3][0][1][0].animate.move_to(livello_2[3][0][0][1]).rotate(-rotazioni[0]*DEGREES))
+        self.play(livello_2[3][1][1][1].animate.move_to(livello_2[3][1][0][1]).rotate(-rotazioni[1]*DEGREES))
+        self.play(livello_2[3][2][1][2].animate.move_to(livello_2[3][2][0][1]).rotate(-rotazioni[2]*DEGREES))
+
+        livello_3 = []
+        for _i in range(12):
+            livello_3.append([livello_2[_i // 3][_i % 3].copy(), livello_2[_i // 3][_i % 3].copy()])
+
+        for _i in range(12):
+            for _j in range(2):
+                self.add(livello_3[_i][_j])
+
+        self.remove(livello_2[0][0][1][2])
+        self.remove(livello_2[0][0][1][3])
+        self.remove(livello_2[0][1][1][1])
+        self.remove(livello_2[0][1][1][3])
+        self.remove(livello_2[0][2][1][1])
+        self.remove(livello_2[0][2][1][2])
+        self.remove(livello_2[1][0][1][2])
+        self.remove(livello_2[1][0][1][3])
+        self.remove(livello_2[1][1][1][0])
+        self.remove(livello_2[1][1][1][3])
+        self.remove(livello_2[1][2][1][0])
+        self.remove(livello_2[1][2][1][2])
+        self.remove(livello_2[2][0][1][1])
+        self.remove(livello_2[2][0][1][3])
+        self.remove(livello_2[2][1][1][0])
+        self.remove(livello_2[2][1][1][3])
+        self.remove(livello_2[2][2][1][0])
+        self.remove(livello_2[2][2][1][1])
+        self.remove(livello_2[3][0][1][1])
+        self.remove(livello_2[3][0][1][2])
+        self.remove(livello_2[3][1][1][0])
+        self.remove(livello_2[3][1][1][2])
+        self.remove(livello_2[3][2][1][0])
+        self.remove(livello_2[3][2][1][1])
+
+        self.play(self.camera.frame.animate.scale(1.5).shift(delta_h / 2))
+        self.cut_and_wait()
+
+        delta_v2 = 3 * DOWN
+        delta_v2_b = 3 * DOWN
+        delta_v2_c = 1 * DOWN
+
+        self.play(
+            *[livello_3[_i // 2][_i % 2].animate.shift(delta_v2 * (_i - 11.5) - delta_v2_b * ((_i // 2) - 5.5) - delta_v2_c * ((_i // 6) - 1.5) + delta_h)
+              for _i in range(24)],
+        )
+        self.play(
+            *[Create(Line(livello_2[_i // 6][(_i % 6 // 2)][0].get_right(), livello_3[_i // 2][_i % 2][0].get_left(), color=GRAY))
+              for _i in range(24)]
+        )
+        self.cut_and_wait()
+
+        self.play(livello_3[0][0][1][2].animate.move_to(livello_3[0][0][0][2]).rotate(-rotazioni[2]*DEGREES))
+        self.play(livello_3[0][1][1][3].animate.move_to(livello_3[0][1][0][2]).rotate(-rotazioni[3]*DEGREES))
+        self.play(livello_3[1][0][1][1].animate.move_to(livello_3[1][0][0][2]).rotate(-rotazioni[1]*DEGREES))
+        self.play(livello_3[1][1][1][3].animate.move_to(livello_3[1][1][0][2]).rotate(-rotazioni[3]*DEGREES))
+        self.play(livello_3[2][0][1][1].animate.move_to(livello_3[2][0][0][2]).rotate(-rotazioni[1]*DEGREES))
+        self.play(livello_3[2][1][1][2].animate.move_to(livello_3[2][1][0][2]).rotate(-rotazioni[2]*DEGREES))
+        self.play(livello_3[3][0][1][2].animate.move_to(livello_3[3][0][0][2]).rotate(-rotazioni[2]*DEGREES))
+        self.play(livello_3[3][1][1][3].animate.move_to(livello_3[3][1][0][2]).rotate(-rotazioni[3]*DEGREES))
+        self.play(livello_3[4][0][1][0].animate.move_to(livello_3[4][0][0][2]).rotate(-rotazioni[0]*DEGREES))
+        self.play(livello_3[4][1][1][3].animate.move_to(livello_3[4][1][0][2]).rotate(-rotazioni[3]*DEGREES))
+        self.play(livello_3[5][0][1][0].animate.move_to(livello_3[5][0][0][2]).rotate(-rotazioni[0]*DEGREES))
+        self.play(livello_3[5][1][1][2].animate.move_to(livello_3[5][1][0][2]).rotate(-rotazioni[2]*DEGREES))
+
+        self.play(livello_3[6][0][1][1].animate.move_to(livello_3[6][0][0][2]).rotate(-rotazioni[1]*DEGREES))
+        self.play(livello_3[6][1][1][3].animate.move_to(livello_3[6][1][0][2]).rotate(-rotazioni[3]*DEGREES))
+        self.play(livello_3[7][0][1][0].animate.move_to(livello_3[7][0][0][2]).rotate(-rotazioni[0]*DEGREES))
+        self.play(livello_3[7][1][1][3].animate.move_to(livello_3[7][1][0][2]).rotate(-rotazioni[3]*DEGREES))
+        self.play(livello_3[8][0][1][0].animate.move_to(livello_3[8][0][0][2]).rotate(-rotazioni[0]*DEGREES))
+        self.play(livello_3[8][1][1][1].animate.move_to(livello_3[8][1][0][2]).rotate(-rotazioni[1]*DEGREES))
+        self.play(livello_3[9][0][1][1].animate.move_to(livello_3[9][0][0][2]).rotate(-rotazioni[1]*DEGREES))
+        self.play(livello_3[9][1][1][2].animate.move_to(livello_3[9][1][0][2]).rotate(-rotazioni[2]*DEGREES))
+        self.play(livello_3[10][0][1][0].animate.move_to(livello_3[10][0][0][2]).rotate(-rotazioni[0]*DEGREES))
+        self.play(livello_3[10][1][1][2].animate.move_to(livello_3[10][1][0][2]).rotate(-rotazioni[2]*DEGREES))
+        self.play(livello_3[11][0][1][0].animate.move_to(livello_3[11][0][0][2]).rotate(-rotazioni[0]*DEGREES))
+        self.play(livello_3[11][1][1][1].animate.move_to(livello_3[11][1][0][2]).rotate(-rotazioni[1]*DEGREES))
+
+        self.wait(30)
