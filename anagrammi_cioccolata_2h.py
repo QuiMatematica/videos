@@ -117,17 +117,18 @@ class Scene(MovingCameraScene):
             )
         self.cut_and_wait()
 
-        self.play(livello_2[1][0][1][0].animate.move_to(livello_2[1][0][0][1]).rotate(-rotazioni[0]*DEGREES))
-        self.play(livello_2[1][1][1][2].animate.move_to(livello_2[1][1][0][1]).rotate(-rotazioni[2]*DEGREES))
-        self.play(livello_2[1][2][1][3].animate.move_to(livello_2[1][2][0][1]).rotate(-rotazioni[3]*DEGREES))
-
-        self.play(livello_2[2][0][1][0].animate.move_to(livello_2[2][0][0][1]).rotate(-rotazioni[0]*DEGREES))
-        self.play(livello_2[2][1][1][1].animate.move_to(livello_2[2][1][0][1]).rotate(-rotazioni[1]*DEGREES))
-        self.play(livello_2[2][2][1][3].animate.move_to(livello_2[2][2][0][1]).rotate(-rotazioni[3]*DEGREES))
-
-        self.play(livello_2[3][0][1][0].animate.move_to(livello_2[3][0][0][1]).rotate(-rotazioni[0]*DEGREES))
-        self.play(livello_2[3][1][1][1].animate.move_to(livello_2[3][1][0][1]).rotate(-rotazioni[1]*DEGREES))
-        self.play(livello_2[3][2][1][2].animate.move_to(livello_2[3][2][0][1]).rotate(-rotazioni[2]*DEGREES))
+        self.play(
+            livello_2[1][0][1][0].animate.move_to(livello_2[1][0][0][1]).rotate(-rotazioni[0]*DEGREES),
+            livello_2[1][1][1][2].animate.move_to(livello_2[1][1][0][1]).rotate(-rotazioni[2]*DEGREES),
+            livello_2[1][2][1][3].animate.move_to(livello_2[1][2][0][1]).rotate(-rotazioni[3]*DEGREES),
+            livello_2[2][0][1][0].animate.move_to(livello_2[2][0][0][1]).rotate(-rotazioni[0]*DEGREES),
+            livello_2[2][1][1][1].animate.move_to(livello_2[2][1][0][1]).rotate(-rotazioni[1]*DEGREES),
+            livello_2[2][2][1][3].animate.move_to(livello_2[2][2][0][1]).rotate(-rotazioni[3]*DEGREES),
+            livello_2[3][0][1][0].animate.move_to(livello_2[3][0][0][1]).rotate(-rotazioni[0]*DEGREES),
+            livello_2[3][1][1][1].animate.move_to(livello_2[3][1][0][1]).rotate(-rotazioni[1]*DEGREES),
+            livello_2[3][2][1][2].animate.move_to(livello_2[3][2][0][1]).rotate(-rotazioni[2]*DEGREES)
+        )
+        self.cut_and_wait()
 
         livello_3 = []
         for _i in range(12):
@@ -163,7 +164,6 @@ class Scene(MovingCameraScene):
         self.remove(livello_2[3][2][1][1])
 
         self.play(self.camera.frame.animate.scale(1.5).shift(delta_h / 2))
-        self.cut_and_wait()
 
         delta_v2 = 3 * DOWN
         delta_v2_b = 3 * DOWN
@@ -179,30 +179,99 @@ class Scene(MovingCameraScene):
         )
         self.cut_and_wait()
 
-        self.play(livello_3[0][0][1][2].animate.move_to(livello_3[0][0][0][2]).rotate(-rotazioni[2]*DEGREES))
-        self.play(livello_3[0][1][1][3].animate.move_to(livello_3[0][1][0][2]).rotate(-rotazioni[3]*DEGREES))
-        self.play(livello_3[1][0][1][1].animate.move_to(livello_3[1][0][0][2]).rotate(-rotazioni[1]*DEGREES))
-        self.play(livello_3[1][1][1][3].animate.move_to(livello_3[1][1][0][2]).rotate(-rotazioni[3]*DEGREES))
-        self.play(livello_3[2][0][1][1].animate.move_to(livello_3[2][0][0][2]).rotate(-rotazioni[1]*DEGREES))
-        self.play(livello_3[2][1][1][2].animate.move_to(livello_3[2][1][0][2]).rotate(-rotazioni[2]*DEGREES))
-        self.play(livello_3[3][0][1][2].animate.move_to(livello_3[3][0][0][2]).rotate(-rotazioni[2]*DEGREES))
-        self.play(livello_3[3][1][1][3].animate.move_to(livello_3[3][1][0][2]).rotate(-rotazioni[3]*DEGREES))
-        self.play(livello_3[4][0][1][0].animate.move_to(livello_3[4][0][0][2]).rotate(-rotazioni[0]*DEGREES))
-        self.play(livello_3[4][1][1][3].animate.move_to(livello_3[4][1][0][2]).rotate(-rotazioni[3]*DEGREES))
-        self.play(livello_3[5][0][1][0].animate.move_to(livello_3[5][0][0][2]).rotate(-rotazioni[0]*DEGREES))
-        self.play(livello_3[5][1][1][2].animate.move_to(livello_3[5][1][0][2]).rotate(-rotazioni[2]*DEGREES))
+        self.play(
+            livello_3[0][0][1][2].animate.move_to(livello_3[0][0][0][2]).rotate(-rotazioni[2]*DEGREES),
+            livello_3[0][1][1][3].animate.move_to(livello_3[0][1][0][2]).rotate(-rotazioni[3]*DEGREES),
+            livello_3[1][0][1][1].animate.move_to(livello_3[1][0][0][2]).rotate(-rotazioni[1]*DEGREES),
+            livello_3[1][1][1][3].animate.move_to(livello_3[1][1][0][2]).rotate(-rotazioni[3]*DEGREES),
+            livello_3[2][0][1][1].animate.move_to(livello_3[2][0][0][2]).rotate(-rotazioni[1]*DEGREES),
+            livello_3[2][1][1][2].animate.move_to(livello_3[2][1][0][2]).rotate(-rotazioni[2]*DEGREES),
+            livello_3[3][0][1][2].animate.move_to(livello_3[3][0][0][2]).rotate(-rotazioni[2]*DEGREES),
+            livello_3[3][1][1][3].animate.move_to(livello_3[3][1][0][2]).rotate(-rotazioni[3]*DEGREES),
+            livello_3[4][0][1][0].animate.move_to(livello_3[4][0][0][2]).rotate(-rotazioni[0]*DEGREES),
+            livello_3[4][1][1][3].animate.move_to(livello_3[4][1][0][2]).rotate(-rotazioni[3]*DEGREES),
+            livello_3[5][0][1][0].animate.move_to(livello_3[5][0][0][2]).rotate(-rotazioni[0]*DEGREES),
+            livello_3[5][1][1][2].animate.move_to(livello_3[5][1][0][2]).rotate(-rotazioni[2]*DEGREES),
+            livello_3[6][0][1][1].animate.move_to(livello_3[6][0][0][2]).rotate(-rotazioni[1]*DEGREES),
+            livello_3[6][1][1][3].animate.move_to(livello_3[6][1][0][2]).rotate(-rotazioni[3]*DEGREES),
+            livello_3[7][0][1][0].animate.move_to(livello_3[7][0][0][2]).rotate(-rotazioni[0]*DEGREES),
+            livello_3[7][1][1][3].animate.move_to(livello_3[7][1][0][2]).rotate(-rotazioni[3]*DEGREES),
+            livello_3[8][0][1][0].animate.move_to(livello_3[8][0][0][2]).rotate(-rotazioni[0]*DEGREES),
+            livello_3[8][1][1][1].animate.move_to(livello_3[8][1][0][2]).rotate(-rotazioni[1]*DEGREES),
+            livello_3[9][0][1][1].animate.move_to(livello_3[9][0][0][2]).rotate(-rotazioni[1]*DEGREES),
+            livello_3[9][1][1][2].animate.move_to(livello_3[9][1][0][2]).rotate(-rotazioni[2]*DEGREES),
+            livello_3[10][0][1][0].animate.move_to(livello_3[10][0][0][2]).rotate(-rotazioni[0]*DEGREES),
+            livello_3[10][1][1][2].animate.move_to(livello_3[10][1][0][2]).rotate(-rotazioni[2]*DEGREES),
+            livello_3[11][0][1][0].animate.move_to(livello_3[11][0][0][2]).rotate(-rotazioni[0]*DEGREES),
+            livello_3[11][1][1][1].animate.move_to(livello_3[11][1][0][2]).rotate(-rotazioni[1]*DEGREES)
+        )
+        self.cut_and_wait()
 
-        self.play(livello_3[6][0][1][1].animate.move_to(livello_3[6][0][0][2]).rotate(-rotazioni[1]*DEGREES))
-        self.play(livello_3[6][1][1][3].animate.move_to(livello_3[6][1][0][2]).rotate(-rotazioni[3]*DEGREES))
-        self.play(livello_3[7][0][1][0].animate.move_to(livello_3[7][0][0][2]).rotate(-rotazioni[0]*DEGREES))
-        self.play(livello_3[7][1][1][3].animate.move_to(livello_3[7][1][0][2]).rotate(-rotazioni[3]*DEGREES))
-        self.play(livello_3[8][0][1][0].animate.move_to(livello_3[8][0][0][2]).rotate(-rotazioni[0]*DEGREES))
-        self.play(livello_3[8][1][1][1].animate.move_to(livello_3[8][1][0][2]).rotate(-rotazioni[1]*DEGREES))
-        self.play(livello_3[9][0][1][1].animate.move_to(livello_3[9][0][0][2]).rotate(-rotazioni[1]*DEGREES))
-        self.play(livello_3[9][1][1][2].animate.move_to(livello_3[9][1][0][2]).rotate(-rotazioni[2]*DEGREES))
-        self.play(livello_3[10][0][1][0].animate.move_to(livello_3[10][0][0][2]).rotate(-rotazioni[0]*DEGREES))
-        self.play(livello_3[10][1][1][2].animate.move_to(livello_3[10][1][0][2]).rotate(-rotazioni[2]*DEGREES))
-        self.play(livello_3[11][0][1][0].animate.move_to(livello_3[11][0][0][2]).rotate(-rotazioni[0]*DEGREES))
-        self.play(livello_3[11][1][1][1].animate.move_to(livello_3[11][1][0][2]).rotate(-rotazioni[1]*DEGREES))
+        livello_4 = []
+        for _i in range(24):
+            livello_4.append(livello_3[_i // 2][_i % 2].copy())
+
+        self.play(self.camera.frame.animate.shift(delta_h / 2))
+
+        self.remove(livello_3[0][0][1][3])
+        self.remove(livello_3[0][1][1][2])
+        self.remove(livello_3[1][0][1][3])
+        self.remove(livello_3[1][1][1][1])
+        self.remove(livello_3[2][0][1][2])
+        self.remove(livello_3[2][1][1][1])
+        self.remove(livello_3[3][0][1][3])
+        self.remove(livello_3[3][1][1][2])
+        self.remove(livello_3[4][0][1][3])
+        self.remove(livello_3[4][1][1][0])
+        self.remove(livello_3[5][0][1][2])
+        self.remove(livello_3[5][1][1][0])
+        self.remove(livello_3[6][0][1][3])
+        self.remove(livello_3[6][1][1][1])
+        self.remove(livello_3[7][0][1][3])
+        self.remove(livello_3[7][1][1][0])
+        self.remove(livello_3[8][0][1][1])
+        self.remove(livello_3[8][1][1][0])
+        self.remove(livello_3[9][0][1][2])
+        self.remove(livello_3[9][1][1][1])
+        self.remove(livello_3[10][0][1][2])
+        self.remove(livello_3[10][1][1][0])
+        self.remove(livello_3[11][0][1][1])
+        self.remove(livello_3[11][1][1][0])
+
+        self.play(*[livello_4[_i].animate.shift(delta_h) for _i in range(24)])
+
+        self.play(
+            *[Create(Line(livello_3[_i // 2][(_i % 2)][0].get_right(), livello_4[_i][0].get_left(), color=GRAY))
+              for _i in range(24)]
+        )
+        self.cut_and_wait()
+
+        self.play(
+            livello_4[0][1][3].animate.move_to(livello_4[0][0][3]).rotate(-rotazioni[3]*DEGREES),
+            livello_4[1][1][2].animate.move_to(livello_4[1][0][3]).rotate(-rotazioni[2]*DEGREES),
+            livello_4[2][1][3].animate.move_to(livello_4[2][0][3]).rotate(-rotazioni[3]*DEGREES),
+            livello_4[3][1][1].animate.move_to(livello_4[3][0][3]).rotate(-rotazioni[1]*DEGREES),
+            livello_4[4][1][2].animate.move_to(livello_4[4][0][3]).rotate(-rotazioni[2]*DEGREES),
+            livello_4[5][1][1].animate.move_to(livello_4[5][0][3]).rotate(-rotazioni[1]*DEGREES),
+            livello_4[6][1][3].animate.move_to(livello_4[6][0][3]).rotate(-rotazioni[3]*DEGREES),
+            livello_4[7][1][2].animate.move_to(livello_4[7][0][3]).rotate(-rotazioni[2]*DEGREES),
+            livello_4[8][1][3].animate.move_to(livello_4[8][0][3]).rotate(-rotazioni[3]*DEGREES),
+            livello_4[9][1][0].animate.move_to(livello_4[9][0][3]).rotate(-rotazioni[0]*DEGREES),
+            livello_4[10][1][2].animate.move_to(livello_4[10][0][3]).rotate(-rotazioni[2]*DEGREES),
+            livello_4[11][1][0].animate.move_to(livello_4[11][0][3]).rotate(-rotazioni[0]*DEGREES),
+            livello_4[12][1][3].animate.move_to(livello_4[12][0][3]).rotate(-rotazioni[3]*DEGREES),
+            livello_4[13][1][1].animate.move_to(livello_4[13][0][3]).rotate(-rotazioni[1]*DEGREES),
+            livello_4[14][1][3].animate.move_to(livello_4[14][0][3]).rotate(-rotazioni[3]*DEGREES),
+            livello_4[15][1][0].animate.move_to(livello_4[15][0][3]).rotate(-rotazioni[0]*DEGREES),
+            livello_4[16][1][1].animate.move_to(livello_4[16][0][3]).rotate(-rotazioni[1]*DEGREES),
+            livello_4[17][1][0].animate.move_to(livello_4[17][0][3]).rotate(-rotazioni[0]*DEGREES),
+            livello_4[18][1][2].animate.move_to(livello_4[18][0][3]).rotate(-rotazioni[2]*DEGREES),
+            livello_4[19][1][1].animate.move_to(livello_4[19][0][3]).rotate(-rotazioni[1]*DEGREES),
+            livello_4[20][1][2].animate.move_to(livello_4[20][0][3]).rotate(-rotazioni[2]*DEGREES),
+            livello_4[21][1][0].animate.move_to(livello_4[21][0][3]).rotate(-rotazioni[0]*DEGREES),
+            livello_4[22][1][1].animate.move_to(livello_4[22][0][3]).rotate(-rotazioni[1]*DEGREES),
+            livello_4[23][1][0].animate.move_to(livello_4[23][0][3]).rotate(-rotazioni[0]*DEGREES)
+        )
+        self.cut_and_wait()
 
         self.wait(30)
