@@ -26,7 +26,7 @@ class Scene(MovingCameraScene):
             segnaposti.add(riquadro)
         segnaposti.arrange(RIGHT, buff=CARDS_BUFF)
 
-        lettere = ["N", "A", "V", "E"]
+        lettere = ["N", "E", "V", "E"]
 
         carte = VGroup()
         for _i in range(4):
@@ -38,9 +38,29 @@ class Scene(MovingCameraScene):
             carta = VGroup(riquadro, lettera)
             carta.rotate(np.random.uniform(-2, 2) * DEGREES)
             carta.move_to(6*UP)
-            self.play(carta.animate.move_to(segnaposti[_i]))
             carte.add(carta)
+
+        riquadro = RoundedRectangle(
+            corner_radius=0.1, height=HEIGHT, width=WIDTH,
+            color=BLACK, fill_color=WHITE, fill_opacity=1
+        )
+        lettera = Tex("A", color=BLACK).scale(LETTER_SCALE)
+        carta = VGroup(riquadro, lettera)
+        carta.rotate(np.random.uniform(-2, 2) * DEGREES)
+        carta.move_to(6 * UP)
+
+        self.play(carte[0].animate.move_to(segnaposti[0]))
+        self.play(carta.animate.move_to(segnaposti[1]))
+        self.play(carte[2].animate.move_to(segnaposti[2]))
+        self.play(carte[3].animate.move_to(segnaposti[3]))
         self.cut_and_wait()
+
+        self.play(carta.animate.move_to(6*DOWN))
+        self.play(carte[1].animate.move_to(segnaposti[1]))
+        self.cut_and_wait()
+        self.remove(carta)
+
+        # ###################################
 
         posizioni = [(-1.5, -.15, 0) + 3*RIGHT, (-.5, .15, 0) + 3*RIGHT, (.5, .15, 0) + 3*RIGHT, (1.5, -.15, 0) + 3*RIGHT]
         rotazioni = [21, 7, -7, -21]
@@ -52,15 +72,13 @@ class Scene(MovingCameraScene):
         segnaposti.shift(3*LEFT)
 
         self.play(Create(segnaposti))
-        self.cut_and_wait()
 
         tutto = VGroup(segnaposti, carte)
 
         delta_v = 7 * DOWN
         delta_h = 12 * RIGHT
 
-        self.play(self.camera.frame.animate.scale(4).shift(delta_h / 2))
-        self.cut_and_wait()
+        self.play(self.camera.frame.animate.scale(9).shift(2 * delta_h))
 
         livello_1 = [tutto.copy(), tutto.copy(), tutto.copy(), tutto.copy()]
         self.remove(*[carte[_i] for _i in range(4)])
@@ -71,13 +89,11 @@ class Scene(MovingCameraScene):
         self.play(
             *[Create(Line(segnaposti.get_right(), livello_1[_i][0].get_left(), color=GRAY)) for _i in range(4)]
         )
-        self.cut_and_wait()
 
         for _i in range(4):
             self.play(
                 livello_1[_i][1][_i].animate.move_to(livello_1[_i][0][0]).rotate(-rotazioni[_i]*DEGREES)
             )
-        self.cut_and_wait()
 
         livello_2 = [
             [livello_1[0].copy(), livello_1[0].copy(), livello_1[0].copy()],
@@ -95,9 +111,6 @@ class Scene(MovingCameraScene):
                 if _i != _j:
                     self.remove(livello_1[_i][1][_j])
 
-        self.play(self.camera.frame.animate.scale(1.5).shift(delta_h / 2))
-        self.cut_and_wait()
-
         delta_v2 = 3 * DOWN
         delta_v2_b = 6 * DOWN
 
@@ -109,15 +122,11 @@ class Scene(MovingCameraScene):
             *[Create(Line(livello_1[_i // 3][0].get_right(), livello_2[_i // 3][_i % 3][0].get_left(), color=GRAY))
               for _i in range(12)]
         )
-        self.cut_and_wait()
-
-        for _i in range(1, 4):
-            self.play(
-                livello_2[0][_i - 1][1][_i].animate.move_to(livello_2[0][_i - 1][0][1]).rotate(-rotazioni[_i]*DEGREES)
-            )
-        self.cut_and_wait()
 
         self.play(
+            livello_2[0][0][1][1].animate.move_to(livello_2[0][0][0][1]).rotate(-rotazioni[1]*DEGREES),
+            livello_2[0][1][1][2].animate.move_to(livello_2[0][1][0][1]).rotate(-rotazioni[2]*DEGREES),
+            livello_2[0][2][1][3].animate.move_to(livello_2[0][2][0][1]).rotate(-rotazioni[3]*DEGREES),
             livello_2[1][0][1][0].animate.move_to(livello_2[1][0][0][1]).rotate(-rotazioni[0]*DEGREES),
             livello_2[1][1][1][2].animate.move_to(livello_2[1][1][0][1]).rotate(-rotazioni[2]*DEGREES),
             livello_2[1][2][1][3].animate.move_to(livello_2[1][2][0][1]).rotate(-rotazioni[3]*DEGREES),
@@ -128,28 +137,6 @@ class Scene(MovingCameraScene):
             livello_2[3][1][1][1].animate.move_to(livello_2[3][1][0][1]).rotate(-rotazioni[1]*DEGREES),
             livello_2[3][2][1][2].animate.move_to(livello_2[3][2][0][1]).rotate(-rotazioni[2]*DEGREES)
         )
-        self.cut_and_wait()
-
-        self.play(self.camera.frame.animate.shift(delta_h / 2))
-
-        gruppo = VGroup()
-        for _i in livello_2:
-            for _j in _i:
-                gruppo.add(_j)
-        graffa = Brace(gruppo, direction=RIGHT, color=YELLOW, sharpness=.5, buff=2)
-        self.play(Create(graffa))
-
-        operazione = MathTex(r"4 {{ \cdot 3 }} = 12", color=YELLOW).scale(8).next_to(graffa, buff=2)
-        self.play(Write(operazione[0]))
-        self.cut_and_wait()
-
-        self.play(Write(operazione[1]))
-        self.cut_and_wait()
-
-        self.play(Write(operazione[2]))
-        self.cut_and_wait()
-
-        self.play(FadeOut(graffa), FadeOut(operazione))
 
         livello_3 = []
         for _i in range(12):
@@ -184,8 +171,6 @@ class Scene(MovingCameraScene):
         self.remove(livello_2[3][2][1][0])
         self.remove(livello_2[3][2][1][1])
 
-        self.play(self.camera.frame.animate.scale(1.5))
-
         delta_v2 = 3 * DOWN
         delta_v2_b = 3 * DOWN
         delta_v2_c = 1 * DOWN
@@ -198,7 +183,6 @@ class Scene(MovingCameraScene):
             *[Create(Line(livello_2[_i // 6][(_i % 6 // 2)][0].get_right(), livello_3[_i // 2][_i % 2][0].get_left(), color=GRAY))
               for _i in range(24)]
         )
-        self.cut_and_wait()
 
         self.play(
             livello_3[0][0][1][2].animate.move_to(livello_3[0][0][0][2]).rotate(-rotazioni[2]*DEGREES),
@@ -226,22 +210,6 @@ class Scene(MovingCameraScene):
             livello_3[11][0][1][0].animate.move_to(livello_3[11][0][0][2]).rotate(-rotazioni[0]*DEGREES),
             livello_3[11][1][1][1].animate.move_to(livello_3[11][1][0][2]).rotate(-rotazioni[1]*DEGREES)
         )
-        self.cut_and_wait()
-
-        self.play(self.camera.frame.animate.shift(delta_h / 2))
-
-        gruppo = VGroup()
-        for _i in livello_3:
-            for _j in _i:
-                gruppo.add(_j)
-        graffa = Brace(gruppo, direction=RIGHT, color=YELLOW, sharpness=.5, buff=2)
-        self.play(Create(graffa))
-
-        operazione = MathTex(r"4 \cdot 3 \cdot 2 = 24", color=YELLOW).scale(12).next_to(graffa, buff=2)
-        self.play(Write(operazione))
-        self.cut_and_wait()
-
-        self.play(FadeOut(graffa), FadeOut(operazione))
 
         livello_4 = []
         for _i in range(24):
@@ -278,7 +246,6 @@ class Scene(MovingCameraScene):
             *[Create(Line(livello_3[_i // 2][(_i % 2)][0].get_right(), livello_4[_i][0].get_left(), color=GRAY))
               for _i in range(24)]
         )
-        self.cut_and_wait()
 
         self.play(
             livello_4[0][1][3].animate.move_to(livello_4[0][0][3]).rotate(-rotazioni[3]*DEGREES),
@@ -306,22 +273,6 @@ class Scene(MovingCameraScene):
             livello_4[22][1][1].animate.move_to(livello_4[22][0][3]).rotate(-rotazioni[1]*DEGREES),
             livello_4[23][1][0].animate.move_to(livello_4[23][0][3]).rotate(-rotazioni[0]*DEGREES)
         )
-        self.cut_and_wait()
-
-        self.play(self.camera.frame.animate.shift(delta_h))
-
-        gruppo = VGroup()
-        for _i in livello_4:
-            gruppo.add(_i[0])
-        graffa = Brace(gruppo, direction=RIGHT, color=YELLOW, sharpness=.5, buff=2)
-        self.play(Create(graffa))
-
-        operazione = MathTex(r"4 \cdot 3 \cdot 2 \cdot 1 {{ = 24 }}", color=YELLOW).scale(12).next_to(graffa, buff=2)
-        self.play(Write(operazione))
-        self.cut_and_wait()
-
-        operazione_con_fattoriale = MathTex(r"4! {{ = 24 }}", color=YELLOW).scale(12).next_to(graffa, buff=2)
-        self.play(TransformMatchingTex(operazione, operazione_con_fattoriale))
         self.cut_and_wait()
 
         self.wait(30)
