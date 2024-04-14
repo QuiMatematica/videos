@@ -27,6 +27,7 @@ class Scene(MovingCameraScene):
         segnaposti.arrange(RIGHT, buff=CARDS_BUFF)
 
         lettere = ["N", "E", "V", "E"]
+        colori = [BLACK, PURE_GREEN, BLACK, PURE_RED]
 
         carte = VGroup()
         for _i in range(4):
@@ -34,7 +35,7 @@ class Scene(MovingCameraScene):
                 corner_radius=0.1, height=HEIGHT, width=WIDTH,
                 color=BLACK, fill_color=WHITE, fill_opacity=1
             )
-            lettera = Tex(lettere[_i], color=BLACK).scale(LETTER_SCALE)
+            lettera = Tex(lettere[_i], color=colori[_i]).scale(LETTER_SCALE)
             carta = VGroup(riquadro, lettera)
             carta.rotate(np.random.uniform(-2, 2) * DEGREES)
             carta.move_to(6 * UP)
@@ -311,5 +312,30 @@ class Scene(MovingCameraScene):
             *[livello_4[23][_i].animate.move_to(coppie[13]) for _i in range(2)],
             self.camera.frame.animate.scale(.6).move_to(coppie)
         )
+        self.cut_and_wait()
+
+        self.play(
+            self.camera.frame.animate.scale(.2).move_to(VGroup(coppie[20], coppie[21])),
+            *[FadeOut(livello_4[13][_i]) for _i in range(2)],
+            *[FadeOut(livello_4[12][_i]) for _i in range(2)],
+            *[FadeOut(livello_4[15][_i]) for _i in range(2)],
+            *[FadeOut(livello_4[17][_i]) for _i in range(2)]
+        )
+        self.cut_and_wait()
+
+        freccia1 = CurvedDoubleArrow(livello_4[14][0][1].get_bottom(), livello_4[16][0][3].get_bottom())
+        freccia2 = CurvedDoubleArrow(livello_4[14][0][3].get_bottom(), livello_4[16][0][1].get_bottom())
+        self.play(Create(freccia1))
+        self.play(Create(freccia2))
+        self.cut_and_wait()
+        self.cut_and_wait()
+
+        formula = MathTex(r"P_2 {{ = 2! }} = 2 \cdot 1 = 2", color=YELLOW).scale(2).next_to(VGroup(coppie[20], coppie[21]), UP, buff=1)
+        self.play(Write(formula[0]))
+        self.cut_and_wait()
+        self.play(Write(formula[1]))
+        self.cut_and_wait()
+        self.play(Write(formula[2]))
+        self.cut_and_wait()
 
         self.wait(30)
