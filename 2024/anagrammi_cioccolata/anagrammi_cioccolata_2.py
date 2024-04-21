@@ -2,7 +2,7 @@ import itertools
 
 from manim import *
 
-DELAY = 1
+DELAY = 30
 WIDTH = 1.3
 HEIGHT = WIDTH * 1.6
 LETTER_SCALE = 3
@@ -322,6 +322,5 @@ class Scene(MovingCameraScene):
 
         operazione_con_fattoriale = MathTex(r"4! {{ = 24 }}", color=YELLOW).scale(12).next_to(graffa, buff=2)
         self.play(TransformMatchingTex(operazione, operazione_con_fattoriale))
-        self.cut_and_wait()
 
         self.wait(30)

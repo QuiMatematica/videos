@@ -1,8 +1,6 @@
-import itertools
-
 from manim import *
 
-DELAY = 1
+DELAY = 30
 WIDTH = 1.3
 HEIGHT = WIDTH * 1.6
 LETTER_SCALE = 3
@@ -41,25 +39,11 @@ class Scene(MovingCameraScene):
             carta.move_to(6 * UP)
             carte.add(carta)
 
-        riquadro = RoundedRectangle(
-            corner_radius=0.1, height=HEIGHT, width=WIDTH,
-            color=BLACK, fill_color=WHITE, fill_opacity=1
-        )
-        lettera = Tex("A", color=BLACK).scale(LETTER_SCALE)
-        carta = VGroup(riquadro, lettera)
-        carta.rotate(np.random.uniform(-2, 2) * DEGREES)
-        carta.move_to(6 * UP)
-
         self.play(carte[0].animate.move_to(segnaposti[0]))
-        self.play(carta.animate.move_to(segnaposti[1]))
+        self.play(carte[1].animate.move_to(segnaposti[1]))
         self.play(carte[2].animate.move_to(segnaposti[2]))
         self.play(carte[3].animate.move_to(segnaposti[3]))
         self.cut_and_wait()
-
-        self.play(carta.animate.move_to(6 * DOWN))
-        self.play(carte[1].animate.move_to(segnaposti[1]))
-        self.cut_and_wait()
-        self.remove(carta)
 
         # ###################################
 
@@ -327,7 +311,6 @@ class Scene(MovingCameraScene):
         freccia2 = CurvedDoubleArrow(livello_4[14][0][3].get_bottom(), livello_4[16][0][1].get_bottom())
         self.play(Create(freccia1))
         self.play(Create(freccia2))
-        self.cut_and_wait()
         self.cut_and_wait()
 
         formula = MathTex(r"P_2 {{ = 2! }} = 2 \cdot 1 = 2", color=YELLOW).scale(2).next_to(VGroup(coppie[20], coppie[21]), UP, buff=1)

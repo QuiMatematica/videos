@@ -2,7 +2,7 @@ import itertools
 
 from manim import *
 
-DELAY = 1
+DELAY = 30
 WIDTH = 1.3
 HEIGHT = WIDTH * 1.6
 LETTER_SCALE = 3
@@ -27,17 +27,16 @@ class Scene(MovingCameraScene):
         segnaposti.arrange(RIGHT, buff=CARDS_BUFF)
 
         lettere = ["C", "I", "O", "C", "C", "O", "L", "A", "T", "A"]
-        colori = [GREEN_E, BLACK, RED_E, BLUE_E, RED_E, GREEN_E, BLACK, RED_E, BLACK, GREEN_E]
 
         carte = VGroup()
         for _i in range(10):
             riquadro = RoundedRectangle(
                 corner_radius=0.1, height=HEIGHT, width=WIDTH,
-                color=WHITE, fill_color=WHITE, fill_opacity=1
+                color=BLACK, fill_color=WHITE, fill_opacity=1
             )
             lettera = Tex(lettere[_i], color=BLACK).scale(LETTER_SCALE)
             carta = VGroup(riquadro, lettera)
-            carta.rotate(np.random.uniform(-5, 5) * DEGREES)
+            carta.rotate(np.random.uniform(-2, 2) * DEGREES)
             carte.add(carta)
 
         self.add(carte)

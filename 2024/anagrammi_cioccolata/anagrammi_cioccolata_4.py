@@ -2,7 +2,7 @@ import itertools
 
 from manim import *
 
-DELAY = 1
+DELAY = 30
 WIDTH = 1.3
 HEIGHT = WIDTH * 1.6
 LETTER_SCALE = 3
