@@ -2,7 +2,7 @@ import math
 
 from manim import *
 
-DELAY = 1
+DELAY = 30
 X_RADIUS = config["frame_x_radius"]
 Y_RADIUS = config["frame_y_radius"]
 SCALE = 1
@@ -130,31 +130,46 @@ class Video(MovingCameraScene):
         self.play(Write(p3))
         self.cut_and_wait()
 
-        self.play(FadeOut(p1), FadeOut(p2), p3.animate.move_to(p2))
+        self.play(FadeOut(p1), FadeOut(p2), p3.animate.move_to(p1))
 
-        p3b = MathTex(r"{{ \overline{AC} }} \cdot \dfrac{1}{2} {{ \overline{AC} }} = {{ \overline{AB} \cdot \overline{BC} }}").move_to(p3)
-        self.play(TransformMatchingTex(p3, p3b))
+        p3b = MathTex(r"{{ \overline{AC} }} \cdot \dfrac{1}{2} {{ \overline{AC} }} = {{ \overline{AB} \cdot \overline{BC} }}").next_to(p3,DOWN)
+        self.play(Write(p3b))
         self.cut_and_wait()
-        p4 = MathTex(r"{{ \overline{AC}^2 }} = 2 \cdot {{ \overline{AB} \cdot \overline{BC} }}").move_to(p3)
-        self.play(TransformMatchingTex(p3b, p4))
+        self.play(FadeOut(p3), p3b.animate.move_to(p3))
+
+        p4 = MathTex(r"{{ \overline{AC}^2 }} = 2 \cdot {{ \overline{AB} \cdot \overline{BC} }}").next_to(p3b,DOWN)
+        self.play(Write(p4))
         self.cut_and_wait()
-        p5 = MathTex(r"{{ \overline{AB}^2 }} + {{ \overline{BC}^2 }} = 2 \cdot {{ \overline{AB} \cdot \overline{BC} }}").move_to(p3)
-        self.play(TransformMatchingTex(p4, p5))
+        self.play(FadeOut(p3b), p4.animate.move_to(p3))
+
+        p5 = MathTex(r"{{ \overline{AB}^2 }} + {{ \overline{BC}^2 }} = 2 \cdot {{ \overline{AB} \cdot \overline{BC} }}").next_to(p4,DOWN)
+        self.play(Write(p5))
         self.cut_and_wait()
-        p6 = MathTex(r"{{ \overline{AB}^2 }} - 2 \cdot {{ \overline{AB} \cdot \overline{BC} }} + {{ \overline{BC}^2 }} = 0").move_to(p3)
-        self.play(TransformMatchingTex(p5, p6))
+        self.play(FadeOut(p4), p5.animate.move_to(p3))
+
+        p6 = MathTex(r"{{ \overline{AB}^2 }} - 2 \cdot {{ \overline{AB} \cdot \overline{BC} }} + {{ \overline{BC}^2 }} = 0").next_to(p5,DOWN)
+        self.play(Write(p6))
         self.cut_and_wait()
-        p7 = MathTex(r"( {{ \overline{AB} }} - {{ \overline{BC} }} )^2 {{ = 0 }}").move_to(p3)
-        self.play(TransformMatchingTex(p6, p7))
+        self.play(FadeOut(p5), p6.animate.move_to(p3))
+
+        p7 = MathTex(r"( {{ \overline{AB} }} - {{ \overline{BC} }} )^2 {{ = 0 }}").next_to(p6,DOWN)
+        self.play(Write(p7))
         self.cut_and_wait()
-        p8 = MathTex(r"{{ \overline{AB} }} - {{ \overline{BC} }} = 0").move_to(p3)
-        self.play(TransformMatchingTex(p7, p8))
+        self.play(FadeOut(p6), p7.animate.move_to(p3))
+
+        p8 = MathTex(r"{{ \overline{AB} }} - {{ \overline{BC} }} = 0").next_to(p7,DOWN)
+        self.play(Write(p8))
         self.cut_and_wait()
-        p9 = MathTex(r"{{ \overline{AB} }} = {{ \overline{BC} }} ").move_to(p3)
-        self.play(TransformMatchingTex(p8, p9))
+        self.play(FadeOut(p7), p8.animate.move_to(p3))
+
+        p9 = MathTex(r"{{ \overline{AB} }} = {{ \overline{BC} }} ").next_to(p8,DOWN)
+        self.play(Write(p9))
         self.cut_and_wait()
-        p10 = MathTex(r"{{ \overline{AB} }} = {{ \overline{BC} }} \Longrightarrow ABC \text{ isoscele}").move_to(p3)
-        self.play(TransformMatchingTex(p9, p10))
+        self.play(FadeOut(p8), p9.animate.move_to(p3))
+
+        p10 = MathTex(r"{{ \overline{AB} }} = {{ \overline{BC} }} \Longrightarrow ABC \text{ isoscele}").next_to(p9,DOWN)
+        self.play(Write(p10))
         self.cut_and_wait()
+        self.play(FadeOut(p9), p10.animate.move_to(p3))
 
         self.wait(30)
