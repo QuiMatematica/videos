@@ -1,21 +1,13 @@
-class MiaClasse:
-    def __init__(self, nome):
-        self.nome = nome
-
-    def radicali(self):
-        for i in range(317, 999):
-            quadrato = i*i
-            prime = quadrato // 1000
-            seconde = quadrato % 1000
-            somma = prime + seconde
-            corretto = somma == i
-            if corretto:
-                print(f"n={i} \t quadrato={quadrato} \t prime={prime} \t seconde={seconde} \t somma={somma} \t corretto={corretto}")
-
+import math
 
 if __name__ == "__main__":
-    # Crea un'istanza della classe
-    istanza = MiaClasse("Giulia")
-
-    # Chiama il metodo saluta
-    istanza.radicali()
+    a = [False] * 100
+    for s in range(100):
+        studente = s + 1
+        for i in range(100):
+            armadietto = i + 1
+            if armadietto % studente == 0:
+                a[i] = not a[i]
+    for i in range(100):
+        if a[i]:
+            print(f"i={i+1}\tstato={a[i]}")
